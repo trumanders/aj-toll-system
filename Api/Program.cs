@@ -13,6 +13,14 @@ namespace Api
 			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 			builder.Services.AddOpenApi();
 
+			// Register DbService
+
+			// Register Context
+
+			// Register AutoMapper
+
+
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.

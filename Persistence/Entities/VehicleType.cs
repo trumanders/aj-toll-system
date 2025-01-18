@@ -6,5 +6,5 @@ public class VehicleType : IEntity
 	public int Id { get; set; }
 
 	[MaxLength(50), Required]
-	public string TypeName { get; set; }
+	public string? TypeName { get; set; }
 }

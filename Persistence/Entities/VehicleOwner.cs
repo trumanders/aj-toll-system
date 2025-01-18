@@ -6,8 +6,8 @@ public class VehicleOwner : IEntity
 	public int Id { get; set; }
 
 	[MaxLength(50), Required]
-	public string VechicleOwnerName { get; set; }
+	public string? VechicleOwnerName { get; set; }
 
 	[Required]
-	public virtual ICollection<Vehicle> Vehicles { get; set; }
+	public virtual ICollection<Vehicle> Vehicles { get; set; } = new HashSet<Vehicle>();
 }
