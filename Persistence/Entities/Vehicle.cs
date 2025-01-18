@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Persistence.Entities;
+﻿namespace Persistence.Entities;
 
 public class Vehicle : IEntity
 {
@@ -16,9 +14,7 @@ public class Vehicle : IEntity
 	[ForeignKey("VehicleOwnerId"), Required]
 	public virtual VehicleOwner? VehicleOwner { get; set; }
 
-
-
 	[Required]
-	public virtual ICollection<VehicleType> VehicleTypes { get; set; } = new HashSet<VehicleType>();
-	public virtual ICollection<TollPassage> TollPassages { get; set; } = new List<TollPassage>();
+	public virtual ICollection<VehicleType>? VehicleTypes { get; set; }
+	public virtual ICollection<TollPassage>? TollPassages { get; set; }
 }
