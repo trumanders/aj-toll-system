@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-namespace Persistence.Entities;
+﻿namespace Persistence.Entities;
 
 public class TollFeeTimeInterval : IEntity
 {

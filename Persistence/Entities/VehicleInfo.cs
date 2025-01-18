@@ -4,7 +4,7 @@
  * Simulating extrnal vehicle API data to retrieve vehicle information from
  */
 
-public class VehicleInfo
+public class VehicleInfo : IEntity
 {
 	[Key]
 	public int Id { get; set; }
