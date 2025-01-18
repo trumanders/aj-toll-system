@@ -1,0 +1,37 @@
+# User-specific files for Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# .NET Core artifacts
+artifacts/
+
+# ASP.NET Core files
+wwwroot/
+
+# Angular files
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+# Visual Studio 2022
+.vs/
+.vs2022/
+
+# Windows-specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# NPM/Yarn package manager logs
+package-lock.json
+yarn.lock
