@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{5D1D7265-412E-4B53-BEAF-B56E0EAD20E5}"
 EndProject
@@ -18,8 +18,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{1FD796CC-595E-4FEF-9109-55DA5A119C20}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Client", "Client\Client.esproj", "{3AF05390-7984-40D1-9621-2922428224BA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excecute", "Excecute\Excecute.csproj", "{C59775EA-76C2-46A0-ACC7-E19F3772B121}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +47,6 @@ Global
 		{3AF05390-7984-40D1-9621-2922428224BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AF05390-7984-40D1-9621-2922428224BA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3AF05390-7984-40D1-9621-2922428224BA}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{C59775EA-76C2-46A0-ACC7-E19F3772B121}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C59775EA-76C2-46A0-ACC7-E19F3772B121}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C59775EA-76C2-46A0-ACC7-E19F3772B121}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C59775EA-76C2-46A0-ACC7-E19F3772B121}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

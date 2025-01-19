@@ -3,9 +3,9 @@ namespace Persistence.Interfaces;
 
 public interface IDbService
 {
-	// Add
+	// Add	
 	public Task<TEntity> AddAsync<TEntity, TDto>(TDto dto)
-		where TEntity : class
+		where TEntity : class, IEntity
 		where TDto : class;
 
 	// Get all
@@ -19,12 +19,12 @@ public interface IDbService
 			where TDto : class;
 
 	// Get one - MODIFY IF NEEDED - SingleOrDefaultAsync throws exception if not found, FirstOrDefaultAsync returns null
-	public Task<TDto> FirstOrDefault<TEntity, TDto>(int id)
+	public Task<TDto> SingleAsync<TEntity, TDto>(Expression<Func<TEntity, bool>> expression)
 			where TEntity : class, IEntity
 			where TDto : class;
 
 	// Update
-	public Task<bool> Update<TEntity, TDto>(int id, TDto dto)
+	public bool Update<TEntity, TDto>(int id, TDto dto)
 			where TEntity : class, IEntity
 			where TDto : class;
 
@@ -39,13 +39,5 @@ public interface IDbService
 	public Task<bool> SaveChangesAsync();
 
 	public string GetURIString<TEntity>(TEntity entity)
-	where TEntity : class, IEntity
-	{
-		var node = typeof(TEntity).Name.ToLower(); // Entity name in lowercase (e.g., "vehicle")
-		return $"/api/{node}s/{entity.Id}"; // Example: /api/vehicles/1
-	}
-
-
-	// MAY NOT BE NEEDED
-	public void Include<TEntity>() where TEntity : class;
+	where TEntity : class, IEntity;
 }
