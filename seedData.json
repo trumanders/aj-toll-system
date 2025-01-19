@@ -1,0 +1,155 @@
+{
+	"FeeIntervals": [
+		{
+			"fee": 9,
+			"start": "06:00",
+			"end": "06:30"
+		},
+		{
+			"fee": 9,
+			"start": "08:30",
+			"end": "15:00"
+		},
+		{
+			"fee": 9,
+			"start": "18:00",
+			"end": "18:30"
+		},
+		{
+			"fee": 16,
+			"start": "06:30",
+			"end": "07:00"
+		},
+		{
+			"fee": 16,
+			"start": "08:00",
+			"end": "08:30"
+		},
+		{
+			"fee": 16,
+			"start": "15:00",
+			"end": "15:30"
+		},
+		{
+			"fee": 16,
+			"start": "17:00",
+			"end": "18:00"
+		},
+		{
+			"fee": 22,
+			"start": "07:00",
+			"end": "08:00"
+		},
+		{
+			"fee": 22,
+			"start": "15:30",
+			"end": "17:00"
+		}
+	],
+
+	"VehicleTypes": [
+		{
+			"Id": 1,
+			"TypeName": "Motorcycle",
+			"IsTollFree": true
+		},
+		{
+			"Id": 2,
+			"TypeName": "Tractor",
+			"IsTollFree": true
+		},
+		{
+			"Id": 3,
+			"TypeName": "Emergency",
+			"IsTollFree": true
+		},
+		{
+			"Id": 4,
+			"TypeName": "Diplomat",
+			"IsTollFree": true
+		},
+		{
+			"Id": 5,
+			"TypeName": "Foreign",
+			"IsTollFree": true
+		},
+		{
+			"Id": 6,
+			"TypeName": "Military",
+			"IsTollFree": true
+		},
+		{
+			"Id": 7,
+			"TypeName": "Car",
+			"IsTollFree": false
+		},
+		{
+			"Id": 8,
+			"TypeName": "Truck",
+			"IsTollFree": false
+		},
+		{
+			"Id": 9,
+			"TypeName": "Bus",
+			"IsTollFree": false
+		}
+	],
+
+	"VehicleInfo": [
+		{
+			"PlateNumber": "PTP461",
+			"OwnerName": "John Thomas",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "FJN740",
+			"OwnerName": "Chris Miller",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "ZCX563",
+			"OwnerName": "Jane Moore",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "VAT087",
+			"OwnerName": "Casey Moore",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "CUL352",
+			"OwnerName": "Casey Davis",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "UXL821",
+			"OwnerName": "Morgan Davis",
+			"VehicleTypeId": 9
+		},
+		{
+			"PlateNumber": "MKW921",
+			"OwnerName": "Chris Anderson",
+			"VehicleTypeId": 9
+		},
+		{
+			"PlateNumber": "OLU514",
+			"OwnerName": "Taylor Moore",
+			"VehicleTypeId": 9
+		},
+		{
+			"PlateNumber": "TJY229",
+			"OwnerName": "Alex Johnson",
+			"VehicleTypeId": 2
+		},
+		{
+			"PlateNumber": "UHA649",
+			"OwnerName": "Sam Wilson",
+			"VehicleTypeId": 1
+		}
+	],
+
+	"DefaultFee": 0,
+
+	"TollFreeMonths": [ 7 ]
+
+}
