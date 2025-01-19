@@ -5,16 +5,16 @@ public class Context : DbContext
 {
 	public Context(DbContextOptions<Context> options) : base(options) { }
 
-	public DbSet<Billing> Billings { get; set; }
-	public DbSet<DailyFee> DailyFees { get; set; }
-	public DbSet<MonthlyFee> MonthlyFees{ get; set; }
-	public DbSet<TollFee> TollFees { get; set; }
-	public DbSet<TollFeeTimeInterval> TollFeesTimeIntervals { get; set; }
-	public DbSet<TollPassage> TollPassages { get; set; }
-	public DbSet<Vehicle> Vehicles { get; set; }
-	public DbSet<VehicleInfo> VehicleInfo { get; set; }
-	public DbSet<VehicleOwner> VehicleOwners { get; set; }
-	public DbSet<VehicleType> VehicleTypes { get; set; }
+	public DbSet<Billing> Billings => Set<Billing>();
+	public DbSet<DailyFee> DailyFees => Set<DailyFee>();
+	public DbSet<MonthlyFee> MonthlyFees => Set<MonthlyFee>();
+	public DbSet<TollFee> TollFees => Set<TollFee>();
+	public DbSet<TollFeeTimeInterval> TollFeesTimeIntervals => Set<TollFeeTimeInterval>();
+	public DbSet<TollPassage> TollPassages => Set<TollPassage>();
+	public DbSet<Vehicle> Vehicles => Set<Vehicle>();
+	public DbSet<VehicleInfo> VehicleInfo => Set<VehicleInfo>();
+	public DbSet<VehicleOwner> VehicleOwners => Set<VehicleOwner>();
+	public DbSet<VehicleType> VehicleTypes => Set<VehicleType>();
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
