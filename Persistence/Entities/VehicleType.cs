@@ -7,4 +7,7 @@ public class VehicleType : IEntity
 
 	[MaxLength(50), Required]
 	public string? TypeName { get; set; }
+
+	[Required]
+	public bool IsTollFree { get; set; }
 }

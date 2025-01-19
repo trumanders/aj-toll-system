@@ -21,8 +21,9 @@ public class Program
 		//builder.Services.AddScoped<IDbService, DbService>();
 
 		// Register Context
-		builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
-		builder.Configuration.GetConnectionString("SqlConnection")));
+		builder.Services.AddDbContext<Context>(options =>
+			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"))
+		);
 
 		// Register AutoMapper
 		builder.Services.AddSingleton(new MapperConfiguration(config =>
