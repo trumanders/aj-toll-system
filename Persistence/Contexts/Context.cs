@@ -7,7 +7,6 @@ public class Context : DbContext
 	public DbSet<DailyFee> DailyFees => Set<DailyFee>();
 	public DbSet<MonthlyFee> MonthlyFees => Set<MonthlyFee>();
 	public DbSet<FeeInterval> FeeIntervals => Set<FeeInterval>();
-	public DbSet<TollPassage> TollPassages => Set<TollPassage>();
 	public DbSet<VehicleInfo> VehicleInfo => Set<VehicleInfo>();
 	public DbSet<VehicleType> VehicleTypes => Set<VehicleType>();
 
@@ -23,7 +22,7 @@ public class Context : DbContext
 
 		// Seed data here
 
-		SeedData(builder);
+		//SeedData(builder);
 	}
 
 	private void SeedData(ModelBuilder builder)
