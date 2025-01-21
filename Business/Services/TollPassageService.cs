@@ -13,17 +13,21 @@ public class TollPassageService : ITollPassageService
 	{
 		var plateNumbers = await _dbService.GetAsync<VehicleInfo, VehicleInfoDTOPlateNumber>();
 		var tollPassages = new List<TollPassage>();
+		var random = new Random();
+		var minutesWithinDay = (60 * 24) - 1;
 
-		foreach (var plateNumber in plateNumbers)
+		// Generate specified number of passages
+		// and randomize plate numbers and passage datetimes within the 
+		// specified date
+		for (int i = 0; i < numberOfPassages; i++)
 		{
-			var random = new Random();
-			var tollPassage = new TollPassage
+			tollPassages.Add(new TollPassage
 			{
-				PlateNumber = plateNumber.PlateNumber,
-				PassageDate = date.AddMinutes(random.Next(0, 60 * 24))
-			};
-			tollPassages.Add(tollPassage);
+				PlateNumber = plateNumbers[random.Next(0, plateNumbers.Count)].PlateNumber,
+				PassageDate = date.AddMinutes(random.Next(0, minutesWithinDay))
+			});
 		}
-		return tollPassages;
+		
+		return tollPassages.OrderBy(x => x.PassageDate).ToList();
 	}
 }
