@@ -1,22 +1,11 @@
-﻿using Business.Services;
-using Persistence.Contexts;
-using Persistence.Entities;
-using Common.DTO;
-using FakeItEasy;
-using Persistence.Interfaces;
-using AutoMapper.Execution;
-using System.Diagnostics;
-using Business.Models;
-using Microsoft.IdentityModel.Tokens;
-namespace Business.Tests;
+﻿namespace Business.Tests;
 
 [TestFixture]
 public class TollPassageServiceTests
 {
-	private TollPassageService _sut;
+	private ITollPassageService _sut;
 	private IDbService _fakeDbService;
 	private DateTime _date;
-	private int _numberOfPassages;
 	private List<VehicleInfoDTOPlateNumber> _fakeVehicleInfo;
 	private List<TollPassage> _result;
 
@@ -29,14 +18,16 @@ public class TollPassageServiceTests
 
 	[Test]
 	public async Task GenerateTollPassages_WhenValidInputProvided_ReturnsOrderedList()
-	{		
+	{
+		// Arrange
 		Arrange();
+		var _numberOfPassages = 100;
 
 		// Act
-		_result = await _sut.GenerateTollPassages(_date, _numberOfPassages);
+		_result = await _sut.GenerateTollPassagesForOneDay(_date, _numberOfPassages);
 
 		// Assert
-		Assert.That(_result, Is.Ordered.By(nameof(TollPassage.PassageDate)));
+		Assert.That(_result, Is.Ordered.By(nameof(TollPassage.PassageTime)));
 	}
 
 	[Test]
@@ -44,45 +35,52 @@ public class TollPassageServiceTests
 	{
 		// Arrange
 		Arrange();
-		
+		var _numberOfPassages = 100;
+
 		// Act
-		_result = await _sut.GenerateTollPassages(_date, _numberOfPassages);
+		_result = await _sut.GenerateTollPassagesForOneDay(_date, _numberOfPassages);
 		
 		// Assert
 		Assert.That(_result, Is.Not.Null);
 	}
 
-	[Test]
-	public async Task GenerateTollPassages_WhenValidInputProvided_ReturnsCorrectNumberOfPassages()
+	[TestCase(1)]
+	[TestCase(100)]
+	[TestCase(1000)]
+	[TestCase(1000000)]
+	public async Task GenerateTollPassages_WhenValidInputProvided_ReturnsCorrectNumberOfPassages(int numberOfPassages)
 	{
 		// Arrange
 		Arrange();
 
 		// Act
-		_result = await _sut.GenerateTollPassages(_date, _numberOfPassages);
+		_result = await _sut.GenerateTollPassagesForOneDay(_date, numberOfPassages);
 
 		// Assert
-		Assert.That(_result, Has.Count.EqualTo(_numberOfPassages));
+		Assert.That(_result, Has.Count.EqualTo(numberOfPassages));
 	}
 
-	[Test]
-	public async Task GenerateTollPassages_WhenValidInputProvided_ReturnsResultWithTheSameDate()
+	[TestCase(1)]
+	[TestCase(100)]
+	[TestCase(1000)]
+	[TestCase(1000000)]
+	public async Task GenerateTollPassages_WhenValidInputProvided_ReturnsResultWithTheSameDate(int numberOfPassages)
 	{
 		// Arrange
 		Arrange();
 
 		// Act
-		_result = await _sut.GenerateTollPassages(_date, _numberOfPassages);
+		_result = await _sut.GenerateTollPassagesForOneDay(_date, numberOfPassages);
+		//_result.ToList().ForEach(x => Debug.WriteLine(x.PassageDate + " - " + x.PlateNumber));
 
 		// Assert
-		Assert.That(_result.Select(x => x.PassageDate.Date).Distinct().Count(),Is.EqualTo(1));
+		Assert.That(_result.Select(x => x.PassageTime.Date).Distinct().Count(),Is.EqualTo(1));
 	}
 
 	private void Arrange()
 	{
 		// Arrange
 		_date = DateTime.Now.Date;
-		_numberOfPassages = 100;
 		_fakeVehicleInfo = new List<VehicleInfoDTOPlateNumber>
 		{
 			new VehicleInfoDTOPlateNumber { PlateNumber = "ABC123" },

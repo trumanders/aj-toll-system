@@ -3,18 +3,17 @@
 public class TollPassageService : ITollPassageService
 {
 	private readonly IDbService _dbService;
-
+	private const int secondsWithinOneDay = 86399;
 	public TollPassageService(IDbService dbService)
 	{
 		_dbService = dbService;
 	}
 
-	public async Task<List<TollPassage>> GenerateTollPassages(DateTime date, int numberOfPassages)
+	public async Task<List<TollPassage>> GenerateTollPassagesForOneDay(DateTime date, int numberOfPassages)
 	{
 		var plateNumbers = await _dbService.GetAsync<VehicleInfo, VehicleInfoDTOPlateNumber>();
 		var tollPassages = new List<TollPassage>();
 		var random = new Random();
-		var minutesWithinDay = (60 * 24) - 1;
 
 		// Generate specified number of passages
 		// and randomize plate numbers and passage datetimes within the 
@@ -24,10 +23,10 @@ public class TollPassageService : ITollPassageService
 			tollPassages.Add(new TollPassage
 			{
 				PlateNumber = plateNumbers[random.Next(0, plateNumbers.Count)].PlateNumber,
-				PassageDate = date.AddMinutes(random.Next(0, minutesWithinDay))
+				PassageTime = date.AddSeconds(random.Next(0, secondsWithinOneDay))
 			});
 		}
 		
-		return tollPassages.OrderBy(x => x.PassageDate).ToList();
+		return tollPassages.OrderBy(x => x.PassageTime).ToList();
 	}
 }
