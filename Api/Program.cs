@@ -1,9 +1,4 @@
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
-
 namespace Api;
-
 public class Program
 {
 	public static void Main(string[] args)
@@ -17,8 +12,10 @@ public class Program
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
 
-		// Register DbService
-		//builder.Services.AddScoped<IDbService, DbService>();
+		builder.Services.AddScoped<IDbService, DbService>();
+		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
+		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
+		builder.Services.AddScoped<IFeeService, FeeService>();
 
 		// Register Context
 		builder.Services.AddDbContext<Context>(options =>
@@ -30,6 +27,8 @@ public class Program
 		{
 			// Map Entity - DTO here
 		}).CreateMapper());
+
+		
 
 		// Prevent circular references
 		builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);

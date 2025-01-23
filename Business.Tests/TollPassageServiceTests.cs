@@ -5,6 +5,7 @@ public class TollPassageServiceTests
 {
 	private ITollPassageService _sut;
 	private IDbService _fakeDbService;
+	private IFeeService _fakeFeeService;
 	private DateTime _date;
 	private List<VehicleInfoDTOPlateNumber> _fakeVehicleInfo;
 	private List<TollPassage> _result;
@@ -13,11 +14,11 @@ public class TollPassageServiceTests
 	public void Setup()
 	{
 		_fakeDbService = A.Fake<IDbService>();
-		_sut = new TollPassageService(_fakeDbService);
+		_sut = new TollPassageService(_fakeDbService, _fakeFeeService);
 	}
 
 	[Test]
-	public async Task GenerateTollPassages_WhenValidInputProvided_ReturnsOrderedList()
+	public async Task GenerateTollPassagesForOneDay_WhenValidInputProvided_ReturnsOrderedList()
 	{
 		// Arrange
 		Arrange();
@@ -31,7 +32,7 @@ public class TollPassageServiceTests
 	}
 
 	[Test]
-	public async Task GenerateTollPassages_WhenValidInputProvided_ReturnsNonNullResult()
+	public async Task GenerateTollPassagesForOneDay_WhenValidInputProvided_ReturnsNonNullResult()
 	{
 		// Arrange
 		Arrange();

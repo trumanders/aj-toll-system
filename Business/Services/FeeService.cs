@@ -1,113 +1,97 @@
-﻿//using TollFeeCalculatorV2.Interfaces;
-//namespace Business.Services;
+﻿namespace Business.Services;
 
-//public class FeeService : IFeeService
-//{
-//	ITollRateService _tollRateProvider;
+public class FeeService : IFeeService
+{
+	private ITollFreeDaysService _tollFreeDaysService;
+	private IDbService _dbService;
+	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
+	const int MAX_DAILY_FEE = 60;
 
-//	const int MAX_FEE = 60;
-//	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
 
-//	public FeeService(ITollRateService tollRateProvider)
-//	{
-//		_tollRateProvider = tollRateProvider ?? throw new ArgumentNullException(nameof(tollRateProvider));
-//	}
+	public FeeService(ITollFreeDaysService tollFreeDayService)
+	{
+		_tollFreeDaysService = tollFreeDayService;
+	}	
 
-//	private bool IsTollFreeDate(DateTime date)
-//	{
-//		if (date.Year != 2024)
-//			throw new NotImplementedException();
+	public async Task<VehicleDailyFee> GetTotalFeeForVehiclePassages(List<TollPassage> vehicleTollPassages)
+	{
+		// KOLLA TOLL FREE DAY INNAN ANROPA DENNA METOD EFTERSOM ALLA PASSAGER ÄR SAMMA DATUM HÄR!
+		
+		if (vehicleTollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
+		{
+			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleTollPassages));
+		}
 
-//		// All saturdays and sundays, and july are toll-free
-//		if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday || _config.TollFreeMonths.Contains(date.Month))
-//			return true;
+		// TODO: Cache this value to prevent multiple calls to the database
+		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
 
-//		return _config.Holidays.Contains(date.Date) || _config.Holidays.Contains(date.Date.AddDays(1));
-//	}
+		foreach (var tollPassage in vehicleTollPassages)
+		{
+			foreach (var feeInterval in feeIntervals)
+			{
+				if (tollPassage.PassageTime.TimeOfDay >= feeInterval.Start && tollPassage.PassageTime.TimeOfDay < feeInterval.End)
+				{
+					tollPassage.Fee = feeInterval.Fee;
+				}
+			}
+		}
 
-//	public int GetTollRate(DateTime dateTime)
-//	{
-//		if (IsTollFreeDate(dateTime))
-//			return 0;
+		CalculateFeeDue(vehicleTollPassages);
+		
+		var vehicleDailyFee = new VehicleDailyFee
+		{
+			PlateNumber = vehicleTollPassages.First().PlateNumber,
+			DailyFee = GetTotalFeeForPassages(vehicleTollPassages),
+		};
 
-//		TimeSpan time = dateTime.TimeOfDay;
+		return vehicleDailyFee;
+	}
 
-//		// För varje avgiftsnivå i config-filen
-//		foreach (var tollFee in _config.TollFees)
-//		{
-//			// gå igenom varje intervall som avgiften gäller för
-//			foreach (var interval in tollFee.TimeIntervals)
-//			{
-//				// om inskickad tid finns i intevallet -> returnera avgiften
-//				if (time >= interval.Start && time < interval.End)
-//				{
-//					return tollFee.Fee;
-//				}
-//			}
-//		}
+	public void CalculateFeeDue(List<TollPassage> tollPassages)
+	{
+		if (tollPassages == null)
+			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
 
-//		return _config.DefaultFee;
-//	}
+		if (tollPassages.Count == 0)
+			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages));
 
-//	public void CalculateFeeDue(List<TollPassage> tollPassages)
-//	{
-//		if (tollPassages == null)
-//			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
+		var firstPassageWithFee = tollPassages.FirstOrDefault(passage => passage.Fee > 0)
+			?? tollPassages.First();
 
-//		if (tollPassages.Count == 0)
-//			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages));
+		var intervalStart = firstPassageWithFee.PassageTime;
+		var highestFeePassageInInterval = firstPassageWithFee;
 
-//		var firstFeePassage = tollPassages.FirstOrDefault(passage => passage.Fee > 0)
-//			?? tollPassages.First();
+		foreach (var tollPassage in tollPassages)
+		{
+			if (IsPassageWithinInterval(intervalStart, tollPassage.PassageTime, _singleChargeInterval))
+			{
+				if (tollPassage.Fee > highestFeePassageInInterval.Fee)
+				{
+					highestFeePassageInInterval = tollPassage;
+				}
+				tollPassage.Fee = 0;
+			}
+			else
+			{
+				highestFeePassageInInterval = tollPassage;
+				intervalStart = tollPassage.PassageTime;
+			}
+		}
+	}
 
-//		var intervalStart = firstFeePassage.PassageTime;
-//		var highestFeePassageInInterval = firstFeePassage;
+	private decimal GetTotalFeeForPassages(List<TollPassage> tollPassages)
+	{
+		if (tollPassages == null)
+			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
+		if (tollPassages.Count == 0)
+			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages));
 
-//		foreach (var tollPassage in tollPassages)
-//		{
-//			// Kollar om vi är inom en timme från intervallets start
-//			if (IsPassageWithinInterval(intervalStart, tollPassage.PassageTime, _singleChargeInterval))
-//			{
-//				// om vi är inom en timma, sätt nuvarande passage till den med högst avgift
-//				// om den är högre än rådande högsta avgift
-//				if (tollPassage.Fee > highestFeePassageInInterval.Fee)
-//				{
-//					highestFeePassageInInterval = tollPassage;
-//				}
-//				tollPassage.Fee = 0;
-//			}
-//			else // om vi är förbi en timme...
-//			{
-//				// sätt första passagen i nya intervallet som högsta avgift
-//				highestFeePassageInInterval = tollPassage;
+		var totalFee = tollPassages.Sum(passage => passage.Fee);
+		return totalFee > MAX_DAILY_FEE ? MAX_DAILY_FEE : totalFee;
+	}
 
-//				// sätt denna första passagen till intervallets start
-//				intervalStart = tollPassage.PassageTime;
-//			}
-//		}
-//		// Om sista passagen påbörjar ett nytt intervall, sätt avgift på den.
-//		//highestFeePassageInInterval.IsFeeToPay = highestFeePassageInInterval.Fee > 0;
-//	}
-
-//	public int GetFeeByDate(DateTime date)
-//	{
-//		return _tollRateProvider.GetTollRate(date);
-//	}
-
-//	public int GetTotalFeeForPassages(List<TollPassage> tollPassages)
-//	{
-//		var totalFee = tollPassages
-//			.GroupBy(passage => passage.PassageTime.Date)
-//			.Sum(group => Math.Min(group.Sum(passage => passage.Fee), MAX_FEE));
-//		// obs, returnerar inte avgiften för en dag
-//		// om datumen går över flera dagar, gruperas avgiften per dag, och maximeras till 60kr
-//		// för varje dag. Om passagerna går över tex 2 dagar, varav en överstiger 60kr och en 
-//		// är på 40kr, returneras 60 + 40.
-//		return totalFee;
-//	}
-
-//	private bool IsPassageWithinInterval(DateTime start, DateTime end, TimeSpan timeSpan)
-//	{
-//		return end - start < timeSpan;
-//	}
-//}
+	private bool IsPassageWithinInterval(DateTime start, DateTime end, TimeSpan timeSpan)
+	{
+		return end - start < timeSpan;
+	}
+}

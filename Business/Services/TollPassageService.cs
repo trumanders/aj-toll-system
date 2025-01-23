@@ -3,10 +3,12 @@
 public class TollPassageService : ITollPassageService
 {
 	private readonly IDbService _dbService;
+	private readonly IFeeService _feeService;
 	private const int secondsWithinOneDay = 86399;
-	public TollPassageService(IDbService dbService)
+	public TollPassageService(IDbService dbService, IFeeService feeService)
 	{
 		_dbService = dbService;
+		_feeService = feeService;
 	}
 
 	public async Task<List<TollPassage>> GenerateTollPassagesForOneDay(DateTime date, int numberOfPassages)
@@ -28,5 +30,21 @@ public class TollPassageService : ITollPassageService
 		}
 		
 		return tollPassages.OrderBy(x => x.PassageTime).ToList();
+	}
+
+	public async Task<List<VehicleDailyFee>> GetVehicleFeeSummary(List<TollPassage> tollPassages)
+	{
+		// List of TollPassage-lists for each platenumber
+		var passagesByPlateNumber = tollPassages
+			.GroupBy(x => x.PlateNumber)
+			.Select(g => g.ToList())
+			.ToList();
+
+		var vehicleDailyFeeTasks = passagesByPlateNumber.Select(vehiclePassages => 
+			_feeService.GetTotalFeeForVehiclePassages(vehiclePassages)).ToList();
+
+		var vehicleDailyFees = await Task.WhenAll(vehicleDailyFeeTasks);
+
+		return vehicleDailyFees.ToList();
 	}
 }

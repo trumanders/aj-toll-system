@@ -3,5 +3,6 @@
 public class TollPassage
 {
 	public string PlateNumber { get; set; }
-	public DateTime PassageDate { get; set; }
+	public DateTime PassageTime { get; set; }
+	public decimal Fee { get; set; } = 0;
 }
