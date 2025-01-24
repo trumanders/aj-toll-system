@@ -10,7 +10,7 @@ public class Program
 		builder.Services.AddControllers();
 		// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 		builder.Services.AddEndpointsApiExplorer();
-		builder.Services.AddSwaggerDocument();
+		builder.Services.AddOpenApiDocument();
 
 		builder.Services.AddScoped<IDbService, DbService>();
 		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
@@ -26,20 +26,17 @@ public class Program
 		builder.Services.AddSingleton(new MapperConfiguration(config =>
 		{
 			// Map Entity - DTO here
-		}).CreateMapper());
-
-		
+		}).CreateMapper());		
 
 		// Prevent circular references
 		builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
-
 		var app = builder.Build();
 
-		// Configure the HTTP request pipeline.
-		if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
-        {
-			app.UseOpenApi();  // NSwag OpenAPI generation
+		if (app.Environment.IsDevelopment())
+		{
+			// use https://localhost:6001/swagger
+			app.UseOpenApi();
 			app.UseSwaggerUi();
 		}
 
