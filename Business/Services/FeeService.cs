@@ -2,21 +2,19 @@
 
 public class FeeService : IFeeService
 {
-	private ITollFreeDaysService _tollFreeDaysService;
 	private IDbService _dbService;
 	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
-	const int MAX_DAILY_FEE = 60;
+	
+	private const decimal MAX_DAILY_FEE = 60;
 
 
-	public FeeService(ITollFreeDaysService tollFreeDayService)
+	public FeeService(IDbService dbService)
 	{
-		_tollFreeDaysService = tollFreeDayService;
+		_dbService = dbService;
 	}	
 
 	public async Task<VehicleDailyFee> GetTotalFeeForVehiclePassages(List<TollPassage> vehicleTollPassages)
 	{
-		// KOLLA TOLL FREE DAY INNAN ANROPA DENNA METOD EFTERSOM ALLA PASSAGER ÄR SAMMA DATUM HÄR!
-		
 		if (vehicleTollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
 		{
 			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleTollPassages));
@@ -47,8 +45,11 @@ public class FeeService : IFeeService
 		return vehicleDailyFee;
 	}
 
-	public void CalculateFeeDue(List<TollPassage> tollPassages)
+	private void CalculateFeeDue(List<TollPassage> tollPassages)
 	{
+		if (tollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
+			throw new ArgumentException("All passages must be for the same vehicle.", nameof(tollPassages));
+
 		if (tollPassages == null)
 			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
 
@@ -58,23 +59,28 @@ public class FeeService : IFeeService
 		var firstPassageWithFee = tollPassages.FirstOrDefault(passage => passage.Fee > 0)
 			?? tollPassages.First();
 
-		var intervalStart = firstPassageWithFee.PassageTime;
+		var intervalStart = firstPassageWithFee;
 		var highestFeePassageInInterval = firstPassageWithFee;
 
-		foreach (var tollPassage in tollPassages)
+		// Start iterating from element after intervalStart / highestFeePassageInInterval
+		foreach (var tollPassage in tollPassages.SkipWhile(passage => passage != intervalStart).Skip(1))
 		{
-			if (IsPassageWithinInterval(intervalStart, tollPassage.PassageTime, _singleChargeInterval))
+			if (IsPassageWithinInterval(tollPassage.PassageTime, intervalStart.PassageTime, _singleChargeInterval))
 			{
-				if (tollPassage.Fee > highestFeePassageInInterval.Fee)
+				if (tollPassage.Fee >= highestFeePassageInInterval.Fee)
 				{
+					highestFeePassageInInterval.Fee = 0;
 					highestFeePassageInInterval = tollPassage;
 				}
-				tollPassage.Fee = 0;
+				else
+				{
+					tollPassage.Fee = 0;
+				}				
 			}
 			else
 			{
 				highestFeePassageInInterval = tollPassage;
-				intervalStart = tollPassage.PassageTime;
+				intervalStart = tollPassage;
 			}
 		}
 	}
@@ -90,8 +96,13 @@ public class FeeService : IFeeService
 		return totalFee > MAX_DAILY_FEE ? MAX_DAILY_FEE : totalFee;
 	}
 
-	private bool IsPassageWithinInterval(DateTime start, DateTime end, TimeSpan timeSpan)
+	private bool IsPassageWithinInterval(DateTime end, DateTime start, TimeSpan timeSpan)
 	{
 		return end - start < timeSpan;
+	}
+
+	public decimal GetMaxDailyFee()
+	{
+		return MAX_DAILY_FEE;
 	}
 }
