@@ -4,8 +4,6 @@ namespace Persistence.Contexts;
 public class Context : DbContext
 {
 	public DbSet<Billing> Billings => Set<Billing>();
-	public DbSet<DailyFee> DailyFees => Set<DailyFee>();
-	public DbSet<MonthlyFee> MonthlyFees => Set<MonthlyFee>();
 	public DbSet<FeeInterval> FeeIntervals => Set<FeeInterval>();
 	public DbSet<VehicleInfo> VehicleInfo => Set<VehicleInfo>();
 	public DbSet<VehicleType> VehicleTypes => Set<VehicleType>();
