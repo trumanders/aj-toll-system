@@ -30,6 +30,12 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("AccumulatedFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("OwnerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -38,15 +44,12 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("TotalMonthlyFee")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("VehicleInfoId")
+                    b.Property<int>("VehicleTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleInfoId");
+                    b.HasIndex("VehicleTypeId");
 
                     b.ToTable("Billings");
                 });
@@ -618,11 +621,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Persistence.Entities.Billing", b =>
                 {
-                    b.HasOne("Persistence.Entities.VehicleInfo", "VehicleInfo")
+                    b.HasOne("Persistence.Entities.VehicleType", "VehicleType")
                         .WithMany()
-                        .HasForeignKey("VehicleInfoId");
+                        .HasForeignKey("VehicleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("VehicleInfo");
+                    b.Navigation("VehicleType");
                 });
 
             modelBuilder.Entity("Persistence.Entities.VehicleInfo", b =>
