@@ -1,0 +1,370 @@
+{
+	"FeeIntervals": [
+		{
+			"fee": 9,
+			"start": "06:00",
+			"end": "06:30"
+		},
+		{
+			"fee": 9,
+			"start": "08:30",
+			"end": "15:00"
+		},
+		{
+			"fee": 9,
+			"start": "18:00",
+			"end": "18:30"
+		},
+		{
+			"fee": 16,
+			"start": "06:30",
+			"end": "07:00"
+		},
+		{
+			"fee": 16,
+			"start": "08:00",
+			"end": "08:30"
+		},
+		{
+			"fee": 16,
+			"start": "15:00",
+			"end": "15:30"
+		},
+		{
+			"fee": 16,
+			"start": "17:00",
+			"end": "18:00"
+		},
+		{
+			"fee": 22,
+			"start": "07:00",
+			"end": "08:00"
+		},
+		{
+			"fee": 22,
+			"start": "15:30",
+			"end": "17:00"
+		}
+	],
+
+	"VehicleTypes": [
+		{
+			"Id": 1,
+			"TypeName": "Motorcycle",
+			"IsTollFree": true
+		},
+		{
+			"Id": 2,
+			"TypeName": "Tractor",
+			"IsTollFree": true
+		},
+		{
+			"Id": 3,
+			"TypeName": "Emergency",
+			"IsTollFree": true
+		},
+		{
+			"Id": 4,
+			"TypeName": "Diplomat",
+			"IsTollFree": true
+		},
+		{
+			"Id": 5,
+			"TypeName": "Foreign",
+			"IsTollFree": true
+		},
+		{
+			"Id": 6,
+			"TypeName": "Military",
+			"IsTollFree": true
+		},
+		{
+			"Id": 7,
+			"TypeName": "Car",
+			"IsTollFree": false
+		},
+		{
+			"Id": 8,
+			"TypeName": "Truck",
+			"IsTollFree": false
+		},
+		{
+			"Id": 9,
+			"TypeName": "Bus",
+			"IsTollFree": false
+		}
+	],
+
+	"VehicleInfo": [
+		{
+			"PlateNumber": "PTP461",
+			"OwnerName": "Tommy Tjernqvist",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "FJN740",
+			"OwnerName": "Hugo Håkman",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "ZCX563",
+			"OwnerName": "Linda Längström",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "VAT087",
+			"OwnerName": "Kalle Krantz",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "CUL352",
+			"OwnerName": "Benny Bäckström",
+			"VehicleTypeId": 9
+		},
+		{
+			"PlateNumber": "UXL821",
+			"OwnerName": "Ronny Röjberg",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "MKW921",
+			"OwnerName": "Sally Ståhl",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "OLU514",
+			"OwnerName": "Eddie Elg",
+			"VehicleTypeId": 6
+		},
+		{
+			"PlateNumber": "TJY229",
+			"OwnerName": "Felix Färnelund",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "UHA649",
+			"OwnerName": "Jörgen Järvstad",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "BTS372",
+			"OwnerName": "Lotta Löfgren",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "XKL291",
+			"OwnerName": "Gustav Gullberg",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "PNY183",
+			"OwnerName": "Mona Mörk",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "KLM562",
+			"OwnerName": "Oscar Olofsson",
+			"VehicleTypeId": 3
+		},
+		{
+			"PlateNumber": "RMJ473",
+			"OwnerName": "Victor Vallén",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "QWE982",
+			"OwnerName": "Jenny Järp",
+			"VehicleTypeId": 5
+		},
+		{
+			"PlateNumber": "TRP648",
+			"OwnerName": "Stina Sörlén",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "ZXC101",
+			"OwnerName": "Axel Åkesson",
+			"VehicleTypeId": 6
+		},
+		{
+			"PlateNumber": "LPO839",
+			"OwnerName": "Nina Norrström",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "GHT467",
+			"OwnerName": "Felicia Forslund",
+			"VehicleTypeId": 9
+		},
+		{
+			"PlateNumber": "KLB381",
+			"OwnerName": "Greta Gerdman",
+			"VehicleTypeId": 2
+		},
+		{
+			"PlateNumber": "XOP122",
+			"OwnerName": "Erik Eklund",
+			"VehicleTypeId": 4
+		},
+		{
+			"PlateNumber": "WZX771",
+			"OwnerName": "Beatrice Boström",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "HUE294",
+			"OwnerName": "Fredrik Friberg",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "LPD450",
+			"OwnerName": "Astrid Albinsson",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "PRT999",
+			"OwnerName": "Sigge Sandström",
+			"VehicleTypeId": 5
+		},
+		{
+			"PlateNumber": "KNL238",
+			"OwnerName": "Kajsa Källström",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "UBK768",
+			"OwnerName": "Torvald Tollberg",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "EMG482",
+			"OwnerName": "Lilly Lind",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "JNH590",
+			"OwnerName": "Bertil Bäckström",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "JOL342",
+			"OwnerName": "Hanna Hultgren",
+			"VehicleTypeId": 3
+		},
+		{
+			"PlateNumber": "WMD229",
+			"OwnerName": "Dagmar Dahlen",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "TYC992",
+			"OwnerName": "Oskar Odelberg",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "TRD147",
+			"OwnerName": "Clara Carlsson",
+			"VehicleTypeId": 1
+		},
+		{
+			"PlateNumber": "BXA321",
+			"OwnerName": "Harry Hägglund",
+			"VehicleTypeId": 6
+		},
+		{
+			"PlateNumber": "PLT465",
+			"OwnerName": "Elsa Eklund",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "GFX109",
+			"OwnerName": "Ulf Ulander",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "LSQ555",
+			"OwnerName": "Märta Melin",
+			"VehicleTypeId": 9
+		},
+		{
+			"PlateNumber": "NKI211",
+			"OwnerName": "Simon Stenberg",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "FPZ830",
+			"OwnerName": "Ingrid Irén",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "TXR871",
+			"OwnerName": "Göran Gidlund",
+			"VehicleTypeId": 6
+		},
+		{
+			"PlateNumber": "WQL130",
+			"OwnerName": "Camilla Carlsson",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "BYH376",
+			"OwnerName": "Roland Rindberg",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "ZCP591",
+			"OwnerName": "Lina Ljungholm",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "TDA643",
+			"OwnerName": "Björn Björkman",
+			"VehicleTypeId": 9
+		},
+		{
+			"PlateNumber": "CBX008",
+			"OwnerName": "Stella Sörensson",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "HKO483",
+			"OwnerName": "Einar Engström",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "WLQ599",
+			"OwnerName": "Emilia Ekberg",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "YSQ102",
+			"OwnerName": "Kristian Karlsson",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "RGX702",
+			"OwnerName": "Viola Vinge",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "MTF981",
+			"OwnerName": "Torsten Törnqvist",
+			"VehicleTypeId": 8
+		},
+		{
+			"PlateNumber": "GQV753",
+			"OwnerName": "Ellinor Elm",
+			"VehicleTypeId": 7
+		},
+		{
+			"PlateNumber": "HZX610",
+			"OwnerName": "Sven Svahn",
+			"VehicleTypeId": 8
+		}
+	],
+
+	"DefaultFee": 0,
+
+	"TollFreeMonths": [ 7 ]
+
+}
