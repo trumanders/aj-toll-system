@@ -1,6 +1,4 @@
-﻿using Persistence.Entities;
-
-namespace Persistence.Contexts;
+﻿namespace Persistence.Contexts;
 public class Context : DbContext
 {
 	public DbSet<Billing> Billings => Set<Billing>();
@@ -31,6 +29,7 @@ public class Context : DbContext
 		SeedVehicleInfoData(builder, ref seedData);
 	}
 
+	#region SeedData
 	private void SeedFeeIntervalData(ModelBuilder builder, ref SeedData seedData)
 	{		
 		var feeIntervals = new List<FeeInterval>();
@@ -83,4 +82,5 @@ public class Context : DbContext
 		}
 		builder.Entity<VehicleInfo>().HasData(vehicleInfos);
 	}
+	#endregion
 }

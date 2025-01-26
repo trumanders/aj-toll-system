@@ -10,12 +10,13 @@ public class Program
 		builder.Services.AddControllers();
 		// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 		builder.Services.AddEndpointsApiExplorer();
-		builder.Services.AddOpenApiDocument();
+		builder.Services.AddSwaggerGen(); 
 
 		builder.Services.AddScoped<IDbService, DbService>();
-		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
-		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
 		builder.Services.AddScoped<IFeeService, FeeService>();
+		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
+		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
+		builder.Services.AddScoped<ITollPassageService, TollPassageService>();
 
 		// Register Context
 		builder.Services.AddDbContext<Context>(options =>
@@ -25,19 +26,20 @@ public class Program
 		// Register AutoMapper
 		builder.Services.AddSingleton(new MapperConfiguration(config =>
 		{
-			// Map Entity - DTO here
+			// GET VehicleInfo
+			
+			config.CreateMap<VehicleInfo, VehicleInfoDTO>();  
+			config.CreateMap<VehicleInfo, VehicleInfoDTOPlateNumber>();
 		}).CreateMapper());		
 
 		// Prevent circular references
 		builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 		var app = builder.Build();
-
 		if (app.Environment.IsDevelopment())
 		{
-			// use https://localhost:6001/swagger
-			app.UseOpenApi();
-			app.UseSwaggerUi();
+			app.UseSwagger();
+			app.UseSwaggerUI(); 
 		}
 
 		app.UseHttpsRedirection();

@@ -13,10 +13,10 @@ public class TollPassageService : ITollPassageService
 		_tollFreeDaysService = tollFreeDaysService;
 	}
 
-	public async Task<List<TollPassage>> GenerateTollPassagesForOneDay(DateTime date, int numberOfPassages)
+	public async Task<List<TollPassageNoFee>> GenerateTollPassagesForOneDay(DateTime date, int numberOfPassages)
 	{
 		var plateNumbers = await _dbService.GetAsync<VehicleInfo, VehicleInfoDTOPlateNumber>();
-		var tollPassages = new List<TollPassage>();
+		var tollPassages = new List<TollPassageNoFee>();
 		var random = new Random();
 
 		// Generate specified number of passages
@@ -24,7 +24,7 @@ public class TollPassageService : ITollPassageService
 		// specified date
 		for (int i = 0; i < numberOfPassages; i++)
 		{
-			tollPassages.Add(new TollPassage
+			tollPassages.Add(new TollPassageNoFee
 			{
 				PlateNumber = plateNumbers[random.Next(0, plateNumbers.Count)].PlateNumber,
 				PassageTime = date.AddSeconds(random.Next(0, secondsWithinOneDay))
