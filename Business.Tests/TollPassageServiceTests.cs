@@ -11,7 +11,7 @@ public class TollPassageServiceTests
 	private ITollFreeDaysService _fakeTollFreeDaysService;
 	private DateTime _date;
 	private List<VehicleInfoDTOPlateNumber> _fakeVehicleInfo;
-	private List<TollPassage> _result;
+	private List<TollPassageNoFee> _result;
 
 	[SetUp]
 	public void Setup()

@@ -1,4 +1,6 @@
-﻿namespace Persistence.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Persistence.Entities;
 
 public class Billing : IEntity
 {
@@ -12,7 +14,14 @@ public class Billing : IEntity
 	public string? OwnerName { get; set; }
 
 	[Required]
-	public decimal TotalMonthlyFee { get; set; }
+	public int VehicleTypeId { get; set; }
 
-	public virtual VehicleInfo? VehicleInfo { get; set; }
+	[ForeignKey("VehicleTypeId")]
+	public virtual VehicleType? VehicleType { get; set; }
+
+	[Required]
+	public DateTime Date { get; set; }
+
+	[Required]
+	public decimal AccumulatedFee { get; set; }
 }
