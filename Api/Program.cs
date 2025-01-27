@@ -35,25 +35,8 @@ public class Program
 		// Prevent circular references
 		builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
-		builder.Services.AddCors(options =>
-		{
-			options.AddPolicy("AllowSwagger", policy =>
-			{
-				// For development (dev app service URL)
-				policy.WithOrigins("https://ajtollsystem-dev.azurewebsites.net") // Dev app service URL
-					  .AllowAnyHeader()
-					  .AllowAnyMethod();
-
-				// For production (production app service URL)
-				policy.WithOrigins("https://ajtollsystem.azurewebsites.net") // Prod app service URL
-					  .AllowAnyHeader()
-					  .AllowAnyMethod();
-			});
-		});
-
 		var app = builder.Build();
 
-		app.UseCors("AllowSwagger");
 		app.UseSwagger();
 		app.UseSwaggerUI(c =>
 		{
