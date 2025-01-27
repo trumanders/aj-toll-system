@@ -36,16 +36,14 @@ public class Program
 		builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 		var app = builder.Build();
-		if (app.Environment.IsDevelopment())
-		{
-			app.UseSwagger();
-			app.UseSwaggerUI(); 
-		}
+
+		app.UseSwagger();
+		app.UseSwaggerUI(); 
+		
 
 		app.UseHttpsRedirection();
 
-		app.UseAuthorization();
-
+		//app.UseAuthorization();
 
 		app.MapControllers();
 
