@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{1FD796CC-595E-4FEF-9109-55DA5A119C20}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Client", "Client\Client.esproj", "{3AF05390-7984-40D1-9621-2922428224BA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business.Tests", "Business.Tests\Business.Tests.csproj", "{C83DEE23-F1CF-4E7C-BF4F-AC23CDAE7EB1}"
 EndProject
 Global
@@ -43,12 +41,6 @@ Global
 		{1FD796CC-595E-4FEF-9109-55DA5A119C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FD796CC-595E-4FEF-9109-55DA5A119C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FD796CC-595E-4FEF-9109-55DA5A119C20}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3AF05390-7984-40D1-9621-2922428224BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AF05390-7984-40D1-9621-2922428224BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AF05390-7984-40D1-9621-2922428224BA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{3AF05390-7984-40D1-9621-2922428224BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AF05390-7984-40D1-9621-2922428224BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3AF05390-7984-40D1-9621-2922428224BA}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{C83DEE23-F1CF-4E7C-BF4F-AC23CDAE7EB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C83DEE23-F1CF-4E7C-BF4F-AC23CDAE7EB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C83DEE23-F1CF-4E7C-BF4F-AC23CDAE7EB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
