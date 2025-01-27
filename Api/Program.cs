@@ -53,11 +53,16 @@ public class Program
 
 		var app = builder.Build();
 
+		app.UseCors("AllowSwagger");
 		app.UseSwagger();
-		app.UseSwaggerUI(); 
-		
+		app.UseSwaggerUI(c =>
+		{
+			c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+			c.RoutePrefix = string.Empty; // Swagger UI at the root
+		});
 
-		//app.UseHttpsRedirection();
+
+		app.UseHttpsRedirection();
 
 		//app.UseAuthorization();
 
