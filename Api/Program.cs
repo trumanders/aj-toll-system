@@ -4,6 +4,7 @@ public class Program
 	public static void Main(string[] args)
 	{
 		var builder = WebApplication.CreateBuilder(args);
+		builder.Services.AddControllersWithViews();
 
 		try
 		{
@@ -49,14 +50,16 @@ public class Program
 
 		var app = builder.Build();
 
-		app.UseRouting();
-		app.UseSwagger();
-		app.UseSwaggerUI(c =>
-		{
-			c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-			c.RoutePrefix = string.Empty; // Swagger UI at the root
-		});
+		app.UseStaticFiles();
 
+		app.UseRouting();
+		//app.UseSwagger();
+		//app.UseSwaggerUI(c =>
+		//{
+		//	c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+		//	c.RoutePrefix = string.Empty; // Swagger UI at the root
+		//});
+		app.MapGet("/", () => Results.Redirect("/hello.html"));
 		app.UseHttpsRedirection();
 
 		//app.UseAuthorization();
