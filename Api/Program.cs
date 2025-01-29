@@ -3,38 +3,31 @@ public class Program
 {
 	public static void Main(string[] args)
 	{
-		var builder = WebApplication.CreateBuilder(args);
-		builder.Services.AddControllersWithViews();
-
-		try
-		{
-			var dbConnection = builder.Configuration.GetConnectionString("SqlConnection");
-			builder.Services.AddDbContext<Context>(options =>
-				options.UseSqlServer(dbConnection));
-		}
-		catch (Exception ex)
-		{
-			// Log the error here for debugging
-			Console.WriteLine("Database connection error: " + ex.Message);
-		}
-
-		// Add services to the container.
+		var builder = WebApplication.CreateBuilder(args);		
 
 		builder.Services.AddControllers();
-		// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-		builder.Services.AddEndpointsApiExplorer();
-		builder.Services.AddSwaggerGen();
-
+		builder.Services.AddDbContext<Context>(options =>
+			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"))
+		);
 		builder.Services.AddScoped<IDbService, DbService>();
 		builder.Services.AddScoped<IFeeService, FeeService>();
 		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
 		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
 		builder.Services.AddScoped<ITollPassageService, TollPassageService>();
 
-		// Register Context
-		builder.Services.AddDbContext<Context>(options =>
-			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"))
-		);
+		builder.Services.AddEndpointsApiExplorer();
+		builder.Services.AddSwaggerGen();
+		builder.Services.AddCors(opt =>
+		{
+			opt.AddPolicy(name: "CorsPolicy", builder =>
+			{
+				builder.WithOrigins("https://localhost:6001")
+					.AllowAnyHeader()
+					.AllowAnyMethod()
+					.AllowCredentials();
+			});
+		});
+
 
 		// Register AutoMapper
 		builder.Services.AddSingleton(new MapperConfiguration(config =>
@@ -46,20 +39,18 @@ public class Program
 		}).CreateMapper());		
 
 		// Prevent circular references
-		builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+		//builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 		var app = builder.Build();
 
-		app.UseStaticFiles();
-
 		app.UseRouting();
-		//app.UseSwagger();
-		//app.UseSwaggerUI(c =>
-		//{
-		//	c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-		//	c.RoutePrefix = string.Empty; // Swagger UI at the root
-		//});
-		app.MapGet("/", () => Results.Redirect("/hello.html"));
+		app.UseSwagger();
+		app.UseSwaggerUI(c =>
+		{
+			c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+			c.RoutePrefix = string.Empty; // Swagger UI at the root
+		});
+
 		app.UseHttpsRedirection();
 
 		//app.UseAuthorization();
