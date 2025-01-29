@@ -22,7 +22,7 @@ public class Program
 		builder.Services.AddControllers();
 		// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 		builder.Services.AddEndpointsApiExplorer();
-		builder.Services.AddSwaggerGen(); 
+		builder.Services.AddSwaggerGen();
 
 		builder.Services.AddScoped<IDbService, DbService>();
 		builder.Services.AddScoped<IFeeService, FeeService>();
@@ -49,13 +49,13 @@ public class Program
 
 		var app = builder.Build();
 
+		app.UseRouting();
 		app.UseSwagger();
 		app.UseSwaggerUI(c =>
 		{
 			c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
 			c.RoutePrefix = string.Empty; // Swagger UI at the root
 		});
-
 
 		app.UseHttpsRedirection();
 
