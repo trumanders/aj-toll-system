@@ -12,8 +12,8 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250126185424_ajtollsystemdb")]
-    partial class ajtollsystemdb
+    [Migration("20250129231330_toll")]
+    partial class toll
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
