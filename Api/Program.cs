@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Builder;
+using NSwag.AspNetCore;
 namespace Api;
 public class Program
 {
@@ -16,7 +18,7 @@ public class Program
 		builder.Services.AddScoped<ITollPassageService, TollPassageService>();
 
 		builder.Services.AddEndpointsApiExplorer();
-		builder.Services.AddSwaggerGen();
+		builder.Services.AddSwaggerDocument();
 		builder.Services.AddCors(opt =>
 		{
 			opt.AddPolicy(name: "CorsPolicy", builder =>
@@ -44,11 +46,10 @@ public class Program
 		var app = builder.Build();
 
 		app.UseRouting();
-		app.UseSwagger();
-		app.UseSwaggerUI(c =>
+		app.UseOpenApi();
+		app.UseSwaggerUi((settings) =>
 		{
-			c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-			c.RoutePrefix = string.Empty; // Swagger UI at the root
+			settings.Path = string.Empty;
 		});
 
 		app.UseHttpsRedirection();
