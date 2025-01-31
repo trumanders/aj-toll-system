@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using NSwag.AspNetCore;
 namespace Api;
 public class Program
 {
@@ -19,29 +17,12 @@ public class Program
 
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
-		builder.Services.AddCors(opt =>
-		{
-			opt.AddPolicy(name: "CorsPolicy", builder =>
-			{
-				builder.WithOrigins("https://localhost:6001")
-					.AllowAnyHeader()
-					.AllowAnyMethod()
-					.AllowCredentials();
-			});
-		});
 
-
-		// Register AutoMapper
 		builder.Services.AddSingleton(new MapperConfiguration(config =>
 		{
-			// GET VehicleInfo
-			
 			config.CreateMap<VehicleInfo, VehicleInfoDTO>();  
 			config.CreateMap<VehicleInfo, VehicleInfoDTOPlateNumber>();
 		}).CreateMapper());		
-
-		// Prevent circular references
-		//builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 		var app = builder.Build();
 
@@ -52,9 +33,19 @@ public class Program
 			settings.Path = string.Empty;
 		});
 
-		app.UseHttpsRedirection();
+		app.Use(async (context, next) =>
+		{
+			if (context.Request.Path == "/")
+			{
+				context.Response.Redirect("/swagger");  // Redirect to Swagger UI
+				return;
+			}
+			await next.Invoke();
+		});
 
-		//app.UseAuthorization();
+		app.UseStaticFiles(); // Important: Serve static files (including Swagger UI assets)
+
+		app.UseHttpsRedirection();
 
 		app.MapControllers();
 
