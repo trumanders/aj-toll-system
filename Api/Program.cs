@@ -43,7 +43,11 @@ public class Program
 			await next.Invoke();
 		});
 
-		app.UseStaticFiles(); // Important: Serve static files (including Swagger UI assets)
+		app.UseStaticFiles();
+		app.MapGet("/", async context =>
+		{
+			await context.Response.SendFileAsync("index.html");
+		});
 
 		app.UseHttpsRedirection();
 
