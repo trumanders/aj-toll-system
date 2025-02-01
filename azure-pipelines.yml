@@ -6,9 +6,6 @@ pool:
 
 variables:
   buildConfiguration: 'Release'  # Or 'Debug' or 'Staging' - YOU MUST CHOOSE
-  appServiceName: 'AjTollSystem-develop' #  <-- Slot name included here!
-  resourceGroupName: 'AjTollSystem'
-  azureSubscriptionName: 'ServiceConnection'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -46,15 +43,16 @@ steps:
   displayName: 'Publish Artifacts'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    TargetPath: '$(Build.ArtifactStagingDirectory)' # Added TargetPath
     ArtifactName: 'drop'
-    publishLocation: 'pipeline'
-    TargetPath: '$(Build.ArtifactStagingDirectory)'
+    publishLocation: 'pipeline' # Changed to 'pipeline'
 
 - task: AzureWebApp@1
   displayName: 'Deploy to Azure App Service'
   inputs:
-    azureSubscription: '$(azureSubscriptionName)'
+    azureSubscription: 'ServiceConnection'
     appType: 'webApp'
-    appName: '$(appServiceName)' # The app service name now includes the slot
+    appName: 'AjTollSystem' # Correct App Service name
+    resourceGroupName: 'AjTollSystem' # <--- Added resource group name
     package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     deploymentMethod: 'zipDeploy'
