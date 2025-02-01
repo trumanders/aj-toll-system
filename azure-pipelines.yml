@@ -6,6 +6,9 @@ pool:
 
 variables:
   buildConfiguration: 'Release'  # Or 'Debug' or 'Staging' - YOU MUST CHOOSE
+  appServiceName: 'AjTollSystem' #  <-- Correct App Service name
+  resourceGroupName: 'AjTollSystem' # <--- Resource group name
+  azureSubscriptionName: 'ServiceConnection' # <--- Service connection name
 
 steps:
 - task: NuGetToolInstaller@1
@@ -37,7 +40,7 @@ steps:
     projects: '**/*.csproj'
     publishWebProjects: true
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: false
+    zipAfterPublish: true # <--- Add this line: zip the publish output
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifacts'
@@ -50,9 +53,9 @@ steps:
 - task: AzureWebApp@1
   displayName: 'Deploy to Azure App Service'
   inputs:
-    azureSubscription: 'ServiceConnection'
+    azureSubscription: '$(azureSubscriptionName)'
     appType: 'webApp'
-    appName: 'AjTollSystem' # Correct App Service name
-    resourceGroupName: 'AjTollSystem' # <--- Added resource group name
-    package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+    appName: '$(appServiceName)' # Correct App Service name
+    resourceGroupName: '$(resourceGroupName)' 
+    package: '$(Build.ArtifactStagingDirectory)/**/*.zip' # <--- Correct path
     deploymentMethod: 'zipDeploy'
