@@ -8,7 +8,7 @@ variables:
   buildConfiguration: 'Release'  # Or 'Debug' or 'Staging' - YOU MUST CHOOSE
   appServiceName: 'AjTollSystem-develop' #  <-- Slot name included here!
   resourceGroupName: 'AjTollSystem'
-  azureSubscriptionName: 'Azure subscription 1'
+  azureSubscriptionName: 'ServiceConnection'
 
 steps:
 - task: NuGetToolInstaller@1
