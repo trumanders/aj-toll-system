@@ -3,12 +3,16 @@ public class Program
 {
 	public static async Task Main(string[] args)
 	{
-		var builder = WebApplication.CreateBuilder(args);				
+		var builder = WebApplication.CreateBuilder(args);
+
+		builder.Logging.AddConsole()
+			.AddDebug()
+			.SetMinimumLevel(LogLevel.Debug);
 
 		builder.Services.AddControllers();
 		builder.Services.AddDbContext<Context>(options =>
-			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"))
-		);
+			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
+
 		builder.Services.AddScoped<IDbService, DbService>();
 		builder.Services.AddScoped<IFeeService, FeeService>();
 		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
@@ -33,22 +37,17 @@ public class Program
 			settings.Path = string.Empty;
 		});
 
-		//app.Use(async (context, next) =>
-		//{
-		//	if (context.Request.Path == "/")
-		//	{
-		//		context.Response.Redirect("/swagger");  // Redirect to Swagger UI
-		//		return;
-		//	}
-		//	await next.Invoke();
-		//});
+		app.Use(async (context, next) =>
+		{
+			if (context.Request.Path == "/")
+			{
+				context.Response.Redirect("/swagger");  // Redirect to Swagger UI
+				return;
+			}
+			await next.Invoke();
+		});
 
-		//app.UseStaticFiles();
-		//app.MapGet("/", async context =>
-		//{
-		//	await context.Response.SendFileAsync("index.html");
-		//});
-
+		app.UseStaticFiles();
 		app.UseHttpsRedirection();
 
 		app.MapControllers();
