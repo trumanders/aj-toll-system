@@ -48,7 +48,21 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     TargetPath: '$(Build.ArtifactStagingDirectory)' # Added TargetPath
     ArtifactName: 'drop'
-    publishLocation: 'pipeline' # Changed to 'pipeline'
+    publishLocation: 'Container'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'dotnet tool install dotnet-project-licenses -g'
+    errorActionPreference: 'continue'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Databaser migrations'
+  inputs:
+    command: 'ef'
+    arguments: 'database update --context Persistence.Contexts.Context --configuration $(buildConfiguration) --project Persistence --startup-project Api'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
 
 - task: AzureWebApp@1
   displayName: 'Deploy to Azure App Service'
