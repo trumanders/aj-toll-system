@@ -50,11 +50,12 @@ steps:
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
-- task: PowerShell@2
+- task: DotNetCoreCLI@2
+  displayName: 'Install EF tool'
   inputs:
-    targetType: 'inline'
-    script: 'dotnet tool install dotnet-project-licenses -g'
-    errorActionPreference: 'continue'
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install dotnet-ef --global --version 7.0.5'
 
 - task: DotNetCoreCLI@2
   displayName: 'Databaser migrations'
