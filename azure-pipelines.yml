@@ -50,20 +50,20 @@ steps:
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Install dotnet-ef tool globally'
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'install --global dotnet-ef'
+# - task: DotNetCoreCLI@2
+#   displayName: 'Install dotnet-ef tool globally'
+#   inputs:
+#     command: 'custom'
+#     custom: 'tool'
+#     arguments: 'install --global dotnet-ef'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Database migrations'
-  inputs:
-    command: 'custom'
-    custom: 'run'
-    arguments: 'ef database update --context Persistence.Contexts.Context --configuration $(buildConfiguration) --project Persistence --startup-project Api'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+# - task: DotNetCoreCLI@2
+#   displayName: 'Database migrations'
+#   inputs:
+#     command: 'custom'
+#     custom: 'run'
+#     arguments: 'ef database update --context Persistence.Contexts.Context --configuration $(buildConfiguration) --project Persistence --startup-project Api'
+#   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - task: AzureWebApp@1
   displayName: 'Deploy to Azure App Service'
