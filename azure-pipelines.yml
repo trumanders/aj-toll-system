@@ -60,10 +60,10 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'Database migrations'
   inputs:
-    command: 'ef'
-    arguments: 'database update --context Persistence.Contexts.Context --configuration $(buildConfiguration) --project Persistence --startup-project Api'
+    command: 'custom'
+    custom: 'run'
+    arguments: 'ef database update --context Persistence.Contexts.Context --configuration $(buildConfiguration) --project Persistence --startup-project Api'
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-
 
 - task: AzureWebApp@1
   displayName: 'Deploy to Azure App Service'
