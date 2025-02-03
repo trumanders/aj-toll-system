@@ -5,10 +5,6 @@ public class Program
 	{
 		var builder = WebApplication.CreateBuilder(args);
 
-		builder.Logging.AddConsole()
-			.AddDebug()
-			.SetMinimumLevel(LogLevel.Debug);
-
 		builder.Services.AddControllers();
 		builder.Services.AddDbContext<Context>(options =>
 			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));

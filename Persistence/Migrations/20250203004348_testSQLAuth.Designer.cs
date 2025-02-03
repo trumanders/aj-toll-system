@@ -12,8 +12,8 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250129231330_toll")]
-    partial class toll
+    [Migration("20250203004348_testSQLAuth")]
+    partial class testSQLAuth
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
