@@ -6,8 +6,27 @@ public class Program
 		var builder = WebApplication.CreateBuilder(args);
 
 		builder.Services.AddControllers();
+
 		builder.Services.AddDbContext<Context>(options =>
-			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
+		{
+			options.UseSqlServer(
+				builder.Configuration.GetConnectionString("SqlConnection"),
+				sqlOptions => sqlOptions.EnableRetryOnFailure()
+			);
+		});
+
+		builder.Services.AddLogging();
+
+		try
+		{
+			using var context = new Context(new DbContextOptions<Context>());
+			var test = context.Database.CanConnect();
+			Console.WriteLine($"Database Connection Test: {test}");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Database Connection Error: {ex.Message}");
+		}
 
 		builder.Services.AddScoped<IDbService, DbService>();
 		builder.Services.AddScoped<IFeeService, FeeService>();
