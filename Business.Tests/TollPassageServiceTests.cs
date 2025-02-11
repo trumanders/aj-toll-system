@@ -11,7 +11,7 @@ public class TollPassageServiceTests
 	private ITollFreeDaysService _fakeTollFreeDaysService;
 	private DateTime _date;
 	private List<VehicleInfoDTOPlateNumber> _fakeVehicleInfo;
-	private List<TollPassageNoFee> _result;
+	private List<TollPassage> _result;
 
 	[SetUp]
 	public void Setup()
@@ -19,63 +19,11 @@ public class TollPassageServiceTests
 		_fakeDbService = A.Fake<IDbService>();
 		_fakeFeeService = A.Fake<IFeeService>();
 		_fakeTollFreeDaysService = A.Fake<ITollFreeDaysService>();
-		_sut = new TollPassageService(_fakeDbService, _fakeFeeService, _fakeTollFreeDaysService);
+		_sut = new TollPassageService(_fakeDbService);
 	}
 
-	[Test]
-	public async Task GetDailyFeeSummaryForEachVehicle_WhenTollFreeDayProvided_ReturnsListWithZeroFees()
-	{
-		// Arrange
-		var anyDate = DateTime.Now;
-		var tollPassages = new List<TollPassage>
-		{
-			new TollPassage { PlateNumber = "ABC123", PassageTime = anyDate }
-		};
 
-		A.CallTo(() => _fakeTollFreeDaysService.IsTollFreeDay(anyDate)).Returns(true);
 
-		// Act
-		var result = await _sut.GetDailyFeeSummaryForEachVehicle(tollPassages);
-
-		// Assert
-		Assert.That(result, Is.Empty);
-		A.CallTo(_fakeFeeService).MustNotHaveHappened();
-	
-	}
-
-	[Test]
-	public async Task GetDailyFeeSummaryForEachVehicle_WhenChargableDayProvided_ReturnsListWithCorrectFees()
-	{
-		// Arrange
-		var anyDate = DateTime.Now;
-		var tollPassages = new List<TollPassage>
-		{
-			new TollPassage { PlateNumber = "ABC123", PassageTime = anyDate },
-			new TollPassage { PlateNumber = "ABC123", PassageTime = anyDate },
-			new TollPassage { PlateNumber = "DEF456", PassageTime = anyDate },
-			new TollPassage { PlateNumber = "DEF456", PassageTime = anyDate },
-			new TollPassage { PlateNumber = "DEF456", PassageTime = anyDate }
-		};
-
-		var fakeVehicleDailyFee1 = new VehicleDailyFee { PlateNumber = "ABC123", DailyFee = 20 };
-		var fakeVehicleDailyFee2 = new VehicleDailyFee { PlateNumber = "DEF456", DailyFee = 30 };
-
-		A.CallTo(() => _fakeFeeService.GetTotalFeeForVehiclePassages(A<List<TollPassage>>
-			.That.Matches(passages => passages.All(p => p.PlateNumber == fakeVehicleDailyFee1.PlateNumber))))
-			.Returns(fakeVehicleDailyFee1);
-
-		A.CallTo(() => _fakeFeeService.GetTotalFeeForVehiclePassages(A<List<TollPassage>>
-			.That.Matches(passages => passages.All(p => p.PlateNumber == fakeVehicleDailyFee2.PlateNumber))))
-			.Returns(fakeVehicleDailyFee2);
-
-		// Act
-		var result = await _sut.GetDailyFeeSummaryForEachVehicle(tollPassages);
-
-		// Assert
-		Assert.That(result, Has.Count.EqualTo(2));
-		Assert.That(result, Has.Exactly(1).Matches<VehicleDailyFee>(x => x.PlateNumber == "ABC123" && x.DailyFee == 20));
-		Assert.That(result, Has.Exactly(1).Matches<VehicleDailyFee>(x => x.PlateNumber == "DEF456" && x.DailyFee == 30));
-	}
 
 	[Test]
 	public async Task GenerateTollPassagesForOneDay_WhenValidInputProvided_ReturnsOrderedList()
