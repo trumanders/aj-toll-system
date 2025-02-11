@@ -9,30 +9,17 @@ public class Program
 
 		builder.Services.AddDbContext<Context>(options =>
 		{
-			options.UseSqlServer(
-				builder.Configuration.GetConnectionString("SqlConnection"),
-				sqlOptions => sqlOptions.EnableRetryOnFailure()
-			);
+			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"));
 		});
 
 		builder.Services.AddLogging();
-
-		try
-		{
-			using var context = new Context(new DbContextOptions<Context>());
-			var test = context.Database.CanConnect();
-			Console.WriteLine($"Database Connection Test: {test}");
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Database Connection Error: {ex.Message}");
-		}
 
 		builder.Services.AddScoped<IDbService, DbService>();
 		builder.Services.AddScoped<IFeeService, FeeService>();
 		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
 		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
 		builder.Services.AddScoped<ITollPassageService, TollPassageService>();
+		builder.Services.AddScoped<ITollDataProcessingService, TollDataProcessingService>();
 
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
@@ -41,6 +28,11 @@ public class Program
 		{
 			config.CreateMap<VehicleInfo, VehicleInfoDTO>();  
 			config.CreateMap<VehicleInfo, VehicleInfoDTOPlateNumber>();
+			config.CreateMap<VehicleInfo, VehicleInfoDTOPlateAndType>();
+			config.CreateMap<FeeInterval, FeeIntervalDTO>();
+			config.CreateMap<VehicleType, VehicleTypeDTO>();
+			config.CreateMap<MonthlyFee, MonthlyFeeDTO>();
+			config.CreateMap<MonthlyFeeDTO, MonthlyFee>();	
 		}).CreateMapper());		
 
 		var app = builder.Build();
@@ -56,13 +48,13 @@ public class Program
 		{
 			if (context.Request.Path == "/")
 			{
-				context.Response.Redirect("/swagger");  // Redirect to Swagger UI
+				context.Response.Redirect("/swagger"); 
 				return;
 			}
 			await next.Invoke();
 		});
 
-		app.UseStaticFiles();
+		//app.UseStaticFiles();
 		app.UseHttpsRedirection();
 
 		app.MapControllers();
