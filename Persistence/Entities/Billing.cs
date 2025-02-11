@@ -13,15 +13,15 @@ public class Billing : IEntity
 	[Required]
 	public string? OwnerName { get; set; }
 
-	[Required]
-	public int VehicleTypeId { get; set; }
+	//[Required]
+	//public int VehicleTypeId { get; set; }
 
-	[ForeignKey("VehicleTypeId")]
-	public virtual VehicleType? VehicleType { get; set; }
+	//[ForeignKey("VehicleTypeId")]
+	//public virtual VehicleType? VehicleType { get; set; }
 
-	[Required]
-	public DateTime Date { get; set; }
+	//[Required]
+	//public DateTime Date { get; set; }
 
-	[Required]
+	//[Required]
 	public decimal AccumulatedFee { get; set; }
 }

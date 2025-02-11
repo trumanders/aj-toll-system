@@ -18,5 +18,5 @@ public class VehicleInfo : IEntity
 	[Required]
 	public int VehicleTypeId { get; set; }
 
-	public virtual VehicleType? VehicleType { get; set; }
+	public VehicleType? VehicleType { get; set; }
 }
