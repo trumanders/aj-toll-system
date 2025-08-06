@@ -1,3 +1,4 @@
+// update-develop
 namespace Api;
 public class Program
 {
@@ -18,17 +19,17 @@ public class Program
 		builder.Services.AddScoped<IFeeService, FeeService>();
 		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
 		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
-		builder.Services.AddScoped<ITollPassageService, TollPassageService>();
-		builder.Services.AddScoped<ITollDataProcessingService, TollDataProcessingService>();
+		builder.Services.AddScoped<ITollCameraService, TollCameraService>();
+		builder.Services.AddScoped<ITollCameraDataProcessingService, TollCameraDataProcessingService>();
 
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
 
 		builder.Services.AddSingleton(new MapperConfiguration(config =>
 		{
-			config.CreateMap<VehicleInfo, VehicleInfoDTO>();  
-			config.CreateMap<VehicleInfo, VehicleInfoDTOPlateNumber>();
-			config.CreateMap<VehicleInfo, VehicleInfoDTOPlateAndType>();
+			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiData>();  
+			config.CreateMap<Persistence.Entities.SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
+			config.CreateMap<Persistence.Entities.SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>();
 			config.CreateMap<FeeInterval, FeeIntervalDTO>();
 			config.CreateMap<VehicleType, VehicleTypeDTO>();
 			config.CreateMap<MonthlyFee, MonthlyFeeDTO>();

@@ -2,7 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProcessDailyTollPassagesController(ITollDataProcessingService _tollDataProcessingService) : ControllerBase
+public class ProcessDailyTollCameraDataController(ITollCameraDataProcessingService _tollCameraDataProcessingService) : ControllerBase
 {
 	/* In a real world scenario, this call is triggered after midnight to process all the passages for the previous day */
 	[HttpGet]
@@ -10,7 +10,7 @@ public class ProcessDailyTollPassagesController(ITollDataProcessingService _toll
 	{
 		try
 		{
-			return Results.Ok(await _tollDataProcessingService.ProcessDailyTollData(date, numberOfPassages));
+			return Results.Ok(await _tollCameraDataProcessingService.ProcessDailyTollCameraData(date, numberOfPassages));
 		}
 		catch
 		{

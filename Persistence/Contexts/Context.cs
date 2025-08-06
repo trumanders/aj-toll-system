@@ -4,7 +4,7 @@
 		public DbSet<Billing> Billing => Set<Billing>();
 		public DbSet<FeeInterval> FeeInterval => Set<FeeInterval>();
 		public DbSet<MonthlyFee> MonthlyFee => Set<MonthlyFee>();
-		public DbSet<VehicleInfo> VehicleInfo => Set<VehicleInfo>();
+		public DbSet<SimulatedVehicleApiData> SimulatedVehicleApiData => Set<SimulatedVehicleApiData>();
 		public DbSet<VehicleType> VehicleType => Set<VehicleType>();
 
 		public Context(DbContextOptions<Context> options) : base(options) { }
@@ -67,12 +67,12 @@
 
 		private void SeedVehicleInfoData(ModelBuilder builder, ref SeedData seedData)
 		{
-			var vehicleInfos = new List<VehicleInfo>();
+			var vehicleInfos = new List<SimulatedVehicleApiData>();
 
 			int id = 1;
 			foreach (var vehicleInfo in seedData.VehicleInfo)
 			{
-				vehicleInfos.Add(new VehicleInfo
+				vehicleInfos.Add(new SimulatedVehicleApiData
 				{
 					Id = id,
 					PlateNumber = vehicleInfo.PlateNumber,
@@ -81,7 +81,7 @@
 				});
 				id++;
 			}
-			builder.Entity<VehicleInfo>().HasData(vehicleInfos);
+			builder.Entity<SimulatedVehicleApiData>().HasData(vehicleInfos);
 		}
 		#endregion
 	}

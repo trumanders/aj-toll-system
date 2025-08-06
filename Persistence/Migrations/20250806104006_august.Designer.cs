@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.Contexts;
 
@@ -11,9 +12,11 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250806104006_august")]
+    partial class august
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,7 +159,7 @@ namespace Persistence.Migrations
                     b.ToTable("MonthlyFee");
                 });
 
-            modelBuilder.Entity("Persistence.Entities.SimulatedVehicleApiData", b =>
+            modelBuilder.Entity("Persistence.Entities.VehicleInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -181,7 +184,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("VehicleTypeId");
 
-                    b.ToTable("SimulatedVehicleApiData");
+                    b.ToTable("VehicleInfo");
 
                     b.HasData(
                         new
@@ -634,7 +637,7 @@ namespace Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Persistence.Entities.SimulatedVehicleApiData", b =>
+            modelBuilder.Entity("Persistence.Entities.VehicleInfo", b =>
                 {
                     b.HasOne("Persistence.Entities.VehicleType", "VehicleType")
                         .WithMany()
