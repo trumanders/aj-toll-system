@@ -28,19 +28,19 @@ public class FeeServiceTests
 			new FeeIntervalDTO { Start = new TimeSpan(8, 0, 0), End = new TimeSpan(9, 0, 0), Fee = 30 }
 		};
 
-		var dailyTollPassages = new List<TollPassage>
+		var dailyTollPassages = new List<TollPassageData>
 		{
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// Fee = 0 (next fee is higher)
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0) },	// Fee = 20
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// Fee = 0 (next fee is higher and within 1 hour)
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0) },	// Fee = 30 (only fee in interval)
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00) },// Fee = 0
-
-			new TollPassage { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59) },	// Fee = 0 (no fee in interval)
-			new TollPassage { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) },	// Fee = 0 (next fee within 1 hour)
-			new TollPassage { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// Fee = 10  
-			new TollPassage { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// Fee = 0 (next fee is higher and within 1 hour)
-			new TollPassage { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00) }  // Fee = 30
+			new TollPassageData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// Fee = 0 (next fee is higher)
+			new TollPassageData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0) },	// Fee = 20
+			new TollPassageData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// Fee = 0 (next fee is higher and within 1 hour)
+			new TollPassageData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0) },	// Fee = 30 (only fee in interval)
+			new TollPassageData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00) },// Fee = 0
+				
+			new TollPassageData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59) },	// Fee = 0 (no fee in interval)
+			new TollPassageData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) },	// Fee = 0 (next fee within 1 hour)
+			new TollPassageData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// Fee = 10  
+			new TollPassageData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// Fee = 0 (next fee is higher and within 1 hour)
+			new TollPassageData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00) }  // Fee = 30
 		};
 
 		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>()).Returns(fakeIntervals);
@@ -70,9 +70,9 @@ public class FeeServiceTests
 			new FeeIntervalDTO { Start = new TimeSpan(6, 0, 0), End = new TimeSpan(7, 0, 0), Fee = 100 }
 		};
 
-		var vehicleTollPassages = new List<TollPassage>
+		var vehicleTollPassages = new List<TollPassageData>
 		{
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) } // Fee = 100
+			new TollPassageData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) } // Fee = 100
 		};
 
 		var expectedDailyFee = _sut.GetMaxDailyFee();

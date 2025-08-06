@@ -1,10 +1,10 @@
 ﻿namespace Persistence.Entities;
 
 /**
- * Simulating extrnal vehicle API data to retrieve vehicle information from
+ * Simulates external vehicle API data
  */
 
-public class VehicleInfo : IEntity
+public class SimulatedVehicleApiData : IEntity
 {
 	[Key]
 	public int Id { get; set; }
@@ -20,3 +20,6 @@ public class VehicleInfo : IEntity
 
 	public VehicleType? VehicleType { get; set; }
 }
+
+
+LÄGG IN VEHICLE TYPE I SIMULATED VEHICLE API DATA-TABELLEN / ENTITETEN!! INTE HURUVIDA TYPEN ÄR TOLL FREE.DET ÄR VÅR EGEN LOGIK!!

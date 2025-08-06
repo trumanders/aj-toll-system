@@ -1,6 +1,6 @@
 ﻿namespace Common.DTO;
 
-public class VehicleInfoDTOPlateNumber
+public class SimulatedVehicleApiDataDTOPlateNumber
 {
 	public string PlateNumber { get; set; }
 }
