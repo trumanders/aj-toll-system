@@ -1,5 +1,4 @@
-﻿
-namespace Persistence.Interfaces;
+﻿namespace Persistence.Interfaces;
 
 public interface IDbService
 {

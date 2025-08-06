@@ -2,15 +2,8 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProcessDailyTollPassagesController : ControllerBase
+public class ProcessDailyTollPassagesController(ITollDataProcessingService _tollDataProcessingService) : ControllerBase
 {
-	private readonly ITollDataProcessingService _tollDataProcessingService;
-
-	public ProcessDailyTollPassagesController(ITollDataProcessingService tollDataProcessingService)
-	{
-		_tollDataProcessingService = tollDataProcessingService;
-	}
-
 	/* In a real world scenario, this call is triggered after midnight to process all the passages for the previous day */
 	[HttpGet]
 	public async Task<IResult> ProcessDailyTollPassages([FromQuery]DateTime date, [FromQuery]int numberOfPassages)
