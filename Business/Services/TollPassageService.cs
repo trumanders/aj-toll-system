@@ -3,28 +3,27 @@
 public class TollPassageService : ITollPassageService
 {
 	private readonly IDbService _dbService;
-	private readonly IFeeService _feeService;
-	private readonly ITollFreeDaysService _tollFreeDaysService;
-	private const int secondsWithinOneDay = 86399;
-	public TollPassageService(IDbService dbService, IFeeService feeService, ITollFreeDaysService tollFreeDaysService)
+
+	private const int secondsWithinOneDay = 24 * 60 * 60;
+	public TollPassageService(IDbService dbService)
 	{
 		_dbService = dbService;
-		_feeService = feeService;
-		_tollFreeDaysService = tollFreeDaysService;
 	}
 
-	public async Task<List<TollPassageNoFee>> GenerateTollPassagesForOneDay(DateTime date, int numberOfPassages)
+	// Simulates the camera scanning of plate numbers and times
+	public async Task<List<TollPassage>> GenerateTollPassagesForOneDay(DateTime date, int numberOfPassages)
 	{
+		// This step is to make sure that the generated passages have plate numbers that we have access to. (simulate external vehicle info database)
 		var plateNumbers = await _dbService.GetAsync<VehicleInfo, VehicleInfoDTOPlateNumber>();
-		var tollPassages = new List<TollPassageNoFee>();
+
+		if (plateNumbers.Count == 0) { return new List<TollPassage>(); }
+
+		var tollPassages = new List<TollPassage>();
 		var random = new Random();
 
-		// Generate specified number of passages
-		// and randomize plate numbers and passage datetimes within the 
-		// specified date
 		for (int i = 0; i < numberOfPassages; i++)
 		{
-			tollPassages.Add(new TollPassageNoFee
+			tollPassages.Add(new TollPassage
 			{
 				PlateNumber = plateNumbers[random.Next(0, plateNumbers.Count)].PlateNumber,
 				PassageTime = date.AddSeconds(random.Next(0, secondsWithinOneDay))
@@ -32,29 +31,5 @@ public class TollPassageService : ITollPassageService
 		}
 		
 		return tollPassages.OrderBy(x => x.PassageTime).ToList();
-	}
-
-	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollPassage> tollPassages)
-	{
-		// Check for toll free day
-		if (_tollFreeDaysService.IsTollFreeDay(tollPassages.First().PassageTime))
-		{
-			return new List<VehicleDailyFee>();
-		}
-
-		// Group passages by plate number
-		var passagesByPlateNumber = tollPassages
-			.GroupBy(x => x.PlateNumber)
-			.Select(g => g.ToList())
-			.ToList();
-
-		// Get list of plate numbers and their daily fee
-		var vehicleDailyFees = new List<VehicleDailyFee>();
-		foreach (var vehiclePassages in passagesByPlateNumber)
-		{
-			vehicleDailyFees.Add(await _feeService.GetTotalFeeForVehiclePassages(vehiclePassages));
-		}
-
-		return vehicleDailyFees;
 	}
 }

@@ -1,4 +1,7 @@
-﻿namespace Business.Services;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
+
+namespace Business.Services;
 
 public class FeeService : IFeeService
 {
@@ -7,23 +10,52 @@ public class FeeService : IFeeService
 	
 	private const decimal MAX_DAILY_FEE = 60;
 
-
 	public FeeService(IDbService dbService)
 	{
 		_dbService = dbService;
-	}	
+	}
 
-	public async Task<VehicleDailyFee> GetTotalFeeForVehiclePassages(List<TollPassage> vehicleTollPassages)
+	public decimal GetMaxDailyFee()
 	{
-		if (vehicleTollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
-		{
-			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleTollPassages));
-		}
+		return MAX_DAILY_FEE;
+	}
 
-		// TODO: Cache this value to prevent multiple calls to the database
+	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollPassage> dailyTollPassages)
+	{		
 		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
 
-		foreach (var tollPassage in vehicleTollPassages)
+		if (!feeIntervals.Any())
+		{
+			throw new InvalidOperationException("Fee intervals are not set.");
+		}
+
+		var dailyTollPassagesGoupedByPlateNumber = dailyTollPassages
+			.GroupBy(x => x.PlateNumber)
+			.Select(g => g.ToList())
+			.ToList();
+
+		var vehicleDailyFees = new List<VehicleDailyFee>();
+
+		foreach (var vehicleDailyTollPassages in dailyTollPassagesGoupedByPlateNumber)
+		{
+			var vehicleDailyFee = GetVehicleDailyFee(vehicleDailyTollPassages, feeIntervals);
+			
+			if (vehicleDailyFee.DailyFee != 0)
+				vehicleDailyFees.Add(vehicleDailyFee);
+		}
+
+		return vehicleDailyFees;
+	}
+
+	#region Private Methods
+	private VehicleDailyFee GetVehicleDailyFee(List<TollPassage> vehicleDailyTollPassages, List<FeeIntervalDTO> feeIntervals)
+	{
+		if (vehicleDailyTollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
+		{
+			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleDailyTollPassages));
+		}
+
+		foreach (var tollPassage in vehicleDailyTollPassages)
 		{
 			foreach (var feeInterval in feeIntervals)
 			{
@@ -34,16 +66,17 @@ public class FeeService : IFeeService
 			}
 		}
 
-		CalculateFeeDue(vehicleTollPassages);
-		
+		CalculateFeeDue(vehicleDailyTollPassages);
+
 		var vehicleDailyFee = new VehicleDailyFee
 		{
-			PlateNumber = vehicleTollPassages.First().PlateNumber,
-			DailyFee = GetTotalFeeForPassages(vehicleTollPassages),
+			PlateNumber = vehicleDailyTollPassages.First().PlateNumber,
+			DailyFee = CalculateDailyFee(vehicleDailyTollPassages)
 		};
 
 		return vehicleDailyFee;
 	}
+
 
 	private void CalculateFeeDue(List<TollPassage> tollPassages)
 	{
@@ -83,9 +116,9 @@ public class FeeService : IFeeService
 				intervalStart = tollPassage;
 			}
 		}
-	}
+	}	
 
-	private decimal GetTotalFeeForPassages(List<TollPassage> tollPassages)
+	private decimal CalculateDailyFee(List<TollPassage> tollPassages)
 	{
 		if (tollPassages == null)
 			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
@@ -100,9 +133,5 @@ public class FeeService : IFeeService
 	{
 		return end - start < timeSpan;
 	}
-
-	public decimal GetMaxDailyFee()
-	{
-		return MAX_DAILY_FEE;
-	}
+	#endregion
 }
