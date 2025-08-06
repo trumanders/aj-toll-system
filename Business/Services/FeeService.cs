@@ -20,7 +20,7 @@ public class FeeService : IFeeService
 		return MAX_DAILY_FEE;
 	}
 
-	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollPassage> dailyTollPassages)
+	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollCameraData> dailyTollPassages)
 	{		
 		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
 
@@ -48,7 +48,7 @@ public class FeeService : IFeeService
 	}
 
 	#region Private Methods
-	private VehicleDailyFee GetVehicleDailyFee(List<TollPassage> vehicleDailyTollPassages, List<FeeIntervalDTO> feeIntervals)
+	private VehicleDailyFee GetVehicleDailyFee(List<TollCameraData> vehicleDailyTollPassages, List<FeeIntervalDTO> feeIntervals)
 	{
 		if (vehicleDailyTollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
 		{
@@ -78,7 +78,7 @@ public class FeeService : IFeeService
 	}
 
 
-	private void CalculateFeeDue(List<TollPassage> tollPassages)
+	private void CalculateFeeDue(List<TollCameraData> tollPassages)
 	{
 		if (tollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
 			throw new ArgumentException("All passages must be for the same vehicle.", nameof(tollPassages));
@@ -118,7 +118,7 @@ public class FeeService : IFeeService
 		}
 	}	
 
-	private decimal CalculateDailyFee(List<TollPassage> tollPassages)
+	private decimal CalculateDailyFee(List<TollCameraData> tollPassages)
 	{
 		if (tollPassages == null)
 			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");

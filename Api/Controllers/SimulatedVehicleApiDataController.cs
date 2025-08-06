@@ -2,11 +2,11 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class VehicleInfoController : ControllerBase
+public class SimulatedVehicleApiDataController : ControllerBase
 {
 	private readonly IDbService _dbService;
 
-	public VehicleInfoController(IDbService dbService)
+	public SimulatedVehicleApiDataController(IDbService dbService)
 	{
 		_dbService = dbService;
 	}
@@ -17,7 +17,7 @@ public class VehicleInfoController : ControllerBase
 	{
 		try
 		{
-			var vehicleInfos = await _dbService.GetAsync<VehicleInfo, VehicleInfoDTO>();
+			var vehicleInfos = await _dbService.GetAsync<Persistence.Entities.SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
 			return Results.Ok(vehicleInfos);
 		}
 		catch
@@ -31,7 +31,7 @@ public class VehicleInfoController : ControllerBase
 	{
 		try
 		{
-			var plateNumbers = await _dbService.GetAsync<VehicleInfo, VehicleInfoDTOPlateNumber>();
+			var plateNumbers = await _dbService.GetAsync<Persistence.Entities.SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
 			return Results.Ok(plateNumbers);
 		}
 		catch

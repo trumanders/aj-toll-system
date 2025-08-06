@@ -3,13 +3,13 @@
 [TestFixture]
 public class TollPassageServiceTests
 {
-	private ITollPassageService _sut;
+	private ITollCameraService _sut;
 	private IDbService _fakeDbService;
 	private IFeeService _fakeFeeService;
 	private ITollFreeDaysService _fakeTollFreeDaysService;
 	private DateTime _date;
-	private List<VehicleInfoDTOPlateNumber> _fakeVehicleInfo;
-	private List<TollPassage> _result;
+	private List<SimulatedVehicleApiDataDTOPlateNumber> _fakeVehicleInfo;
+	private List<TollCameraData> _result;
 
 	[SetUp]
 	public void Setup()
@@ -17,7 +17,7 @@ public class TollPassageServiceTests
 		_fakeDbService = A.Fake<IDbService>();
 		_fakeFeeService = A.Fake<IFeeService>();
 		_fakeTollFreeDaysService = A.Fake<ITollFreeDaysService>();
-		_sut = new TollPassageService(_fakeDbService);
+		_sut = new TollCameraService(_fakeDbService);
 		GenerateTollPassagesForOneDay_Arrange();
 	}
 
@@ -27,10 +27,10 @@ public class TollPassageServiceTests
 		var _numberOfPassages = 100;
 
 		// Act
-		_result = await _sut.GenerateTollPassagesForOneDay(_date, _numberOfPassages);
+		_result = await _sut.GenerateDailyTollCameraData(_date, _numberOfPassages);
 
 		// Assert
-		Assert.That(_result, Is.Ordered.By(nameof(TollPassage.PassageTime)));
+		Assert.That(_result, Is.Ordered.By(nameof(TollCameraData.PassageTime)));
 	}
 
 	[Test]
@@ -39,7 +39,7 @@ public class TollPassageServiceTests
 		var _numberOfPassages = 100;
 
 		// Act
-		_result = await _sut.GenerateTollPassagesForOneDay(_date, _numberOfPassages);
+		_result = await _sut.GenerateDailyTollCameraData(_date, _numberOfPassages);
 
 		// Assert
 		Assert.That(_result, Is.Not.Null);
@@ -52,7 +52,7 @@ public class TollPassageServiceTests
 	public async Task GenerateTollPassagesForOneDay_WhenValidInputProvided_ReturnsCorrectNumberOfPassages(int numberOfPassages)
 	{
 		// Act
-		_result = await _sut.GenerateTollPassagesForOneDay(_date, numberOfPassages);
+		_result = await _sut.GenerateDailyTollCameraData(_date, numberOfPassages);
 
 		// Assert
 		Assert.That(_result, Has.Count.EqualTo(numberOfPassages));
@@ -65,7 +65,7 @@ public class TollPassageServiceTests
 	public async Task GenerateTollPassagesForOneDay_WhenValidInputProvided_ReturnsResultWithTheSameDate(int numberOfPassages)
 	{
 		// Act
-		_result = await _sut.GenerateTollPassagesForOneDay(_date, numberOfPassages);
+		_result = await _sut.GenerateDailyTollCameraData(_date, numberOfPassages);
 
 		// Assert
 		Assert.That(_result.Select(x => x.PassageTime.Date).Distinct().Count(), Is.EqualTo(1));
@@ -77,14 +77,14 @@ public class TollPassageServiceTests
 		_date = DateTime.Now.Date;
 		_fakeVehicleInfo =
 		[
-			new VehicleInfoDTOPlateNumber { PlateNumber = "ABC123" },
-			new VehicleInfoDTOPlateNumber { PlateNumber = "DEF456" },
-			new VehicleInfoDTOPlateNumber { PlateNumber = "GHI789" },
-			new VehicleInfoDTOPlateNumber { PlateNumber = "JKL012" },
-			new VehicleInfoDTOPlateNumber { PlateNumber = "MNO345" }
+			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "ABC123" },
+			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "DEF456" },
+			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "GHI789" },
+			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "JKL012" },
+			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "MNO345" }
 		];
 
-		A.CallTo(() => _fakeDbService.GetAsync<VehicleInfo, VehicleInfoDTOPlateNumber>())
+		A.CallTo((() => _fakeDbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>()))
 			.Returns(_fakeVehicleInfo);
 	}
 }

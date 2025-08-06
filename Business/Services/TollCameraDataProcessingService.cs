@@ -1,53 +1,54 @@
 ﻿namespace Business.Services;
 
-public class TollDataProcessingService : ITollDataProcessingService
+public class TollCameraDataProcessingService : ITollCameraDataProcessingService
 {
 	private readonly IDbService _dbService;
 	private readonly IFeeService _feeService;
-	private readonly ITollPassageService _tollPassageService;
+	private readonly ITollCameraService _tollCameraService;
 	private readonly ITollFreeDaysService _tollFreeDaysService;
 
-	public TollDataProcessingService(IDbService dbService, ITollPassageService tollPassageService, IFeeService feeService, ITollFreeDaysService tollFreeDaysService)
+	public TollCameraDataProcessingService(IDbService dbService, ITollCameraService tollCameraService, IFeeService feeService, ITollFreeDaysService tollFreeDaysService)
 	{
 		_dbService = dbService;
-		_tollPassageService = tollPassageService;
+		_tollCameraService = tollCameraService;
 		_feeService = feeService;
 		_tollFreeDaysService = tollFreeDaysService;
 	}
 
-	public async Task<ProcessedTollData> ProcessDailyTollData(DateTime date, int numberOfTollPassages)
+
+	public async Task<ProcessedPassages> ProcessDailyTollCameraData(DateTime date, int numberOfTollPassages)
 	{
 		if (_tollFreeDaysService.IsTollFreeDay(date))
 		{
 			// return empty list
 		}
 
-		var dailyTollPassages = await _tollPassageService.GenerateTollPassagesForOneDay(date, numberOfTollPassages);
+		var dailyTollCameraData = await _tollCameraService.GenerateDailyTollCameraData(date, numberOfTollPassages);
 
-		if (!dailyTollPassages.Any()) { return new ProcessedTollData(); }
+		if (!dailyTollCameraData.Any()) { return new ProcessedPassages(); }
 
-		/* VehicleInfoRepository */
-		var vehiclePlateAndTypeForAllPassages = await _dbService.GetWithExpressionAndIncludesAsync<VehicleInfo, VehicleInfoDTOPlateAndType>(
-			vi => dailyTollPassages
+		// Get info on each vehicle from the simulated vehicle API
+		var vehiclePlateAndTypeForAllPassages = await _dbService.GetWithExpressionAndIncludesAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>(
+			vi => dailyTollCameraData
 				.Select(dtp => dtp.PlateNumber)
 				.Contains(vi.PlateNumber),
 			vi => vi.VehicleType);
 
-		RemoveTollFreeVehicles(dailyTollPassages, vehiclePlateAndTypeForAllPassages);
+		RemoveTollFreeVehicles(dailyTollCameraData, vehiclePlateAndTypeForAllPassages);
 		
 		/* FeeIntervalRepository*/
-		var vehiclesDailyFees = await _feeService.GetDailyFeeSummaryForEachVehicle(dailyTollPassages);
+		var dailyFeeForEachVehicle = await _feeService.GetDailyFeeSummaryForEachVehicle(dailyTollCameraData);
 
 		/* MontlyFeeRepository */ // Vehicles that are already in monthly fee table (to update) 
 		var monthlyFeesToUpdate = await _dbService.GetAsync<MonthlyFee, MonthlyFeeDTO>(entity =>
-			vehiclesDailyFees.Select(vdf => vdf.PlateNumber).Contains(entity.PlateNumber));
+			dailyFeeForEachVehicle.Select(vdf => vdf.PlateNumber).Contains(entity.PlateNumber));
 
 		var monthlyFeesToUpdateLookup = monthlyFeesToUpdate.ToDictionary(dto => dto.PlateNumber);
 
 		var newVehicles = new List<MonthlyFeeDTO>();
 
 		/* Update or add MonthlyFee */
-		foreach (var vehicleDailyFee in vehiclesDailyFees)
+		foreach (var vehicleDailyFee in dailyFeeForEachVehicle)
 		{			
 			if (monthlyFeesToUpdateLookup.TryGetValue(vehicleDailyFee.PlateNumber, out var monthlyFeeDto))
 			{
@@ -79,21 +80,21 @@ public class TollDataProcessingService : ITollDataProcessingService
 
 		var updatedMonthlyFees = await _dbService.GetAsync<MonthlyFee, MonthlyFeeDTO>();
 
-		var processedTollData = new ProcessedTollData()
+		var processedTollData = new ProcessedPassages()
 		{
-			TollPassages = dailyTollPassages,
-			VehiclesDailyFees = vehiclesDailyFees,
+			TollCameraData = dailyTollCameraData,
+			VehiclesDailyFees = dailyFeeForEachVehicle,
 			MonthlyFees = updatedMonthlyFees
 		};
 
 		return processedTollData;
 	}
 
-	private void RemoveTollFreeVehicles(List<TollPassage> dailyTollPassages, List<VehicleInfoDTOPlateAndType> vehiclePlateAndTypeForAllPassages)
+	private void RemoveTollFreeVehicles(List<TollCameraData> dailyTollCameraData, List<SimulatedVehicleApiDataDTOPlateAndType> vehiclePlateAndTypeForAllPassages)
 	{
-		dailyTollPassages.RemoveAll(dtp => 
+		dailyTollCameraData.RemoveAll(data => 
 			vehiclePlateAndTypeForAllPassages
-				.Single(plateAndType => plateAndType.PlateNumber == dtp.PlateNumber)
+				.Single(plateAndType => plateAndType.PlateNumber == data.PlateNumber)
 				.VehicleType.IsTollFree
 		);
 	}
