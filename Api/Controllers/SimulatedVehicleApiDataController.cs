@@ -27,13 +27,13 @@ public class SimulatedVehicleApiDataController : ControllerBase
 	}
 
 	[HttpGet("platenumbers")]
-	public async Task<IResult> GetAllPlateNumber()
+	public async Task<IResult> GetAllPlateNumbers()
 	{
 		try
 		{
-			var simulatedVehicleApiPlateNumbers = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
+			var vehiclePlateNumbers = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
 
-			return Results.Ok(simulatedVehicleApiPlateNumbers);
+			return Results.Ok(vehiclePlateNumbers);
 		}
 		catch (Exception e)
 		{

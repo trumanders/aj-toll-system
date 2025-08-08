@@ -29,7 +29,7 @@ public class Program
 		{
 			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
 			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
-			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>();
+			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOVehicleTypeName>();
 			config.CreateMap<FeeInterval, FeeIntervalDTO>();
 			config.CreateMap<VehicleType, VehicleTypeDTO>();
 			config.CreateMap<MonthlyFee, MonthlyFeeDTO>();

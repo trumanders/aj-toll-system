@@ -2,5 +2,5 @@
 
 public interface ITollCameraDataProcessingService
 {
-	public Task<ProcessedPassages> ProcessDailyTollCameraData(DateTime date, int numberOfTollPassages);
+	public Task<List<MonthlyFeeDTO>> ProcessDailyTollCameraData(DateTime date, int numberOfTollPassages);
 }

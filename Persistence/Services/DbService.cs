@@ -1,8 +1,5 @@
-﻿
-using AutoMapper;
-using Common.DTO;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Persistence.Services;
 
@@ -46,15 +43,7 @@ public class DbService : IDbService
 	{
 		IQueryable<TEntity> query = _db.Set<TEntity>();
 
-		if (typeof(TEntity) == typeof(SimulatedVehicleApiData)
-			&& typeof(TDto) == typeof(SimulatedVehicleApiDataDTO))
-		{
-			// Eagerly include VehicleType
-			query = (IQueryable<TEntity>)((IQueryable<SimulatedVehicleApiData>)query)
-				.Include(x => x.VehicleType);
-		}
-
-		var entities = await query.ToListAsync();
+		var entities = await _db.Set<TEntity>().ToListAsync();
 		return _mapper.Map<List<TDto>>(entities);
 	}
 
@@ -79,9 +68,14 @@ public class DbService : IDbService
 		where TEntity : class, IEntity
 		where TDto : class
 	{
-		var entities = await _db.Set<TEntity>().Where(expression).ToListAsync();
-		return _mapper.Map<List<TDto>>(entities);
+		var dtos = await _db.Set<TEntity>()
+			.Where(expression)
+			.ProjectTo<TDto>(_mapper.ConfigurationProvider)
+			.ToListAsync();
+
+		return dtos;
 	}
+
 
 	public async Task<List<TDto>> GetWithExpressionAndIncludesAsync<TEntity, TDto>(
 		Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includes)

@@ -2,7 +2,7 @@
 
 public interface IFeeService
 {
-	public Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollPassageData> tollPassages);
+	public Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollCameraData> tollPassages);
 	public decimal GetMaxDailyFee();
 
 }

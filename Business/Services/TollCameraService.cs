@@ -11,25 +11,23 @@ public class TollCameraService : ITollCameraService
 	}
 
 	// Simulates the camera scanning of plate numbers and times
-	public async Task<List<TollPassageData>> SimulateDailyTollCameraData(DateTime date, int numberOfPassages)
+	public async Task<List<TollCameraData>> SimulateDailyTollCameraData(DateTime date, int numberOfPassages)
 	{
-		// This step is to make sure that the generated passages have plate numbers that we have access to. (simulate external vehicle info database)
-		var plateNumbers = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
-
-		if (plateNumbers.Count == 0) { return new List<TollPassageData>(); }
-
-		var tollPassages = new List<TollPassageData>();
+		// The simulated scanning of plate numbers must be based on the existing plate numbers in the simulated vehicle API data.
+		var simulatedPlateNumberScans = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
+		var tollCameraData = new List<TollCameraData>();
+		if (simulatedPlateNumberScans.Count == 0) { return tollCameraData; }
 		var random = new Random();
 
 		for (int i = 0; i < numberOfPassages; i++)
 		{
-			tollPassages.Add(new TollPassageData
+			tollCameraData.Add(new TollCameraData()
 			{
-				PlateNumber = plateNumbers[random.Next(0, plateNumbers.Count)].PlateNumber,
+				PlateNumber = simulatedPlateNumberScans[random.Next(0, simulatedPlateNumberScans.Count)].PlateNumber,
 				PassageTime = date.AddSeconds(random.Next(0, secondsWithinOneDay))
 			});
 		}
 		
-		return tollPassages.OrderBy(x => x.PassageTime).ToList();
+		return [.. tollCameraData.OrderBy(x => x.PassageTime)];
 	}
 }

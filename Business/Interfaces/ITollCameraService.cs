@@ -2,6 +2,5 @@
 
 public interface ITollCameraService
 {
-	public Task<List<TollPassageData>> SimulateDailyTollCameraData(DateTime date, int numberOfPassages);
-	
+	public Task<List<TollCameraData>> SimulateDailyTollCameraData(DateTime date, int numberOfPassages);	
 }

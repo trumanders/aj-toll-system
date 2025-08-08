@@ -9,7 +9,7 @@ public class TollPassageServiceTests
 	private ITollFreeDaysService _fakeTollFreeDaysService;
 	private DateTime _date;
 	private List<SimulatedVehicleApiDataDTOPlateNumber> _fakeVehicleInfo;
-	private List<TollPassageData> _result;
+	private List<TollCameraData> _result;
 
 	[SetUp]
 	public void Setup()
@@ -27,7 +27,7 @@ public class TollPassageServiceTests
 		var _numberOfPassages = 100;
 
 		// Act
-		_result = await _sut.GenerateDailyTollCameraData(_date, _numberOfPassages);
+		_result = await _sut.SimulateDailyTollCameraData(_date, _numberOfPassages);
 
 		// Assert
 		Assert.That(_result, Is.Ordered.By(nameof(TollPassageData.PassageTime)));
@@ -39,7 +39,7 @@ public class TollPassageServiceTests
 		var _numberOfPassages = 100;
 
 		// Act
-		_result = await _sut.GenerateDailyTollCameraData(_date, _numberOfPassages);
+		_result = await _sut.SimulateDailyTollCameraData(_date, _numberOfPassages);
 
 		// Assert
 		Assert.That(_result, Is.Not.Null);
@@ -52,7 +52,7 @@ public class TollPassageServiceTests
 	public async Task GenerateTollPassagesForOneDay_WhenValidInputProvided_ReturnsCorrectNumberOfPassages(int numberOfPassages)
 	{
 		// Act
-		_result = await _sut.GenerateDailyTollCameraData(_date, numberOfPassages);
+		_result = await _sut.SimulateDailyTollCameraData(_date, numberOfPassages);
 
 		// Assert
 		Assert.That(_result, Has.Count.EqualTo(numberOfPassages));
@@ -65,7 +65,7 @@ public class TollPassageServiceTests
 	public async Task GenerateTollPassagesForOneDay_WhenValidInputProvided_ReturnsResultWithTheSameDate(int numberOfPassages)
 	{
 		// Act
-		_result = await _sut.GenerateDailyTollCameraData(_date, numberOfPassages);
+		_result = await _sut.SimulateDailyTollCameraData(_date, numberOfPassages);
 
 		// Assert
 		Assert.That(_result.Select(x => x.PassageTime.Date).Distinct().Count(), Is.EqualTo(1));
