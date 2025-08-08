@@ -20,6 +20,3 @@ public class SimulatedVehicleApiData : IEntity
 
 	public VehicleType? VehicleType { get; set; }
 }
-
-
-LÄGG IN VEHICLE TYPE I SIMULATED VEHICLE API DATA-TABELLEN / ENTITETEN!! INTE HURUVIDA TYPEN ÄR TOLL FREE.DET ÄR VÅR EGEN LOGIK!!
