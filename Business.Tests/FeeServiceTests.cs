@@ -28,7 +28,7 @@ public class FeeServiceTests
 			new FeeIntervalDTO { Start = new TimeSpan(8, 0, 0), End = new TimeSpan(9, 0, 0), Fee = 30 }
 		};
 
-		var dailyTollPassages = new List<TollCameraData>
+		var dailyTollCameraData = new List<TollCameraData>
 		{
 			new TollCameraData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// Fee = 0 (next fee is higher)
 			new TollCameraData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0) },	// Fee = 20
@@ -52,7 +52,7 @@ public class FeeServiceTests
 		};
 
 		// Act	
-		var result = _sut.GetDailyFeeSummaryForEachVehicle(dailyTollPassages).Result;
+		var result = _sut.GetDailyFeeSummaryForEachVehicle(dailyTollCameraData).Result;
 
 		// Assert
 		Assert.That(expectedVehicleDailyFees.Zip(result, (a, b) => 

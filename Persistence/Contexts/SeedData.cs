@@ -3,7 +3,7 @@
 public class SeedData
 {
 	public List<FeeIntervalSeedData> FeeIntervals { get; set; }
-	public List<VehicleInfoSeedData> VehicleInfo { get; set; }
+	public List<SimulatedVehicleApiDataSeedData> SimulatedVehicleApiDataSeedData { get; set; } 
 	public List<VehicleTypeSeedData> VehicleTypes { get; set; }
 
 	public List<int> TollFreeMonths { get; set; }
@@ -17,11 +17,11 @@ public class FeeIntervalSeedData
 	public TimeSpan End { get; set; }
 }
 
-public class VehicleInfoSeedData
+public class SimulatedVehicleApiDataSeedData
 {
 	public string PlateNumber { get; set; }
 	public string OwnerName { get; set; }
-	public int VehicleTypeId { get; set; }
+	public string VehicleTypeName { get; set; }
 }
 
 public class VehicleTypeSeedData

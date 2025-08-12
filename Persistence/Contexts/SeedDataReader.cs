@@ -1,5 +1,4 @@
-﻿
-namespace Persistence.Contexts;
+﻿namespace Persistence.Contexts;
 
 public static class SeedDataReader
 {

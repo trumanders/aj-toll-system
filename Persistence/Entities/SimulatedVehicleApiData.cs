@@ -16,7 +16,5 @@ public class SimulatedVehicleApiData : IEntity
 	public string OwnerName { get; set; }
 
 	[Required]
-	public int VehicleTypeId { get; set; }
-
-	public VehicleType? VehicleType { get; set; }
+	public string? VehicleTypeName { get; set; }
 }

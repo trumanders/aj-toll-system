@@ -67,21 +67,21 @@
 
 		private void SeedVehicleInfoData(ModelBuilder builder, ref SeedData seedData)
 		{
-			var vehicleInfos = new List<SimulatedVehicleApiData>();
+			var simulatedVehicleApiDatas = new List<SimulatedVehicleApiData>();
 
 			int id = 1;
-			foreach (var vehicleInfo in seedData.VehicleInfo)
+			foreach (var simulatedVehicleApiData in seedData.SimulatedVehicleApiDataSeedData)
 			{
-				vehicleInfos.Add(new SimulatedVehicleApiData
+				simulatedVehicleApiDatas.Add(new SimulatedVehicleApiData
 				{
 					Id = id,
-					PlateNumber = vehicleInfo.PlateNumber,
-					OwnerName = vehicleInfo.OwnerName,
-					VehicleTypeId = vehicleInfo.VehicleTypeId
+					PlateNumber = simulatedVehicleApiData.PlateNumber,
+					OwnerName = simulatedVehicleApiData.OwnerName,
+					VehicleTypeName = simulatedVehicleApiData.VehicleTypeName
 				});
 				id++;
 			}
-			builder.Entity<SimulatedVehicleApiData>().HasData(vehicleInfos);
+			builder.Entity<SimulatedVehicleApiData>().HasData(simulatedVehicleApiDatas);
 		}
 		#endregion
 	}

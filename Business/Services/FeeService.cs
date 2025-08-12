@@ -20,25 +20,25 @@ public class FeeService : IFeeService
 		return MAX_DAILY_FEE;
 	}
 
-	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollCameraData> dailyTollPassages)
+	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollCameraData> cameraData)
 	{		
 		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
 
-		if (!feeIntervals.Any())
+		if (feeIntervals.Count == 0)
 		{
 			throw new InvalidOperationException("Fee intervals are not set.");
 		}
 
-		var dailyTollPassagesGoupedByPlateNumber = dailyTollPassages
+		var cameraDataByPlateNumber = cameraData
 			.GroupBy(x => x.PlateNumber)
 			.Select(g => g.ToList())
 			.ToList();
 
 		var vehicleDailyFees = new List<VehicleDailyFee>();
 
-		foreach (var vehicleDailyTollPassages in dailyTollPassagesGoupedByPlateNumber)
+		foreach (var dataPerPlateNumber in cameraDataByPlateNumber)
 		{
-			var vehicleDailyFee = GetVehicleDailyFee(vehicleDailyTollPassages, feeIntervals);
+			var vehicleDailyFee = GetVehicleDailyFee(dataPerPlateNumber, feeIntervals);
 			
 			if (vehicleDailyFee.DailyFee != 0)
 				vehicleDailyFees.Add(vehicleDailyFee);
@@ -48,37 +48,47 @@ public class FeeService : IFeeService
 	}
 
 	#region Private Methods
-	private VehicleDailyFee GetVehicleDailyFee(List<TollCameraData> vehicleDailyTollPassages, List<FeeIntervalDTO> feeIntervals)
+	private VehicleDailyFee GetVehicleDailyFee(List<TollCameraData> vehicleDailyTollCameraData, List<FeeIntervalDTO> feeIntervals)
 	{
-		if (vehicleDailyTollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
+		if (vehicleDailyTollCameraData.Select(x => x.PlateNumber).Distinct().Count() > 1)
 		{
-			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleDailyTollPassages));
+			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleDailyTollCameraData));
 		}
 
-		foreach (var tollPassage in vehicleDailyTollPassages)
+		var tollPassagesData = new List<TollPassageData>();
+		foreach (var cameraData in vehicleDailyTollCameraData)
 		{
+			var tollPassageData = new TollPassageData
+			{
+				PlateNumber = cameraData.PlateNumber,
+				PassageTime = cameraData.PassageTime,
+				Fee = 0
+			};
+
 			foreach (var feeInterval in feeIntervals)
 			{
-				if (tollPassage.PassageTime.TimeOfDay >= feeInterval.Start && tollPassage.PassageTime.TimeOfDay < feeInterval.End)
+				if (cameraData.PassageTime.TimeOfDay >= feeInterval.Start && cameraData.PassageTime.TimeOfDay < feeInterval.End)
 				{
-					tollPassage.Fee = feeInterval.Fee;
+					tollPassageData.Fee = feeInterval.Fee;
 				}
 			}
+
+			tollPassagesData.Add(tollPassageData);
 		}
 
-		CalculateFeeDue(vehicleDailyTollPassages);
+		CalculateFeeDue(tollPassagesData);
 
 		var vehicleDailyFee = new VehicleDailyFee
 		{
-			PlateNumber = vehicleDailyTollPassages.First().PlateNumber,
-			DailyFee = CalculateDailyFee(vehicleDailyTollPassages)
+			PlateNumber = tollPassagesData.First().PlateNumber,
+			DailyFee = CalculateDailyFee(tollPassagesData)
 		};
 
 		return vehicleDailyFee;
 	}
 
 
-	private void CalculateFeeDue(List<TollCameraData> tollPassages)
+	private void CalculateFeeDue(List<TollPassageData> tollPassages)
 	{
 		if (tollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
 			throw new ArgumentException("All passages must be for the same vehicle.", nameof(tollPassages));
@@ -118,7 +128,7 @@ public class FeeService : IFeeService
 		}
 	}	
 
-	private decimal CalculateDailyFee(List<TollCameraData> tollPassages)
+	private decimal CalculateDailyFee(List<TollPassageData> tollPassages)
 	{
 		if (tollPassages == null)
 			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");

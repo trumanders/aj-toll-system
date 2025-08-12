@@ -50,316 +50,316 @@
 	"VehicleTypes": [
 		{
 			"Id": 1,
-			"TypeName": "Motorcycle",
+			"TypeName": "MOTORCYCLE",
 			"IsTollFree": true
 		},
 		{
 			"Id": 2,
-			"TypeName": "Tractor",
+			"TypeName": "TRACTOR",
 			"IsTollFree": true
 		},
 		{
 			"Id": 3,
-			"TypeName": "Emergency",
+			"TypeName": "EMERGENCY",
 			"IsTollFree": true
 		},
 		{
 			"Id": 4,
-			"TypeName": "Diplomat",
+			"TypeName": "DIPLOMAT",
 			"IsTollFree": true
 		},
 		{
 			"Id": 5,
-			"TypeName": "Foreign",
+			"TypeName": "FOREIGN",
 			"IsTollFree": true
 		},
 		{
 			"Id": 6,
-			"TypeName": "Military",
+			"TypeName": "MILITARY",
 			"IsTollFree": true
 		},
 		{
 			"Id": 7,
-			"TypeName": "Car",
+			"TypeName": "CAR",
 			"IsTollFree": false
 		},
 		{
 			"Id": 8,
-			"TypeName": "Truck",
+			"TypeName": "TRUCK",
 			"IsTollFree": false
 		},
 		{
 			"Id": 9,
-			"TypeName": "Bus",
+			"TypeName": "BUS",
 			"IsTollFree": false
 		}
 	],
 
-	"VehicleInfo": [
+	"SimulatedVehicleApiDataSeedData": [
 		{
 			"PlateNumber": "PTP461",
 			"OwnerName": "Tommy Tjernqvist",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "FJN740",
 			"OwnerName": "Hugo Håkman",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "ZCX563",
 			"OwnerName": "Linda Längström",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "VAT087",
 			"OwnerName": "Kalle Krantz",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		},
 		{
 			"PlateNumber": "CUL352",
 			"OwnerName": "Benny Bäckström",
-			"VehicleTypeId": 9
+			"VehicleTypeName": "BUS"
 		},
 		{
 			"PlateNumber": "UXL821",
 			"OwnerName": "Ronny Röjberg",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "MKW921",
 			"OwnerName": "Sally Ståhl",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "OLU514",
 			"OwnerName": "Eddie Elg",
-			"VehicleTypeId": 6
+			"VehicleTypeName": "MILITARY"
 		},
 		{
 			"PlateNumber": "TJY229",
 			"OwnerName": "Felix Färnelund",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "UHA649",
 			"OwnerName": "Jörgen Järvstad",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		},
 		{
 			"PlateNumber": "BTS372",
 			"OwnerName": "Lotta Löfgren",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		},
 		{
 			"PlateNumber": "XKL291",
 			"OwnerName": "Gustav Gullberg",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "PNY183",
 			"OwnerName": "Mona Mörk",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "KLM562",
-			"OwnerName": "Oscar Olofsson",
-			"VehicleTypeId": 3
+			"OwnerName": "OsCAR Olofsson",
+			"VehicleTypeName": "EMERGENCY"
 		},
 		{
 			"PlateNumber": "RMJ473",
 			"OwnerName": "Victor Vallén",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "QWE982",
 			"OwnerName": "Jenny Järp",
-			"VehicleTypeId": 5
+			"VehicleTypeName": "FOREIGN"
 		},
 		{
 			"PlateNumber": "TRP648",
 			"OwnerName": "Stina Sörlén",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "ZXC101",
 			"OwnerName": "Axel Åkesson",
-			"VehicleTypeId": 6
+			"VehicleTypeName": "MILITARY"
 		},
 		{
 			"PlateNumber": "LPO839",
 			"OwnerName": "Nina Norrström",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "GHT467",
 			"OwnerName": "Felicia Forslund",
-			"VehicleTypeId": 9
+			"VehicleTypeName": "BUS"
 		},
 		{
 			"PlateNumber": "KLB381",
 			"OwnerName": "Greta Gerdman",
-			"VehicleTypeId": 2
+			"VehicleTypeName": "TRACTOR"
 		},
 		{
 			"PlateNumber": "XOP122",
 			"OwnerName": "Erik Eklund",
-			"VehicleTypeId": 4
+			"VehicleTypeName": "DIPLOMAT"
 		},
 		{
 			"PlateNumber": "WZX771",
 			"OwnerName": "Beatrice Boström",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "HUE294",
 			"OwnerName": "Fredrik Friberg",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "LPD450",
 			"OwnerName": "Astrid Albinsson",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "PRT999",
 			"OwnerName": "Sigge Sandström",
-			"VehicleTypeId": 5
+			"VehicleTypeName": "FOREIGN"
 		},
 		{
 			"PlateNumber": "KNL238",
 			"OwnerName": "Kajsa Källström",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "UBK768",
 			"OwnerName": "Torvald Tollberg",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		},
 		{
 			"PlateNumber": "EMG482",
 			"OwnerName": "Lilly Lind",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "JNH590",
 			"OwnerName": "Bertil Bäckström",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "JOL342",
 			"OwnerName": "Hanna Hultgren",
-			"VehicleTypeId": 3
+			"VehicleTypeName": "EMERGENCY"
 		},
 		{
 			"PlateNumber": "WMD229",
 			"OwnerName": "Dagmar Dahlen",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "TYC992",
 			"OwnerName": "Oskar Odelberg",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "TRD147",
-			"OwnerName": "Clara Carlsson",
-			"VehicleTypeId": 1
+			"OwnerName": "Clara CARlsson",
+			"VehicleTypeName": "MOTORCYCLE"
 		},
 		{
 			"PlateNumber": "BXA321",
 			"OwnerName": "Harry Hägglund",
-			"VehicleTypeId": 6
+			"VehicleTypeName": "MILITARY"
 		},
 		{
 			"PlateNumber": "PLT465",
 			"OwnerName": "Elsa Eklund",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "GFX109",
 			"OwnerName": "Ulf Ulander",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		},
 		{
 			"PlateNumber": "LSQ555",
 			"OwnerName": "Märta Melin",
-			"VehicleTypeId": 9
+			"VehicleTypeName": "BUS"
 		},
 		{
 			"PlateNumber": "NKI211",
 			"OwnerName": "Simon Stenberg",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "FPZ830",
 			"OwnerName": "Ingrid Irén",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "TXR871",
 			"OwnerName": "Göran Gidlund",
-			"VehicleTypeId": 6
+			"VehicleTypeName": "MILITARY"
 		},
 		{
 			"PlateNumber": "WQL130",
-			"OwnerName": "Camilla Carlsson",
-			"VehicleTypeId": 7
+			"OwnerName": "Camilla CARlsson",
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "BYH376",
 			"OwnerName": "Roland Rindberg",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		},
 		{
 			"PlateNumber": "ZCP591",
 			"OwnerName": "Lina Ljungholm",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "TDA643",
 			"OwnerName": "Björn Björkman",
-			"VehicleTypeId": 9
+			"VehicleTypeName": "BUS"
 		},
 		{
 			"PlateNumber": "CBX008",
 			"OwnerName": "Stella Sörensson",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "HKO483",
 			"OwnerName": "Einar Engström",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "WLQ599",
 			"OwnerName": "Emilia Ekberg",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "YSQ102",
 			"OwnerName": "Kristian Karlsson",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		},
 		{
 			"PlateNumber": "RGX702",
 			"OwnerName": "Viola Vinge",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "MTF981",
 			"OwnerName": "Torsten Törnqvist",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		},
 		{
 			"PlateNumber": "GQV753",
 			"OwnerName": "Ellinor Elm",
-			"VehicleTypeId": 7
+			"VehicleTypeName": "CAR"
 		},
 		{
 			"PlateNumber": "HZX610",
 			"OwnerName": "Sven Svahn",
-			"VehicleTypeId": 8
+			"VehicleTypeName": "TRUCK"
 		}
 	],
 

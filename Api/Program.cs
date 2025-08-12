@@ -27,9 +27,9 @@ public class Program
 
 		builder.Services.AddSingleton(new MapperConfiguration(config =>
 		{
-			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiData>();  
-			config.CreateMap<Persistence.Entities.SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
-			config.CreateMap<Persistence.Entities.SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>();
+			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
+			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
+			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOVehicleTypeName>();
 			config.CreateMap<FeeInterval, FeeIntervalDTO>();
 			config.CreateMap<VehicleType, VehicleTypeDTO>();
 			config.CreateMap<MonthlyFee, MonthlyFeeDTO>();

@@ -17,26 +17,27 @@ public class SimulatedVehicleApiDataController : ControllerBase
 	{
 		try
 		{
-			var vehicleInfos = await _dbService.GetAsync<Persistence.Entities.SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
-			return Results.Ok(vehicleInfos);
+			var simulatedVehicleApiData = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
+			return Results.Ok(simulatedVehicleApiData);
 		}
-		catch
+		catch (Exception e)
 		{
-			return Results.Problem("An error occurred while retrieving data.");
+			return Results.Problem($"An error occurred while retrieving data. Exception: {e.Message}");
 		}
 	}
 
 	[HttpGet("platenumbers")]
-	public async Task<IResult> GetAllPlateNumber()
+	public async Task<IResult> GetAllPlateNumbers()
 	{
 		try
 		{
-			var plateNumbers = await _dbService.GetAsync<Persistence.Entities.SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
-			return Results.Ok(plateNumbers);
+			var vehiclePlateNumbers = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
+
+			return Results.Ok(vehiclePlateNumbers);
 		}
-		catch
+		catch (Exception e)
 		{
-			return Results.Problem("An error occurred while retrieving data.");
+			return Results.Problem($"An error occurred while retrieving data. Exception: {e.Message}");
 		}
 	}
 }

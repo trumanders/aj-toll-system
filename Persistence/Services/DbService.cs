@@ -1,5 +1,5 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Persistence.Services;
 
@@ -41,34 +41,41 @@ public class DbService : IDbService
 		where TEntity : class, IEntity
 		where TDto : class
 	{
+		IQueryable<TEntity> query = _db.Set<TEntity>();
+
 		var entities = await _db.Set<TEntity>().ToListAsync();
 		return _mapper.Map<List<TDto>>(entities);
 	}
 
-	public async Task<List<TDto>> GetWithIncludesAsync<TEntity, TDto>(params Expression<Func<TEntity, object>>[] includes)
-		where TEntity : class, IEntity
-		where TDto : class
-	{
-		IQueryable<TEntity> query = _db.Set<TEntity>();
+	//public async Task<List<TDto>> GetWithIncludesAsync<TEntity, TDto>(params Expression<Func<TEntity, object>>[] includes)
+	//	where TEntity : class, IEntity
+	//	where TDto : class
+	//{
+	//	IQueryable<TEntity> query = _db.Set<TEntity>();
 
-		foreach (var include in includes)
-		{
-			query = query.Include(include);
-		}
+	//	foreach (var include in includes)
+	//	{
+	//		query = query.Include(include);
+	//	}
 
-		var entities = await query.ToListAsync();
+	//	var entities = await query.ToListAsync();
 
-		return _mapper.Map<List<TDto>>(entities);
-	}
+	//	return _mapper.Map<List<TDto>>(entities);
+	//}
 
 	// Get with expression
 	public async Task<List<TDto>> GetAsync<TEntity, TDto>(Expression<Func<TEntity, bool>> expression)
 		where TEntity : class, IEntity
 		where TDto : class
 	{
-		var entities = await _db.Set<TEntity>().Where(expression).ToListAsync();
-		return _mapper.Map<List<TDto>>(entities);
+		var dtos = await _db.Set<TEntity>()
+			.Where(expression)
+			.ProjectTo<TDto>(_mapper.ConfigurationProvider)
+			.ToListAsync();
+
+		return dtos;
 	}
+
 
 	public async Task<List<TDto>> GetWithExpressionAndIncludesAsync<TEntity, TDto>(
 		Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includes)
@@ -92,44 +99,44 @@ public class DbService : IDbService
 	}
 
 
-	public async Task<TDto> SingleAsync<TEntity, TDto>(Expression<Func<TEntity, bool>> expression)
-		where TEntity : class, IEntity
-		where TDto : class
-	{
-		var entity = await _db.Set<TEntity>().SingleOrDefaultAsync(expression);
-		if (entity is null)
-		{
-			throw new Exception("Entity not found");
-		}
-		return _mapper.Map<TDto>(entity);
-	}
+	//public async Task<TDto> SingleAsync<TEntity, TDto>(Expression<Func<TEntity, bool>> expression)
+	//	where TEntity : class, IEntity
+	//	where TDto : class
+	//{
+	//	var entity = await _db.Set<TEntity>().SingleOrDefaultAsync(expression);
+	//	if (entity is null)
+	//	{
+	//		throw new Exception("Entity not found");
+	//	}
+	//	return _mapper.Map<TDto>(entity);
+	//}
 
 	// Update
-	public bool Update<TEntity, TDto>(int id, TDto dto)
-		where TEntity : class, IEntity
-		where TDto : class
-	{
-		var entity = _mapper.Map<TEntity>(dto);
+	//public bool Update<TEntity, TDto>(int id, TDto dto)
+	//	where TEntity : class, IEntity
+	//	where TDto : class
+	//{
+	//	var entity = _mapper.Map<TEntity>(dto);
 
-		if (id != entity.Id)
-		{
-			return false;
-		}
-		_db.Set<TEntity>().Update(entity);
+	//	if (id != entity.Id)
+	//	{
+	//		return false;
+	//	}
+	//	_db.Set<TEntity>().Update(entity);
 
-		return true;
-	}
+	//	return true;
+	//}
 
-	public bool Update<TEntity, TDto>(List<TDto> dtos)
-		where TEntity : class, IEntity
-		where TDto : class
-	{
-		var entities = _mapper.Map<List<TEntity>>(dtos);
+	//public bool Update<TEntity, TDto>(List<TDto> dtos)
+	//	where TEntity : class, IEntity
+	//	where TDto : class
+	//{
+	//	var entities = _mapper.Map<List<TEntity>>(dtos);
 
-		_db.Set<TEntity>().UpdateRange(entities);
+	//	_db.Set<TEntity>().UpdateRange(entities);
 
-		return true;
-	}
+	//	return true;
+	//}
 
 	public async Task<bool> Update<TEntity, TDto>(Expression<Func<TEntity, bool>> expression, List<TDto> dtos)
 	where TEntity : class, IEntity
@@ -151,44 +158,44 @@ public class DbService : IDbService
 	}
 
 	// Delete
-	public async Task<bool> DeleteAsync<TEntity>(int id)
-		where TEntity : class, IEntity
-	{
-		var entity = await SingleAsync<TEntity>(e => e.Id.Equals(id));
-		if (entity is null)
-		{
-			return false;
-		}
-		_db.Remove(entity);
-		return true;
-	}
+	//public async Task<bool> DeleteAsync<TEntity>(int id)
+	//	where TEntity : class, IEntity
+	//{
+	//	var entity = await SingleAsync<TEntity>(e => e.Id.Equals(id));
+	//	if (entity is null)
+	//	{
+	//		return false;
+	//	}
+	//	_db.Remove(entity);
+	//	return true;
+	//}
 
 	// Check if at least one item is found
-	public async Task<bool> AnyAsync<TEntity>(Expression<Func<TEntity, bool>> exception)
-		where TEntity : class, IEntity
-	{
-		return await _db.Set<TEntity>().AnyAsync(exception);
-	}
+	//public async Task<bool> AnyAsync<TEntity>(Expression<Func<TEntity, bool>> exception)
+	//	where TEntity : class, IEntity
+	//{
+	//	return await _db.Set<TEntity>().AnyAsync(exception);
+	//}
 
 	public async Task<bool> SaveChangesAsync()
 	{
 		return await _db.SaveChangesAsync() >= 0;
 	}
 
-	public string GetURIString<TEntity>(TEntity entity)
-		where TEntity : class, IEntity
-	{
-		throw new NotImplementedException();
-	}
+	//public string GetURIString<TEntity>(TEntity entity)
+	//	where TEntity : class, IEntity
+	//{
+	//	throw new NotImplementedException();
+	//}
 
-	private async Task<TEntity?> SingleAsync<TEntity>(Expression<Func<TEntity, bool>> expression)
-		where TEntity : class, IEntity
-	{
-		var entity = await _db.Set<TEntity>().SingleOrDefaultAsync(expression);
-		if (entity is null)
-		{
-			throw new Exception("Entity not found");
-		}
-		return entity;
-	}
+	//private async Task<TEntity?> SingleAsync<TEntity>(Expression<Func<TEntity, bool>> expression)
+	//	where TEntity : class, IEntity
+	//{
+	//	var entity = await _db.Set<TEntity>().SingleOrDefaultAsync(expression);
+	//	if (entity is null)
+	//	{
+	//		throw new Exception("Entity not found");
+	//	}
+	//	return entity;
+	//}
 }
