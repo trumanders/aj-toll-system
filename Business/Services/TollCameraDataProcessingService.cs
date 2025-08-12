@@ -48,7 +48,7 @@ public class TollCameraDataProcessingService : ITollCameraDataProcessingService
 				.Select(p => p.PlateNumber)
 			.Contains(x.PlateNumber))
 			.ToList();
-
+		
 		var dailyFeeForEachVehicle = await _feeService.GetDailyFeeSummaryForEachVehicle(nonTollFreeCameraData);
 
 		/* MontlyFeeRepository */ // Vehicles that are already in monthly fee table (to update) 
@@ -81,8 +81,8 @@ public class TollCameraDataProcessingService : ITollCameraDataProcessingService
 		// Update Monthly Fees by plate number		
 		if (monthlyFeesToUpdateLookup.Count > 0)
 			await _dbService.Update<MonthlyFee, MonthlyFeeDTO>(e => monthlyFeesToUpdateLookup.Values
-				.Select(dto => dto.PlateNumber)
-				.Contains(e.PlateNumber), monthlyFeesToUpdateLookup.Values.ToList());		
+					.Select(dto => dto.PlateNumber)
+						.Contains(e.PlateNumber), monthlyFeesToUpdateLookup.Values.ToList());		
 
 		// Add new vehicles to monthly fees
 		if (newMonthlyFees.Count > 0)
