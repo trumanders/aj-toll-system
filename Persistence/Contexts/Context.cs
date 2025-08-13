@@ -1,86 +1,87 @@
-﻿namespace Persistence.Contexts;
-public class Context : DbContext
-{
-	public DbSet<Billing> Billings => Set<Billing>();
-	public DbSet<FeeInterval> FeeIntervals => Set<FeeInterval>();
-	public DbSet<VehicleInfo> VehicleInfo => Set<VehicleInfo>();
-	public DbSet<VehicleType> VehicleTypes => Set<VehicleType>();
-
-	public Context(DbContextOptions<Context> options) : base(options) { }
-
-	protected override void OnModelCreating(ModelBuilder builder)
+﻿	namespace Persistence.Contexts;
+	public class Context : DbContext
 	{
-		base.OnModelCreating(builder);
+		public DbSet<Billing> Billing => Set<Billing>();
+		public DbSet<FeeInterval> FeeInterval => Set<FeeInterval>();
+		public DbSet<MonthlyFee> MonthlyFee => Set<MonthlyFee>();
+		public DbSet<SimulatedVehicleApiData> SimulatedVehicleApiData => Set<SimulatedVehicleApiData>();
+		public DbSet<VehicleType> VehicleType => Set<VehicleType>();
 
-		// Disable cascade delete here
+		public Context(DbContextOptions<Context> options) : base(options) { }
 
-		// Configure composite keys here (many to many)
-
-		// Seed data here
-
-		SeedData(builder);
-	}
-
-	private void SeedData(ModelBuilder builder)
-	{
-		var seedData = SeedDataReader.GetSeedData();
-		SeedFeeIntervalData(builder, ref seedData);
-		SeedVehicleTypeData(builder, ref seedData);
-		SeedVehicleInfoData(builder, ref seedData);
-	}
-
-	#region SeedData
-	private void SeedFeeIntervalData(ModelBuilder builder, ref SeedData seedData)
-	{		
-		var feeIntervals = new List<FeeInterval>();
-		int id = 1;
-		foreach (var feeInterval in seedData.FeeIntervals)
+		protected override void OnModelCreating(ModelBuilder builder)
 		{
-			feeIntervals.Add(new FeeInterval
-			{
-				Id = id,
-				Fee = feeInterval.Fee,
-				Start = feeInterval.Start,
-				End = feeInterval.End
-			});
-			id++;
-		}
-		builder.Entity<FeeInterval>().HasData(feeIntervals);
-	}
+			base.OnModelCreating(builder);
 
-	private void SeedVehicleTypeData(ModelBuilder builder, ref SeedData seedData)
-	{
-		var vehicleTypes = new List<VehicleType>();
-		foreach (var vehicleType in seedData.VehicleTypes)
+			// Disable cascade delete here
+
+			// Configure composite keys here (many to many)
+
+			// Seed data here
+
+			SeedData(builder);
+		}
+
+		private void SeedData(ModelBuilder builder)
 		{
-			vehicleTypes.Add(new VehicleType
-			{
-				Id = vehicleType.Id,
-				TypeName = vehicleType.TypeName,
-				IsTollFree = vehicleType.IsTollFree
-			});
+			var seedData = SeedDataReader.GetSeedData();
+			SeedFeeIntervalData(builder, ref seedData);
+			SeedVehicleTypeData(builder, ref seedData);
+			SeedVehicleInfoData(builder, ref seedData);
 		}
-		builder.Entity<VehicleType>().HasData(vehicleTypes);
 
-	}
+		#region SeedData
+		private void SeedFeeIntervalData(ModelBuilder builder, ref SeedData seedData)
+		{		
+			var feeIntervals = new List<FeeInterval>();
+			int id = 1;
+			foreach (var feeInterval in seedData.FeeIntervals)
+			{
+				feeIntervals.Add(new FeeInterval
+				{
+					Id = id,
+					Fee = feeInterval.Fee,
+					Start = feeInterval.Start,
+					End = feeInterval.End
+				});
+				id++;
+			}
+			builder.Entity<FeeInterval>().HasData(feeIntervals);
+		}
 
-	private void SeedVehicleInfoData(ModelBuilder builder, ref SeedData seedData)
-	{
-		var vehicleInfos = new List<VehicleInfo>();
-
-		int id = 1;
-		foreach (var vehicleInfo in seedData.VehicleInfo)
+		private void SeedVehicleTypeData(ModelBuilder builder, ref SeedData seedData)
 		{
-			vehicleInfos.Add(new VehicleInfo
+			var vehicleTypes = new List<VehicleType>();
+			foreach (var vehicleType in seedData.VehicleTypes)
 			{
-				Id = id,
-				PlateNumber = vehicleInfo.PlateNumber,
-				OwnerName = vehicleInfo.OwnerName,
-				VehicleTypeId = vehicleInfo.VehicleTypeId
-			});
-			id++;
+				vehicleTypes.Add(new VehicleType
+				{
+					Id = vehicleType.Id,
+					TypeName = vehicleType.TypeName,
+					IsTollFree = vehicleType.IsTollFree
+				});
+			}
+			builder.Entity<VehicleType>().HasData(vehicleTypes);
+
 		}
-		builder.Entity<VehicleInfo>().HasData(vehicleInfos);
+
+		private void SeedVehicleInfoData(ModelBuilder builder, ref SeedData seedData)
+		{
+			var simulatedVehicleApiDatas = new List<SimulatedVehicleApiData>();
+
+			int id = 1;
+			foreach (var simulatedVehicleApiData in seedData.SimulatedVehicleApiDataSeedData)
+			{
+				simulatedVehicleApiDatas.Add(new SimulatedVehicleApiData
+				{
+					Id = id,
+					PlateNumber = simulatedVehicleApiData.PlateNumber,
+					OwnerName = simulatedVehicleApiData.OwnerName,
+					VehicleTypeName = simulatedVehicleApiData.VehicleTypeName
+				});
+				id++;
+			}
+			builder.Entity<SimulatedVehicleApiData>().HasData(simulatedVehicleApiDatas);
+		}
+		#endregion
 	}
-	#endregion
-}

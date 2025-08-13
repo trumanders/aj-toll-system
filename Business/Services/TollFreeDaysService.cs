@@ -11,7 +11,6 @@ public class TollFreeDaysService : ITollFreeDaysService
 	}
 
 	// Toll free dates include Saturdays, Sundays, public holidays, and the day before a public holiday
-	// (when the DAY_AFTER the date that is checked is a public holiday)
 	public bool IsTollFreeDay(DateTime date)
 	{
 		bool isTollFreeDay = 

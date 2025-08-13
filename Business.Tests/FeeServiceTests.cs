@@ -5,16 +5,20 @@ public class FeeServiceTests
 {
 	private IFeeService _sut;
 	private IDbService _fakeDbService;
+	private ITollFreeDaysService _fakeTollFreeDaysService;
+	private IFeeService _fakeFeeService;
 
 	[SetUp]
 	public void SetUp()
 	{
 		_fakeDbService = A.Fake<IDbService>();
 		_sut = new FeeService(_fakeDbService);
+		_fakeTollFreeDaysService = A.Fake<ITollFreeDaysService>();
+		_fakeFeeService = A.Fake<IFeeService>();
 	}
 
 	[Test]
-	public void GetTotalFeeForVehiclePassages_WhenValidInputProvided_ReturnsCorrectDailyFee()
+	public void GetDailyFeeSummaryForEachVehicle_WhenValidInputProvided_ReturnsCorrectDailyFees()
 	{
 		// Arrange
 		var fakeIntervals = new List<FeeIntervalDTO>
@@ -24,62 +28,41 @@ public class FeeServiceTests
 			new FeeIntervalDTO { Start = new TimeSpan(8, 0, 0), End = new TimeSpan(9, 0, 0), Fee = 30 }
 		};
 
-		var vehicleTollPassages = new List<TollPassage>
+		var dailyTollCameraData = new List<TollCameraData>
 		{
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// Fee = 0 (next fee is higher)
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0) },	// Fee = 20
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// Fee = 0 (next fee is higher)
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0) },	// Fee = 30 (only fee in interval)
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00) } // Fee = 0
+			new TollCameraData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// Fee = 0 (next fee is higher)
+			new TollCameraData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0) },	// Fee = 20
+			new TollCameraData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// Fee = 0 (next fee is higher and within 1 hour)
+			new TollCameraData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0) },	// Fee = 30 (only fee in interval)
+			new TollCameraData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00) },// Fee = 0
+				
+			new TollCameraData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59) },	// Fee = 0 (no fee in interval)
+			new TollCameraData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) },	// Fee = 0 (next fee within 1 hour)
+			new TollCameraData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// Fee = 10  
+			new TollCameraData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// Fee = 0 (next fee is higher and within 1 hour)
+			new TollCameraData { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00) }  // Fee = 30
 		};
 
 		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>()).Returns(fakeIntervals);
-		var expectedVehicleDailyFee = 50;
-		var expectedPlateNumber = "ABC123";
 
-		// Act	
-		var result = _sut.GetTotalFeeForVehiclePassages(vehicleTollPassages).Result;
-
-		// Assert
-		Assert.That(result.PlateNumber, Is.EqualTo(expectedPlateNumber));
-		Assert.That(result.DailyFee, Is.EqualTo(expectedVehicleDailyFee));
-	}
-
-	[Test]
-	public void GetTotalFeeForVehiclePassages_WhenPassagesForDifferentVehiclesProvided_ThrowsArgumentException()
-	{
-		// Arrange
-		var vehicleTollPassages = new List<TollPassage>
+		var expectedVehicleDailyFees = new List<VehicleDailyFee>
 		{
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },
-			new TollPassage { PlateNumber = "XYZ123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0) }
+				new VehicleDailyFee() { PlateNumber = "ABC123", DailyFee = 50 },
+				new VehicleDailyFee() { PlateNumber = "DEF456", DailyFee = 40 }
 		};
 
-		// Act & Assert
-		Assert.ThrowsAsync<ArgumentException>(() => _sut.GetTotalFeeForVehiclePassages(vehicleTollPassages));
-	}
+		// Act	
+		var result = _sut.GetDailyFeeSummaryForEachVehicle(dailyTollCameraData).Result;
+
+		// Assert
+		Assert.That(expectedVehicleDailyFees.Zip(result, (a, b) => 
+			a.PlateNumber == b.PlateNumber &&
+			a.DailyFee == b.DailyFee)
+			.All(x => x));
+	}	
 
 	[Test]
-	public void GetTotalFeeForVehiclePassages_WhenPassagesListIsNull_ThrowsArgumentNullException()
-	{
-		// Arrange
-		List<TollPassage> vehicleTollPassages = null;
-
-		// Act & Assert
-		Assert.ThrowsAsync<ArgumentNullException>(() => _sut.GetTotalFeeForVehiclePassages(vehicleTollPassages));
-	}
-
-	[Test]
-	public void GetTotalFeeForVehiclePassages_WhenPassagesListIsEmpty_ThrowsArgumentException()
-	{
-		// Arrange
-		var vehicleTollPassages = new List<TollPassage>();
-		// Act & Assert
-		Assert.ThrowsAsync<ArgumentException>(() => _sut.GetTotalFeeForVehiclePassages(vehicleTollPassages));
-	}
-
-	[Test]
-	public void GetTotalFeeForVehiclePassages_WhenDailyFeeExceedsMaxDailyFee_ReturnsMaxDailyFee()
+	public void GetDailyFeeSummaryForEachVehicle_WhenDailyFeeExceedsMaxDailyFee_ReturnsMaxDailyFee()
 	{
 		// Arrange
 		var fakeIntervals = new List<FeeIntervalDTO>
@@ -87,9 +70,9 @@ public class FeeServiceTests
 			new FeeIntervalDTO { Start = new TimeSpan(6, 0, 0), End = new TimeSpan(7, 0, 0), Fee = 100 }
 		};
 
-		var vehicleTollPassages = new List<TollPassage>
+		var vehicleTollPassages = new List<TollCameraData>
 		{
-			new TollPassage { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) } // Fee = 100
+			new TollCameraData { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) } // Fee = 100
 		};
 
 		var expectedDailyFee = _sut.GetMaxDailyFee();
@@ -97,10 +80,10 @@ public class FeeServiceTests
 		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>()).Returns(fakeIntervals);
 
 		// Act	
-		var result = _sut.GetTotalFeeForVehiclePassages(vehicleTollPassages).Result;
+		var result = _sut.GetDailyFeeSummaryForEachVehicle(vehicleTollPassages).Result;
 
 		// Assert
-		Assert.That(result.DailyFee, Is.EqualTo(expectedDailyFee));
+		Assert.That(result.First().DailyFee, Is.EqualTo(expectedDailyFee));
 	}
 }
 

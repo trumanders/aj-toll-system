@@ -1,4 +1,7 @@
-﻿namespace Business.Services;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
+
+namespace Business.Services;
 
 public class FeeService : IFeeService
 {
@@ -7,45 +10,85 @@ public class FeeService : IFeeService
 	
 	private const decimal MAX_DAILY_FEE = 60;
 
-
 	public FeeService(IDbService dbService)
 	{
 		_dbService = dbService;
-	}	
+	}
 
-	public async Task<VehicleDailyFee> GetTotalFeeForVehiclePassages(List<TollPassage> vehicleTollPassages)
+	public decimal GetMaxDailyFee()
 	{
-		if (vehicleTollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
-		{
-			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleTollPassages));
-		}
+		return MAX_DAILY_FEE;
+	}
 
-		// TODO: Cache this value to prevent multiple calls to the database
+	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollCameraData> cameraData)
+	{		
 		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
 
-		foreach (var tollPassage in vehicleTollPassages)
+		if (feeIntervals.Count == 0)
 		{
-			foreach (var feeInterval in feeIntervals)
-			{
-				if (tollPassage.PassageTime.TimeOfDay >= feeInterval.Start && tollPassage.PassageTime.TimeOfDay < feeInterval.End)
-				{
-					tollPassage.Fee = feeInterval.Fee;
-				}
-			}
+			throw new InvalidOperationException("Fee intervals are not set.");
 		}
 
-		CalculateFeeDue(vehicleTollPassages);
-		
+		var cameraDataByPlateNumber = cameraData
+			.GroupBy(x => x.PlateNumber)
+			.Select(g => g.ToList())
+			.ToList();
+
+		var vehicleDailyFees = new List<VehicleDailyFee>();
+
+		foreach (var dataPerPlateNumber in cameraDataByPlateNumber)
+		{
+			var vehicleDailyFee = GetVehicleDailyFee(dataPerPlateNumber, feeIntervals);
+			
+			if (vehicleDailyFee.DailyFee != 0)
+				vehicleDailyFees.Add(vehicleDailyFee);
+		}
+
+		return vehicleDailyFees;
+	}
+
+	#region Private Methods
+	private VehicleDailyFee GetVehicleDailyFee(List<TollCameraData> vehicleDailyTollCameraData, List<FeeIntervalDTO> feeIntervals)
+	{
+		if (vehicleDailyTollCameraData.Select(x => x.PlateNumber).Distinct().Count() > 1)
+		{
+			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleDailyTollCameraData));
+		}
+
+		var tollPassagesData = new List<TollPassageData>();
+		foreach (var cameraData in vehicleDailyTollCameraData)
+		{
+			var tollPassageData = new TollPassageData
+			{
+				PlateNumber = cameraData.PlateNumber,
+				PassageTime = cameraData.PassageTime,
+				Fee = 0
+			};
+
+			foreach (var feeInterval in feeIntervals)
+			{
+				if (cameraData.PassageTime.TimeOfDay >= feeInterval.Start && cameraData.PassageTime.TimeOfDay < feeInterval.End)
+				{
+					tollPassageData.Fee = feeInterval.Fee;
+				}
+			}
+
+			tollPassagesData.Add(tollPassageData);
+		}
+
+		CalculateFeeDue(tollPassagesData);
+
 		var vehicleDailyFee = new VehicleDailyFee
 		{
-			PlateNumber = vehicleTollPassages.First().PlateNumber,
-			DailyFee = GetTotalFeeForPassages(vehicleTollPassages),
+			PlateNumber = tollPassagesData.First().PlateNumber,
+			DailyFee = CalculateDailyFee(tollPassagesData)
 		};
 
 		return vehicleDailyFee;
 	}
 
-	private void CalculateFeeDue(List<TollPassage> tollPassages)
+
+	private void CalculateFeeDue(List<TollPassageData> tollPassages)
 	{
 		if (tollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
 			throw new ArgumentException("All passages must be for the same vehicle.", nameof(tollPassages));
@@ -83,9 +126,9 @@ public class FeeService : IFeeService
 				intervalStart = tollPassage;
 			}
 		}
-	}
+	}	
 
-	private decimal GetTotalFeeForPassages(List<TollPassage> tollPassages)
+	private decimal CalculateDailyFee(List<TollPassageData> tollPassages)
 	{
 		if (tollPassages == null)
 			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
@@ -100,9 +143,5 @@ public class FeeService : IFeeService
 	{
 		return end - start < timeSpan;
 	}
-
-	public decimal GetMaxDailyFee()
-	{
-		return MAX_DAILY_FEE;
-	}
+	#endregion
 }
