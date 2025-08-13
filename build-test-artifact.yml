@@ -34,6 +34,14 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Database migrations'
+  inputs:
+    command: 'custom'
+    custom: 'run'
+    arguments: 'ef database update --context Persistence.Contexts.Context --configuration $(buildConfiguration) --project Persistence --startup-project Api'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+- task: DotNetCoreCLI@2
   displayName: 'Publish'
   inputs:
     command: 'publish'
