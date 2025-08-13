@@ -1,5 +1,3 @@
-trigger: none  # No CI trigger; manual or scheduled only
-
 resources:
   pipelines:
   - pipeline: buildAndTest  # local name for reference
