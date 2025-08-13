@@ -1,5 +1,12 @@
-trigger:
-- main
+resources:
+  pipelines:
+  - pipeline: build-and-test
+    source: build-and-test
+    trigger:
+      branches:
+        include:
+        - main
+
 
 pool:
   vmImage: 'windows-latest'
