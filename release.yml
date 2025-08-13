@@ -27,5 +27,5 @@ steps:
     appType: 'webApp'
     appName: '$(appServiceName)'
     resourceGroupName: '$(resourceGroupName)'
-    package: '$(Pipeline.Workspace)/drop/Api/Api.zip'
+    package: '$(Pipeline.Workspace)\buildAndTest\drop\Api.zip'
     deploymentMethod: 'zipDeploy'
