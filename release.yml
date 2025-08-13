@@ -1,0 +1,33 @@
+trigger: none  # No CI trigger; manual or scheduled only
+
+resources:
+  pipelines:
+  - pipeline: buildAndTest  # local name for reference
+    source: build-test-artifact  # name of your build pipeline
+    trigger: 
+      branches:
+        include:
+        - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  appServiceName: 'AjTollSystem'
+  resourceGroupName: 'AjTollSystem'
+  azureSubscriptionName: 'ServiceConnection'
+
+steps:
+- download: buildAndTest
+  artifact: drop  # must match ArtifactName in build pipeline
+  displayName: 'Download build artifacts'
+
+- task: AzureWebApp@1
+  displayName: 'Deploy to Azure App Service'
+  inputs:
+    azureSubscription: '$(azureSubscriptionName)'
+    appType: 'webApp'
+    appName: '$(appServiceName)'
+    resourceGroupName: '$(resourceGroupName)'
+    package: '$(Pipeline.Workspace)/drop/**/*.zip'
+    deploymentMethod: 'zipDeploy'
