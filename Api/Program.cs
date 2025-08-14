@@ -10,7 +10,12 @@ public class Program
 
 		builder.Services.AddDbContext<Context>(options =>
 		{
-			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"));
+			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"),
+			sqlOptions => sqlOptions.EnableRetryOnFailure(
+				maxRetryCount: 5,
+				maxRetryDelay: TimeSpan.FromSeconds(10),
+				errorNumbersToAdd: null)
+			);
 		});
 
 		builder.Services.AddLogging();
