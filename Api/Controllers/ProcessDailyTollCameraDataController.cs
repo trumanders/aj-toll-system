@@ -12,9 +12,9 @@ public class ProcessDailyTollCameraDataController(ITollCameraDataProcessingServi
 		{
 			return Results.Ok(await _tollCameraDataProcessingService.ProcessDailyTollCameraData(date, numberOfPassages));
 		}
-		catch
+		catch (Exception e)
 		{
-			return Results.Problem("An error occurred while retrieving data.");
+			return Results.Problem($"An error occurred while retrieving data. Exception: {e.Message}");
 		}
 	}
 }
