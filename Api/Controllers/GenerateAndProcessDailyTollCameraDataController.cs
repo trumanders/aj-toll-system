@@ -2,7 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProcessDailyTollCameraDataController(ITollCameraDataProcessingService _tollCameraDataProcessingService) : ControllerBase
+public class GenerateAndProcessDailyTollCameraDataController(ITollCameraDataProcessingService _tollCameraDataProcessingService) : ControllerBase
 {
 	/* In a real world scenario, this call is triggered after midnight to process all the passages for the previous day */
 	[HttpGet]
