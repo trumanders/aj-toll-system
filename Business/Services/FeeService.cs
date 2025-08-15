@@ -78,10 +78,11 @@ public class FeeService : IFeeService
 
 		CalculateFeeDue(tollPassagesData);
 
+		var totalFee = tollPassagesData.Sum(passage => passage.Fee);
 		var vehicleDailyFee = new VehicleDailyFee
 		{
 			PlateNumber = tollPassagesData.First().PlateNumber,
-			DailyFee = CalculateDailyFee(tollPassagesData)
+			DailyFee = totalFee > MAX_DAILY_FEE ? MAX_DAILY_FEE : totalFee
 		};
 
 		return vehicleDailyFee;
@@ -109,6 +110,7 @@ public class FeeService : IFeeService
 		foreach (var tollPassage in tollPassages.SkipWhile(passage => passage != intervalStart).Skip(1))
 		{
 			if (IsPassageWithinInterval(tollPassage.PassageTime, intervalStart.PassageTime, _singleChargeInterval))
+			
 			{
 				if (tollPassage.Fee >= highestFeePassageInInterval.Fee)
 				{
@@ -127,17 +129,6 @@ public class FeeService : IFeeService
 			}
 		}
 	}	
-
-	private decimal CalculateDailyFee(List<TollPassageData> tollPassages)
-	{
-		if (tollPassages == null)
-			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
-		if (tollPassages.Count == 0)
-			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages));
-
-		var totalFee = tollPassages.Sum(passage => passage.Fee);
-		return totalFee > MAX_DAILY_FEE ? MAX_DAILY_FEE : totalFee;
-	}
 
 	private bool IsPassageWithinInterval(DateTime end, DateTime start, TimeSpan timeSpan)
 	{

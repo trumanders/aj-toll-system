@@ -51,7 +51,7 @@ public class TollCameraDataProcessingService : ITollCameraDataProcessingService
 		
 		var dailyFeeForEachVehicle = await _feeService.GetDailyFeeSummaryForEachVehicle(nonTollFreeCameraData);
 
-		/* MontlyFeeRepository */ // Vehicles that are already in monthly fee table (to update) 
+		// Vehicles that are already in monthly fee table (to update) 
 		var monthlyFeesToUpdate = await _dbService.GetAsync<MonthlyFee, MonthlyFeeDTO>(entity =>
 			dailyFeeForEachVehicle.Select(x => x.PlateNumber).Contains(entity.PlateNumber));
 
