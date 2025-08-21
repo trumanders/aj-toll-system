@@ -19,7 +19,7 @@
 
 			// Seed data here
 
-			//SeedData(builder);
+			SeedData(builder);
 		}
 
 		private void SeedData(ModelBuilder builder)
@@ -57,7 +57,7 @@
 				vehicleTypes.Add(new VehicleType
 				{
 					Id = vehicleType.Id,
-					TypeName = vehicleType.TypeName,
+					VehicleTypeName = vehicleType.TypeName,
 					IsTollFree = vehicleType.IsTollFree
 				});
 			}

@@ -12,8 +12,8 @@ public class SimulatedVehicleApiDataController : ControllerBase
 	}
 
 
-	[HttpGet]
-	public async Task<IResult> Get()
+	[HttpGet("getAll")]
+	public async Task<IResult> GetAll()
 	{
 		try
 		{
@@ -26,7 +26,7 @@ public class SimulatedVehicleApiDataController : ControllerBase
 		}
 	}
 
-	[HttpGet("platenumbers")]
+	[HttpGet("getAllPlatenumbers")]
 	public async Task<IResult> GetAllPlateNumbers()
 	{
 		try

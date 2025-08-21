@@ -25,7 +25,7 @@ public class Program
 		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
 		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
 		builder.Services.AddScoped<ITollCameraService, TollCameraService>();
-		builder.Services.AddScoped<ITollCameraDataProcessingService, TollCameraDataProcessingService>();
+		builder.Services.AddScoped<IPassagesService, PassagesService>();
 
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
@@ -39,6 +39,7 @@ public class Program
 			config.CreateMap<VehicleType, VehicleTypeDTO>();
 			config.CreateMap<MonthlyFee, MonthlyFeeDTO>();
 			config.CreateMap<MonthlyFeeDTO, MonthlyFee>();	
+			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>();	
 		}).CreateMapper());		
 
 		var app = builder.Build();

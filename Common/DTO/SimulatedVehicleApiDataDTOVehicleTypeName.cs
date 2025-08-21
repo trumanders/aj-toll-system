@@ -2,5 +2,5 @@
 
 public class SimulatedVehicleApiDataDTOVehicleTypeName
 {
-	public string VehicleTypeName { get; set; }
+	public string? VehicleTypeName { get; set; }
 }
