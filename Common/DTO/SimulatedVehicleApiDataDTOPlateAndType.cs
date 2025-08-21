@@ -3,5 +3,5 @@
 public class SimulatedVehicleApiDataDTOPlateAndType
 {
 	public string PlateNumber { get; set; }
-	public VehicleTypeDTO VehicleType { get; set; }
+	public string? VehicleTypeName { get; set; }
 }

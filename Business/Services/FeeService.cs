@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Metrics;
+﻿using Business.Models;
 
 namespace Business.Services;
 
@@ -7,7 +6,7 @@ public class FeeService : IFeeService
 {
 	private IDbService _dbService;
 	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
-	
+
 	private const decimal MAX_DAILY_FEE = 60;
 
 	public FeeService(IDbService dbService)
@@ -20,8 +19,44 @@ public class FeeService : IFeeService
 		return MAX_DAILY_FEE;
 	}
 
+	public async Task<List<TollPassageData>> ApplyFeeToAllPassages(List<TollPassageData> tollPassageData)
+	{
+		if (tollPassageData.Any(x => x.VehicleTypeName is null))
+			throw new ArgumentException("VehicleType is required. Please include vehicle type in the request.");
+
+		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
+
+		if (feeIntervals.Count == 0)
+		{
+			throw new InvalidOperationException("Fee intervals are not set.");
+		}
+
+		var passagesByPlateNumberWithFeeApplied = tollPassageData
+			.GroupBy(x => x.PlateNumber)
+			.Select(plateNumberGroup =>
+				{
+					var passagesWithFee = plateNumberGroup
+						.Select(passage =>
+						{
+							passage.Fee = feeIntervals
+								.FirstOrDefault(feeInterval => passage.PassageTime.TimeOfDay >= feeInterval.Start && passage.PassageTime.TimeOfDay <= feeInterval.End)
+								?.Fee ?? 0;
+							return passage;
+						}).ToList();
+					ApplyFeeDiscontToPassages(passagesWithFee);
+					return passagesWithFee;
+				}
+			).ToList();
+
+		return passagesByPlateNumberWithFeeApplied
+			.SelectMany(plateNumberGroup => plateNumberGroup)
+			.ToList();
+	}
+
+
+
 	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollCameraData> cameraData)
-	{		
+	{
 		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
 
 		if (feeIntervals.Count == 0)
@@ -39,7 +74,7 @@ public class FeeService : IFeeService
 		foreach (var dataPerPlateNumber in cameraDataByPlateNumber)
 		{
 			var vehicleDailyFee = GetVehicleDailyFee(dataPerPlateNumber, feeIntervals);
-			
+
 			if (vehicleDailyFee.DailyFee != 0)
 				vehicleDailyFees.Add(vehicleDailyFee);
 		}
@@ -76,28 +111,29 @@ public class FeeService : IFeeService
 			tollPassagesData.Add(tollPassageData);
 		}
 
-		CalculateFeeDue(tollPassagesData);
+		ApplyFeeDiscontToPassages(tollPassagesData);
 
+		var totalFee = tollPassagesData.Sum(passage => passage.Fee);
 		var vehicleDailyFee = new VehicleDailyFee
 		{
 			PlateNumber = tollPassagesData.First().PlateNumber,
-			DailyFee = CalculateDailyFee(tollPassagesData)
+			DailyFee = totalFee > MAX_DAILY_FEE ? MAX_DAILY_FEE : totalFee
 		};
 
 		return vehicleDailyFee;
 	}
 
 
-	private void CalculateFeeDue(List<TollPassageData> tollPassages)
+	private void ApplyFeeDiscontToPassages(List<TollPassageData> tollPassages)
 	{
 		if (tollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
 			throw new ArgumentException("All passages must be for the same vehicle.", nameof(tollPassages));
 
 		if (tollPassages == null)
-			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
+			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null when applying fee discount.");
 
 		if (tollPassages.Count == 0)
-			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages));
+			throw new ArgumentException("Toll passages list cannot be empty when applying fee discount.", nameof(tollPassages));
 
 		var firstPassageWithFee = tollPassages.FirstOrDefault(passage => passage.Fee > 0)
 			?? tollPassages.First();
@@ -118,7 +154,7 @@ public class FeeService : IFeeService
 				else
 				{
 					tollPassage.Fee = 0;
-				}				
+				}
 			}
 			else
 			{
@@ -126,17 +162,6 @@ public class FeeService : IFeeService
 				intervalStart = tollPassage;
 			}
 		}
-	}	
-
-	private decimal CalculateDailyFee(List<TollPassageData> tollPassages)
-	{
-		if (tollPassages == null)
-			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
-		if (tollPassages.Count == 0)
-			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages));
-
-		var totalFee = tollPassages.Sum(passage => passage.Fee);
-		return totalFee > MAX_DAILY_FEE ? MAX_DAILY_FEE : totalFee;
 	}
 
 	private bool IsPassageWithinInterval(DateTime end, DateTime start, TimeSpan timeSpan)
