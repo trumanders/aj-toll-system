@@ -1,5 +1,8 @@
 # build-test-artifact.yml
-trigger: none
+trigger:
+  branches:
+    include:
+    - master
 
 pool:
   vmImage: 'windows-latest'
