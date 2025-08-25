@@ -1,11 +1,10 @@
+trigger: none  # This pipeline does not trigger on its own commits
+
 resources:
   pipelines:
-  - pipeline: buildAndTest  # local name for reference
-    source: build-test-artifact  # name of your build pipeline
-    trigger: 
-      branches:
-        include:
-        - master
+  - pipeline: buildAndTest      # local reference name
+    source: build-test-artifact # name of your build pipeline
+    trigger: true               # triggers this pipeline on every new successful run
 
 pool:
   vmImage: 'windows-latest'
