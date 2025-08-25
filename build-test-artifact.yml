@@ -37,6 +37,13 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: "Install EF Core CLI"
+  inputs:
+    command: custom
+    custom: tool
+    arguments: install --global dotnet-ef --version 9.*
+
+- task: DotNetCoreCLI@2
   displayName: 'Database migrations'
   inputs:
     command: 'custom'
