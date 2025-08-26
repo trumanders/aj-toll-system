@@ -46,12 +46,9 @@ steps:
 - task: AzureCLI@2
   displayName: 'Connect to Azure'
   inputs:
-    azureSubscription: 'ServiceConnection'
+    azureSubscription: 'ServiceConnection' # The name of your service connection
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: |
-      az login --service-principal -u $(ServicePrincipalId) -p $(ServicePrincipalSecret) --tenant $(TenantId)
-      az account set --subscription $(azureSubscriptionName)
 
 - task: DotNetCoreCLI@2
   displayName: 'Database migrations'
