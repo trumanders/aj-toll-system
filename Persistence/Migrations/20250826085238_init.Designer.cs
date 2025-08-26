@@ -12,15 +12,15 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250806124549_ChangedClassNamesAndEntityName")]
-    partial class ChangedClassNamesAndEntityName
+    [Migration("20250826085238_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -177,12 +177,11 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
-                    b.Property<int>("VehicleTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("VehicleTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("VehicleTypeId");
 
                     b.ToTable("SimulatedVehicleApiData");
 
@@ -192,371 +191,371 @@ namespace Persistence.Migrations
                             Id = 1,
                             OwnerName = "Tommy Tjernqvist",
                             PlateNumber = "PTP461",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 2,
                             OwnerName = "Hugo Håkman",
                             PlateNumber = "FJN740",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 3,
                             OwnerName = "Linda Längström",
                             PlateNumber = "ZCX563",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 4,
                             OwnerName = "Kalle Krantz",
                             PlateNumber = "VAT087",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 5,
                             OwnerName = "Benny Bäckström",
                             PlateNumber = "CUL352",
-                            VehicleTypeId = 9
+                            VehicleTypeName = "BUS"
                         },
                         new
                         {
                             Id = 6,
                             OwnerName = "Ronny Röjberg",
                             PlateNumber = "UXL821",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 7,
                             OwnerName = "Sally Ståhl",
                             PlateNumber = "MKW921",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 8,
                             OwnerName = "Eddie Elg",
                             PlateNumber = "OLU514",
-                            VehicleTypeId = 6
+                            VehicleTypeName = "MILITARY"
                         },
                         new
                         {
                             Id = 9,
                             OwnerName = "Felix Färnelund",
                             PlateNumber = "TJY229",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 10,
                             OwnerName = "Jörgen Järvstad",
                             PlateNumber = "UHA649",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 11,
                             OwnerName = "Lotta Löfgren",
                             PlateNumber = "BTS372",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 12,
                             OwnerName = "Gustav Gullberg",
                             PlateNumber = "XKL291",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 13,
                             OwnerName = "Mona Mörk",
                             PlateNumber = "PNY183",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 14,
-                            OwnerName = "Oscar Olofsson",
+                            OwnerName = "OsCAR Olofsson",
                             PlateNumber = "KLM562",
-                            VehicleTypeId = 3
+                            VehicleTypeName = "EMERGENCY"
                         },
                         new
                         {
                             Id = 15,
                             OwnerName = "Victor Vallén",
                             PlateNumber = "RMJ473",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 16,
                             OwnerName = "Jenny Järp",
                             PlateNumber = "QWE982",
-                            VehicleTypeId = 5
+                            VehicleTypeName = "FOREIGN"
                         },
                         new
                         {
                             Id = 17,
                             OwnerName = "Stina Sörlén",
                             PlateNumber = "TRP648",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 18,
                             OwnerName = "Axel Åkesson",
                             PlateNumber = "ZXC101",
-                            VehicleTypeId = 6
+                            VehicleTypeName = "MILITARY"
                         },
                         new
                         {
                             Id = 19,
                             OwnerName = "Nina Norrström",
                             PlateNumber = "LPO839",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 20,
                             OwnerName = "Felicia Forslund",
                             PlateNumber = "GHT467",
-                            VehicleTypeId = 9
+                            VehicleTypeName = "BUS"
                         },
                         new
                         {
                             Id = 21,
                             OwnerName = "Greta Gerdman",
                             PlateNumber = "KLB381",
-                            VehicleTypeId = 2
+                            VehicleTypeName = "TRACTOR"
                         },
                         new
                         {
                             Id = 22,
                             OwnerName = "Erik Eklund",
                             PlateNumber = "XOP122",
-                            VehicleTypeId = 4
+                            VehicleTypeName = "DIPLOMAT"
                         },
                         new
                         {
                             Id = 23,
                             OwnerName = "Beatrice Boström",
                             PlateNumber = "WZX771",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 24,
                             OwnerName = "Fredrik Friberg",
                             PlateNumber = "HUE294",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 25,
                             OwnerName = "Astrid Albinsson",
                             PlateNumber = "LPD450",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 26,
                             OwnerName = "Sigge Sandström",
                             PlateNumber = "PRT999",
-                            VehicleTypeId = 5
+                            VehicleTypeName = "FOREIGN"
                         },
                         new
                         {
                             Id = 27,
                             OwnerName = "Kajsa Källström",
                             PlateNumber = "KNL238",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 28,
                             OwnerName = "Torvald Tollberg",
                             PlateNumber = "UBK768",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 29,
                             OwnerName = "Lilly Lind",
                             PlateNumber = "EMG482",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 30,
                             OwnerName = "Bertil Bäckström",
                             PlateNumber = "JNH590",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 31,
                             OwnerName = "Hanna Hultgren",
                             PlateNumber = "JOL342",
-                            VehicleTypeId = 3
+                            VehicleTypeName = "EMERGENCY"
                         },
                         new
                         {
                             Id = 32,
                             OwnerName = "Dagmar Dahlen",
                             PlateNumber = "WMD229",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 33,
                             OwnerName = "Oskar Odelberg",
                             PlateNumber = "TYC992",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 34,
-                            OwnerName = "Clara Carlsson",
+                            OwnerName = "Clara CARlsson",
                             PlateNumber = "TRD147",
-                            VehicleTypeId = 1
+                            VehicleTypeName = "MOTORCYCLE"
                         },
                         new
                         {
                             Id = 35,
                             OwnerName = "Harry Hägglund",
                             PlateNumber = "BXA321",
-                            VehicleTypeId = 6
+                            VehicleTypeName = "MILITARY"
                         },
                         new
                         {
                             Id = 36,
                             OwnerName = "Elsa Eklund",
                             PlateNumber = "PLT465",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 37,
                             OwnerName = "Ulf Ulander",
                             PlateNumber = "GFX109",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 38,
                             OwnerName = "Märta Melin",
                             PlateNumber = "LSQ555",
-                            VehicleTypeId = 9
+                            VehicleTypeName = "BUS"
                         },
                         new
                         {
                             Id = 39,
                             OwnerName = "Simon Stenberg",
                             PlateNumber = "NKI211",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 40,
                             OwnerName = "Ingrid Irén",
                             PlateNumber = "FPZ830",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 41,
                             OwnerName = "Göran Gidlund",
                             PlateNumber = "TXR871",
-                            VehicleTypeId = 6
+                            VehicleTypeName = "MILITARY"
                         },
                         new
                         {
                             Id = 42,
-                            OwnerName = "Camilla Carlsson",
+                            OwnerName = "Camilla CARlsson",
                             PlateNumber = "WQL130",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 43,
                             OwnerName = "Roland Rindberg",
                             PlateNumber = "BYH376",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 44,
                             OwnerName = "Lina Ljungholm",
                             PlateNumber = "ZCP591",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 45,
                             OwnerName = "Björn Björkman",
                             PlateNumber = "TDA643",
-                            VehicleTypeId = 9
+                            VehicleTypeName = "BUS"
                         },
                         new
                         {
                             Id = 46,
                             OwnerName = "Stella Sörensson",
                             PlateNumber = "CBX008",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 47,
                             OwnerName = "Einar Engström",
                             PlateNumber = "HKO483",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 48,
                             OwnerName = "Emilia Ekberg",
                             PlateNumber = "WLQ599",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 49,
                             OwnerName = "Kristian Karlsson",
                             PlateNumber = "YSQ102",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 50,
                             OwnerName = "Viola Vinge",
                             PlateNumber = "RGX702",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 51,
                             OwnerName = "Torsten Törnqvist",
                             PlateNumber = "MTF981",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 52,
                             OwnerName = "Ellinor Elm",
                             PlateNumber = "GQV753",
-                            VehicleTypeId = 7
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 53,
                             OwnerName = "Sven Svahn",
                             PlateNumber = "HZX610",
-                            VehicleTypeId = 8
+                            VehicleTypeName = "TRUCK"
                         });
                 });
 
@@ -571,7 +570,7 @@ namespace Persistence.Migrations
                     b.Property<bool>("IsTollFree")
                         .HasColumnType("bit");
 
-                    b.Property<string>("TypeName")
+                    b.Property<string>("VehicleTypeName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -585,67 +584,56 @@ namespace Persistence.Migrations
                         {
                             Id = 1,
                             IsTollFree = true,
-                            TypeName = "Motorcycle"
+                            VehicleTypeName = "MOTORCYCLE"
                         },
                         new
                         {
                             Id = 2,
                             IsTollFree = true,
-                            TypeName = "Tractor"
+                            VehicleTypeName = "TRACTOR"
                         },
                         new
                         {
                             Id = 3,
                             IsTollFree = true,
-                            TypeName = "Emergency"
+                            VehicleTypeName = "EMERGENCY"
                         },
                         new
                         {
                             Id = 4,
                             IsTollFree = true,
-                            TypeName = "Diplomat"
+                            VehicleTypeName = "DIPLOMAT"
                         },
                         new
                         {
                             Id = 5,
                             IsTollFree = true,
-                            TypeName = "Foreign"
+                            VehicleTypeName = "FOREIGN"
                         },
                         new
                         {
                             Id = 6,
                             IsTollFree = true,
-                            TypeName = "Military"
+                            VehicleTypeName = "MILITARY"
                         },
                         new
                         {
                             Id = 7,
                             IsTollFree = false,
-                            TypeName = "Car"
+                            VehicleTypeName = "CAR"
                         },
                         new
                         {
                             Id = 8,
                             IsTollFree = false,
-                            TypeName = "Truck"
+                            VehicleTypeName = "TRUCK"
                         },
                         new
                         {
                             Id = 9,
                             IsTollFree = false,
-                            TypeName = "Bus"
+                            VehicleTypeName = "BUS"
                         });
-                });
-
-            modelBuilder.Entity("Persistence.Entities.SimulatedVehicleApiData", b =>
-                {
-                    b.HasOne("Persistence.Entities.VehicleType", "VehicleType")
-                        .WithMany()
-                        .HasForeignKey("VehicleTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("VehicleType");
                 });
 #pragma warning restore 612, 618
         }
