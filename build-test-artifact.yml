@@ -49,6 +49,8 @@ steps:
     azureSubscription: 'ServiceConnection' # The name of your service connection
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
+    inlineScript: | 
+      echo "Successfully connected to Azure."
 
 - task: DotNetCoreCLI@2
   displayName: 'Database migrations'
