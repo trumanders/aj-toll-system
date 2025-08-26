@@ -43,12 +43,22 @@ steps:
     custom: tool
     arguments: install --global dotnet-ef --version 9.*
 
+- task: AzureCLI@2
+  displayName: 'Connect to Azure'
+  inputs:
+    azureSubscription: 'ServiceConnection'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az login --service-principal -u $(ServicePrincipalId) -p $(ServicePrincipalSecret) --tenant $(TenantId)
+      az account set --subscription $(azureSubscriptionName)
+
 - task: DotNetCoreCLI@2
   displayName: 'Database migrations'
   inputs:
     command: 'custom'
     custom: 'ef'
-    arguments: 'database update --context Persistence.Contexts.Context --configuration $(buildConfiguration) --project Persistence --startup-project Api'
+    arguments: 'database update --context Persistence.Contexts.Context --configuration $(buildConfiguration) --project Persistence --startup-project Api --connection "$(DatabaseConnection)"'
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - task: DotNetCoreCLI@2
