@@ -19,7 +19,7 @@
 
 			// Seed data here
 
-			 // SeedData(builder);
+			SeedData(builder);
 		}
 
 		private void SeedData(ModelBuilder builder)
