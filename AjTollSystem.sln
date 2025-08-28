@@ -8,7 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{23DBF2AE-878B-4E88-9FA0-7CABB12798C2}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		seedData.json = seedData.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{D804C839-075D-435A-B5DB-DAF3648F0853}"
