@@ -12,8 +12,8 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250828084726_seed-data-fix2-disable-seed")]
-    partial class seeddatafix2disableseed
+    [Migration("20250828222929_change-seed-workflow-hardcoded")]
+    partial class changeseedworkflowhardcoded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
