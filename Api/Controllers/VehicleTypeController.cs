@@ -1,17 +1,16 @@
 ﻿using Business.Models;
-
 namespace Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PassagesController(IPassagesService _passagesService) : ControllerBase
+public class VehicleTypeController(IVehicleTypeService _vehicleTypeService) : ControllerBase
 {
 	[HttpPost("add-vehicle-type")]
 	public async Task<IResult> AddVehicleTypeToTollCameraDataAsync([FromBody] List<TollCameraData> dailyTollCameraData)
 	{
 		try
 		{
-			return Results.Ok(await _passagesService.AddVehicleTypeToTollCameraDataAsync(dailyTollCameraData));
+			return Results.Ok(await _vehicleTypeService.AddVehicleTypeToTollCameraDataAsync(dailyTollCameraData));
 		}
 		catch (Exception e)
 		{
@@ -25,14 +24,11 @@ public class PassagesController(IPassagesService _passagesService) : ControllerB
 	{
 		try
 		{
-			return Results.Ok(await _passagesService.FilterOutTollFreeVehicles(tollCameraDataWithVehicleType));
+			return Results.Ok(await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollCameraDataWithVehicleType));
 		}
 		catch (Exception e)
 		{
 			return Results.Problem($"An error occurred while filtering out toll free vehicles. Exception: {e.Message}");
-		}
-		{
-
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 public class TollFreeDaysService : ITollFreeDaysService
 {
-	IPublicHolidays _holiday;
+	private readonly IPublicHolidays _holiday;
 	private const int DAY_AFTER = 1;
 
 	public TollFreeDaysService(IPublicHolidays holiday)

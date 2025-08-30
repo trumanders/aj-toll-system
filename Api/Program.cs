@@ -1,4 +1,3 @@
-// update-develop
 namespace Api;
 public class Program
 {
@@ -21,10 +20,13 @@ public class Program
 		builder.Services.AddLogging();
 
 		builder.Services.AddScoped<IDbService, DbService>();
-		builder.Services.AddScoped<IFeeService, FeeService>();
 		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
 		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
 		builder.Services.AddScoped<ITollCameraService, TollCameraService>();
+		builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();		
+		builder.Services.AddScoped<IFeeService, FeeService>();
+		
+		
 		builder.Services.AddScoped<IPassagesService, PassagesService>();
 
 		builder.Services.AddEndpointsApiExplorer();
@@ -61,7 +63,6 @@ public class Program
 			await next.Invoke();
 		});
 
-		//app.UseStaticFiles();
 		app.UseHttpsRedirection();
 
 		app.MapControllers();
