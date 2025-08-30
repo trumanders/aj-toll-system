@@ -1,7 +1,6 @@
 ﻿using Business.Models;
 
 namespace Api.Controllers;
-
 [Route("api/[controller]")]
 [ApiController]
 public class FeeController(IFeeService _feeService) : ControllerBase

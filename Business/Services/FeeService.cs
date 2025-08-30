@@ -1,10 +1,8 @@
-﻿using Business.Models;
-
-namespace Business.Services;
+﻿namespace Business.Services;
 
 public class FeeService : IFeeService
 {
-	private IDbService _dbService;
+	private readonly IDbService _dbService;
 	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
 
 	private const decimal MAX_DAILY_FEE = 60;
