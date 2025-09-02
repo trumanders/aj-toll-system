@@ -8,7 +8,7 @@ public class TollCameraController(ITollCameraService _tollCameraService, ITollFr
 	[HttpGet("get-daily-toll-camera-data")]
 	public async Task<IResult> GetDailyTollCameraData([FromQuery]DateTime date, [FromQuery]int numberOfPassages)
 	{
-		if (_tollFreeDaysService.IsTollFreeDay(date)) { return Results.Ok(new List<TollCameraDataDTO>()); }
+		if (_tollFreeDaysService.IsTollFreeDay(date)) { return Results.Ok(new List<TollCameraDataDTO>()); } // MOVE TO separate service
 
 		try
 		{
