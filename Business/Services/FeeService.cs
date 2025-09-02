@@ -1,16 +1,10 @@
 ﻿namespace Business.Services;
 
-public class FeeService : IFeeService
+public class FeeService(IDbService _dbService) : IFeeService
 {
-	private readonly IDbService _dbService;
 	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
 
 	private const decimal MAX_DAILY_FEE = 60;
-
-	public FeeService(IDbService dbService)
-	{
-		_dbService = dbService;
-	}
 
 	public decimal GetMaxDailyFee()
 	{
@@ -26,7 +20,7 @@ public class FeeService : IFeeService
 
 		if (feeIntervals.Count == 0)
 		{
-			throw new InvalidOperationException("Fee intervals are not set.");
+			throw new InvalidOperationException("There are no fee intervals available.");
 		}
 
 		var passagesByPlateNumberWithFeeApplied = tollPassageData
@@ -37,7 +31,7 @@ public class FeeService : IFeeService
 						.Select(passage =>
 						{
 							passage.Fee = feeIntervals
-								.FirstOrDefault(feeInterval => passage.PassageTime.TimeOfDay >= feeInterval.Start && passage.PassageTime.TimeOfDay <= feeInterval.End)
+								.FirstOrDefault(feeInterval => passage.PassageTime.TimeOfDay >= feeInterval.Start && passage.PassageTime.TimeOfDay < feeInterval.End)
 								?.Fee ?? 0;
 							return passage;
 						}).ToList();
@@ -46,81 +40,44 @@ public class FeeService : IFeeService
 				}
 			).ToList();
 
-		return passagesByPlateNumberWithFeeApplied
-			.SelectMany(plateNumberGroup => plateNumberGroup)
-			.ToList();
+		return [.. passagesByPlateNumberWithFeeApplied.SelectMany(plateNumberGroup => plateNumberGroup)];
 	}
 
-
-
-	public async Task<List<VehicleDailyFee>> GetDailyFeeSummaryForEachVehicle(List<TollCameraData> cameraData)
-	{
-		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
-
-		if (feeIntervals.Count == 0)
+	public List<VehicleDailyFee> GetDailyFeeSummaryForEachVehicle(List<TollPassageData> passageData)
+	{		
+		if (passageData.Any(x => x.Fee == null))
 		{
-			throw new InvalidOperationException("Fee intervals are not set.");
+			throw new InvalidOperationException("The passages must have fees applied to calculate the total daily fee");
 		}
 
-		var cameraDataByPlateNumber = cameraData
+		var passasgesByPlatenumber = passageData
 			.GroupBy(x => x.PlateNumber)
 			.Select(g => g.ToList())
 			.ToList();
 
 		var vehicleDailyFees = new List<VehicleDailyFee>();
 
-		foreach (var dataPerPlateNumber in cameraDataByPlateNumber)
+		foreach (var platenumberGroup in passasgesByPlatenumber)
 		{
-			var vehicleDailyFee = GetVehicleDailyFee(dataPerPlateNumber, feeIntervals);
-
-			if (vehicleDailyFee.DailyFee != 0)
-				vehicleDailyFees.Add(vehicleDailyFee);
+			vehicleDailyFees.Add(new VehicleDailyFee()
+			{
+				PlateNumber = platenumberGroup.First().PlateNumber,
+				DailyFee = CalculateTotalDailyFeeForVehicle(platenumberGroup),
+				Date = platenumberGroup.First().PassageTime.Date
+			});
 		}
 
 		return vehicleDailyFees;
 	}
 
 	#region Private Methods
-	private VehicleDailyFee GetVehicleDailyFee(List<TollCameraData> vehicleDailyTollCameraData, List<FeeIntervalDTO> feeIntervals)
+
+	private decimal? CalculateTotalDailyFeeForVehicle(List<TollPassageData> dailyFeesForVehicle)
 	{
-		if (vehicleDailyTollCameraData.Select(x => x.PlateNumber).Distinct().Count() > 1)
-		{
-			throw new ArgumentException("All passages must be for the same vehicle.", nameof(vehicleDailyTollCameraData));
-		}
+		var dailyFee = dailyFeesForVehicle.Sum(x => x.Fee);
 
-		var tollPassagesData = new List<TollPassageData>();
-		foreach (var cameraData in vehicleDailyTollCameraData)
-		{
-			var tollPassageData = new TollPassageData
-			{
-				PlateNumber = cameraData.PlateNumber,
-				PassageTime = cameraData.PassageTime,
-				Fee = 0
-			};
-
-			foreach (var feeInterval in feeIntervals)
-			{
-				if (cameraData.PassageTime.TimeOfDay >= feeInterval.Start && cameraData.PassageTime.TimeOfDay < feeInterval.End)
-				{
-					tollPassageData.Fee = feeInterval.Fee;
-				}
-			}
-
-			tollPassagesData.Add(tollPassageData);
-		}
-
-		ApplyFeeDiscontToPassages(tollPassagesData);
-
-		var totalFee = tollPassagesData.Sum(passage => passage.Fee);
-		var vehicleDailyFee = new VehicleDailyFee
-		{
-			PlateNumber = tollPassagesData.First().PlateNumber,
-			DailyFee = totalFee > MAX_DAILY_FEE ? MAX_DAILY_FEE : totalFee
-		};
-
-		return vehicleDailyFee;
+		return dailyFee > 60 ? 60 : dailyFee;
 	}
-
 
 	private void ApplyFeeDiscontToPassages(List<TollPassageData> tollPassages)
 	{
