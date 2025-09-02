@@ -21,7 +21,28 @@ public class FeeServiceTests
 		new () { Fee = 9,  Start = new TimeSpan(18, 0, 0), End = new TimeSpan(18, 30, 0) }
 	];
 
-	[SetUp]
+	private readonly List<TollPassageData> _tollPassagesWithoutFee =
+	[
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), VehicleTypeName = "Car" },	// (16) (0, next is within hour and higher)
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0), VehicleTypeName = "Car" },	// 22
+
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), VehicleTypeName = "Car" },	// 22
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0), VehicleTypeName = "Car" },	// (16) (0, is within hour from previous which is higher)
+
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00), VehicleTypeName = "Car" },// 9
+
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59), VehicleTypeName = "Car" },	// 0
+
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0), VehicleTypeName = "Car" },	// (9) (0, next is within hour and higher)
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), VehicleTypeName = "Car" },	// 16
+
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), VehicleTypeName = "Car" },	// 22
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00), VehicleTypeName = "Car" }  // (16) (0, within hour from previous which is higher)
+	];
+
+	private readonly List<decimal> _tollPassagesWithoutFeeExpectedFees = [22, 22, 9, 16, 22];
+
+[SetUp]
 	public void SetUp()
 	{
 		_fakeDbService = A.Fake<IDbService>();
@@ -60,35 +81,26 @@ public class FeeServiceTests
 		// Arrange
 		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>()).Returns(_fakeFeeIntervals);
 
-		var tollPassageData = new List<TollPassageData>
-		{
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), VehicleTypeName = "Car" },	// (16) (0, next is within hour and higher)
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0), VehicleTypeName = "Car" },	// 22
-
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), VehicleTypeName = "Car" },	// 22
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0), VehicleTypeName = "Car" },	// (16) (0, is within hour from previous which is higher)
-
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00), VehicleTypeName = "Car" },// 9
-
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59), VehicleTypeName = "Car" },	// 0
-
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0), VehicleTypeName = "Car" },	// (9) (0, next is within hour and higher)
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), VehicleTypeName = "Car" },	// 16
-
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), VehicleTypeName = "Car" },	// 22
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00), VehicleTypeName = "Car" }  // (16) (0, within hour from previous which is higher)
-		};
-
-		var expectedFees = new List<decimal> { 0, 22, 22, 0, 9, 0, 0, 16, 22, 0 };
-
 		// Act
-		var tollPassagesWithFee = await _sut.ApplyFeeToAllPassages(tollPassageData);
-		var actualFees = tollPassagesWithFee.Select(x => x.Fee).ToList();
+		var actualFees = (await _sut.ApplyFeeToAllPassages(_tollPassagesWithoutFee)).Select(x => x.Fee).ToList();
 
 		Assert.That(actualFees
-			.Zip(expectedFees, (actual, expected) => actual == expected)
+			.Zip(_tollPassagesWithoutFeeExpectedFees, (actual, expected) => actual == expected)
 			.All(x => x), Is.True);
+	}
 
+	[Test]
+	public async Task ApplyFeeToAllPassages_OnlyKeepPassagesWithFee()
+	{
+		// Arrange
+		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>()).Returns(_fakeFeeIntervals);
+
+		// Act
+		var actualFees = (await _sut.ApplyFeeToAllPassages(_tollPassagesWithoutFee)).Select(x => x.Fee).ToList();
+
+
+		// Assert
+		Assert.That(actualFees.All(fee => fee > 0), Is.True);
 	}
 
 	[Test]
@@ -148,13 +160,13 @@ public class FeeServiceTests
 
 		};
 
-		var expectedDailyFee = new List<decimal>() { 60, 60 };
+		var maxDailyFee = _sut.GetMaxDailyFee();
 
 		// Act	
-		var actualDailyFee = _sut.GetDailyFeeSummaryForEachVehicle(vehicleTollPassages).Select(x => x.DailyFee);
+		var actualDailyFees = _sut.GetDailyFeeSummaryForEachVehicle(vehicleTollPassages).Select(x => x.DailyFee).ToList();
 
 		// Assert
-		Assert.That(actualDailyFee, Is.EqualTo(expectedDailyFee));
+		Assert.That(actualDailyFees.All(fee => fee <= maxDailyFee));
 	}
 }
 

@@ -26,19 +26,23 @@ public class FeeService(IDbService _dbService) : IFeeService
 		var passagesByPlateNumberWithFeeApplied = tollPassageData
 			.GroupBy(x => x.PlateNumber)
 			.Select(plateNumberGroup =>
-				{
-					var passagesWithFee = plateNumberGroup
-						.Select(passage =>
-						{
-							passage.Fee = feeIntervals
-								.FirstOrDefault(feeInterval => passage.PassageTime.TimeOfDay >= feeInterval.Start && passage.PassageTime.TimeOfDay < feeInterval.End)
-								?.Fee ?? 0;
-							return passage;
-						}).ToList();
-					ApplyFeeDiscontToPassages(passagesWithFee);
-					return passagesWithFee;
-				}
-			).ToList();
+			{
+				var passagesWithFee = plateNumberGroup
+					.Select(passage =>
+					{
+						passage.Fee = feeIntervals
+							.FirstOrDefault(feeInterval => passage.PassageTime.TimeOfDay >= feeInterval.Start && passage.PassageTime.TimeOfDay < feeInterval.End)
+							?.Fee ?? 0;
+						return passage;
+					})
+					.Where(passage => passage != null)
+					.ToList();
+
+				ApplyFeeDiscontToPassages(passagesWithFee);
+				RemoveZeroFees(passagesWithFee);
+
+				return passagesWithFee;
+			}).ToList();
 
 		return [.. passagesByPlateNumberWithFeeApplied.SelectMany(plateNumberGroup => plateNumberGroup)];
 	}
@@ -122,6 +126,11 @@ public class FeeService(IDbService _dbService) : IFeeService
 	private bool IsPassageWithinInterval(DateTime end, DateTime start, TimeSpan timeSpan)
 	{
 		return end - start < timeSpan;
+	}
+
+	private void RemoveZeroFees(List<TollPassageData> tollPassagesWithFee)
+	{
+		tollPassagesWithFee.RemoveAll(x => x.Fee == 0);
 	}
 	#endregion
 }
