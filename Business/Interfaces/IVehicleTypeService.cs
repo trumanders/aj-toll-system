@@ -2,8 +2,7 @@
 
 public interface IVehicleTypeService
 {
-	public Task<List<TollCameraDataWithVehicleTypeDTO>> AddVehicleTypeToTollCameraDataAsync(List<TollCameraData> tollCameraDataToFilter);
+	public Task<List<TollPassageData>> AddVehicleTypeToTollCameraDataAsync(List<TollPassageData> tollCameraDataToFilter);
 
-	public Task<List<TollCameraDataWithVehicleTypeDTO>> FilterOutTollFreeVehiclesAsync(List<TollCameraDataWithVehicleTypeDTO> tollCameraDataWithVehicleType);
-
+	public Task<List<TollPassageData>> FilterOutTollFreeVehiclesAsync(List<TollPassageData> tollCameraDataWithVehicleType);
 }

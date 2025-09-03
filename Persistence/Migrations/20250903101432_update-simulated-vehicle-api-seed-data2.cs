@@ -1,0 +1,118 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Persistence.Migrations
+{
+    /// <inheritdoc />
+    public partial class updatesimulatedvehicleapiseeddata2 : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+			// Seed FeeInterval (Id, Fee, Start, End)
+			migrationBuilder.InsertData(
+				table: "FeeInterval",
+				columns: new[] { "Id", "Fee", "Start", "End" },
+				values: new object[,]
+				{
+					{ 1, 9, new TimeSpan(6,0,0), new TimeSpan(6,30,0) },
+					{ 2, 16, new TimeSpan(6,30,0), new TimeSpan(7,0,0) },
+					{ 3, 22, new TimeSpan(7,0,0), new TimeSpan(8,0,0) },
+					{ 4, 9, new TimeSpan(8,30,0), new TimeSpan(15,0,0) },
+					{ 5, 16, new TimeSpan(8,0,0), new TimeSpan(8,30,0) },
+					{ 6, 16, new TimeSpan(15,0,0), new TimeSpan(15,30,0) },
+					{ 7, 22, new TimeSpan(15,30,0), new TimeSpan(17,0,0) },
+					{ 8, 16, new TimeSpan(17,0,0), new TimeSpan(18,0,0) },
+					{ 9, 9, new TimeSpan(18,0,0), new TimeSpan(18,30,0) }
+				}
+			);
+
+			// Seed VehicleType (Id, VehicleTypeName, IsTollFree)
+			migrationBuilder.InsertData(
+				table: "VehicleType",
+				columns: new[] { "Id", "VehicleTypeName", "IsTollFree" },
+				values: new object[,]
+				{
+			{ 1, "MOTORCYCLE", true },
+			{ 2, "TRACTOR", true },
+			{ 3, "EMERGENCY", true },
+			{ 4, "DIPLOMAT", true },
+			{ 5, "FOREIGN", true },
+			{ 6, "MILITARY", true },
+			{ 7, "CAR", false },
+			{ 8, "TRUCK", false },
+			{ 9, "BUS", false }
+				}
+			);
+
+			// Seed SimulatedVehicleApiData (Id, PlateNumber, OwnerName, VehicleTypeName)
+			migrationBuilder.InsertData(
+				table: "SimulatedVehicleApiData",
+				columns: new[] { "Id", "PlateNumber", "OwnerName", "VehicleTypeName", "OwnerStreetName", "OwnerZipCode", "OwnerCity", "OwnerCountry" },
+				values: new object[,]
+				{
+					{ 1, "PTP461", "Tommy Tjernqvist", "CAR", "Kungsportsavenyen 12", "41136", "Göteborg", "Sweden" },
+					{ 2, "FJN740", "Hugo Håkman", "CAR", "Olivedalsgatan 7", "41304", "Göteborg", "Sweden" },
+					{ 3, "ZCX563", "Linda Längström", "CAR", "Södra Vägen 23", "41254", "Göteborg", "Sweden" },
+					{ 4, "VAT087", "Kalle Krantz", "TRUCK", "Hisingenvägen 5", "41712", "Göteborg", "Sweden" },
+					{ 5, "CUL352", "Benny Bäckström", "BUS", "Backaplan 8", "41834", "Göteborg", "Sweden" },
+					{ 6, "UXL821", "Ronny Röjberg", "CAR", "Mölndalsvägen 55", "41263", "Göteborg", "Sweden" },
+					{ 7, "MKW921", "Sally Ståhl", "CAR", "Kungsgatan 42", "41119", "Göteborg", "Sweden" },
+					{ 8, "OLU514", "Eddie Elg", "MILITARY", "Gamlestads Brygga 10", "41502", "Göteborg", "Sweden" },
+					{ 9, "TJY229", "Felix Färnelund", "CAR", "Östra Hamngatan 6", "41109", "Göteborg", "Sweden" },
+					{ 10, "UHA649", "Jörgen Järvstad", "TRUCK", "Lindholmen 3", "41756", "Göteborg", "Sweden" },
+					{ 11, "BTS372", "Lotta Löfgren", "TRUCK", "Kungälvsvägen 19", "44231", "Kungälv", "Sweden" },
+					{ 12, "XKL291", "Gustav Gullberg", "CAR", "Alebergsvägen 2", "44930", "Nödinge", "Sweden" },
+					{ 13, "PNY183", "Mona Mörk", "CAR", "Partillevägen 7", "43337", "Partille", "Sweden" },
+					{ 14, "KLM562", "Oscar Olofsson", "EMERGENCY", "Angeredsgatan 15", "42432", "Angered", "Sweden" },
+					{ 15, "RMJ473", "Victor Vallén", "CAR", "Stenungsundsvägen 11", "44430", "Stenungsund", "Sweden" },
+					{ 16, "QWE982", "John Smith", "FOREIGN", "10 Downing Street", "SW1A 2", "London", "UK" },
+					{ 17, "TRP648", "Stina Sörlén", "CAR", "Kortedala Torg 5", "41507", "Göteborg", "Sweden" },
+					{ 18, "ZXC101", "Axel Åkesson", "MILITARY", "Hisingstorget 8", "41762", "Göteborg", "Sweden" },
+					{ 19, "LPO839", "Nina Norrström", "CAR", "Majorna Allén 12", "41465", "Göteborg", "Sweden" },
+					{ 20, "GHT467", "Felicia Forslund", "BUS", "Önneredsvägen 22", "42641", "Göteborg", "Sweden" },
+					{ 21, "KLB381", "Greta Gerdman", "TRACTOR", "Torslanda 3", "42338", "Göteborg", "Sweden" },
+					{ 22, "XOP122", "Erik Eklund", "DIPLOMAT", "Avenue Louise 5", "1000", "Brussels", "Belgium" },
+					{ 23, "WZX771", "Beatrice Boström", "CAR", "Örgrytevägen 9", "41672", "Göteborg", "Sweden" },
+					{ 24, "HUE294", "Fredrik Friberg", "CAR", "Västra Frölunda 14", "42131", "Göteborg", "Sweden" },
+					{ 25, "LPD450", "Astrid Albinsson", "CAR", "Backa Vägen 19", "41842", "Göteborg", "Sweden" },
+					{ 26, "PRT999", "Hans Müller", "FOREIGN", "Kurfürstendamm 23", "10719", "Berlin", "Germany" },
+					{ 27, "KNL238", "Kajsa Källström", "CAR", "Kungsladugård 5", "41470", "Göteborg", "Sweden" },
+					{ 28, "UBK768", "Torvald Tollberg", "TRUCK", "Alingsåsvägen 31", "44134", "Alingsås", "Sweden" },
+					{ 29, "EMG482", "Lilly Lind", "CAR", "Långgatorna 11", "41328", "Göteborg", "Sweden" },
+					{ 30, "JNH590", "Bertil Bäckström", "CAR", "Angered Centrum 2", "42435", "Göteborg", "Sweden" },
+					{ 31, "JOL342", "Hanna Hultgren", "EMERGENCY", "Mölndalsvägen 77", "41263", "Göteborg", "Sweden" },
+					{ 32, "WMD229", "Dagmar Dahlen", "CAR", "Lindholmen 14", "41756", "Göteborg", "Sweden" },
+					{ 33, "TYC992", "Oskar Odelberg", "CAR", "Majorna Allén 21", "41465", "Göteborg", "Sweden" },
+					{ 34, "TRD147", "Clara Carlsson", "MOTORCYCLE", "Hisingenvägen 17", "41712", "Göteborg", "Sweden" },
+					{ 35, "BXA321", "Harry Hägglund", "MILITARY", "Backaplan 9", "41834", "Göteborg", "Sweden" },
+					{ 36, "PLT465", "Elsa Eklund", "CAR", "Södra Vägen 31", "41254", "Göteborg", "Sweden" },
+					{ 37, "GFX109", "Ulf Ulander", "TRUCK", "Kortedala Torg 12", "41507", "Göteborg", "Sweden" },
+					{ 38, "LSQ555", "Märta Melin", "BUS", "Långgatorna 45", "41328", "Göteborg", "Sweden" },
+					{ 39, "NKI211", "Simon Stenberg", "CAR", "Kungälvsvägen 21", "44231", "Kungälv", "Sweden" },
+					{ 40, "FPZ830", "Ingrid Irén", "CAR", "Alebergsvägen 11", "44930", "Nödinge", "Sweden" },
+					{ 41, "TXR871", "Göran Gidlund", "MILITARY", "Partillevägen 19", "43337", "Partille", "Sweden" },
+					{ 42, "WQL130", "Camilla Carlsson", "CAR", "Angeredsgatan 19", "42432", "Göteborg", "Sweden" },
+					{ 43, "BYH376", "Roland Rindberg", "TRUCK", "Hisingstorget 7", "41762", "Göteborg", "Sweden" },
+					{ 44, "ZCP591", "Lina Ljungholm", "CAR", "Östra Hamngatan 23", "41109", "Göteborg", "Sweden" },
+					{ 45, "TDA643", "Björn Björkman", "BUS", "Önneredsvägen 6", "42641", "Göteborg", "Sweden" },
+					{ 46, "CBX008", "Stella Sörensson", "CAR", "Torslanda 12", "42338", "Göteborg", "Sweden" },
+					{ 47, "HKO483", "Einar Engström", "CAR", "Stenungsundsvägen 5", "44430", "Stenungsund", "Sweden" },
+					{ 48, "WLQ599", "Emilia Ekberg", "CAR", "Backaplan 21", "41834", "Göteborg", "Sweden" },
+					{ 49, "YSQ102", "Kristian Karlsson", "TRUCK", "Kungälvsvägen 29", "44231", "Kungälv", "Sweden" },
+					{ 50, "RGX702", "Viola Vinge", "CAR", "Alebergsvägen 17", "44930", "Nödinge", "Sweden" },
+					{ 51, "MTF981", "Torsten Törnqvist", "TRUCK", "Mölndalsvägen 99", "41263", "Göteborg", "Sweden" },
+					{ 52, "GQV753", "Ellinor Elm", "CAR", "Långgatorna 33", "41328", "Göteborg", "Sweden" },
+					{ 53, "HZX610", "Sven Svahn", "TRUCK", "Hisingenvägen 21", "41712", "Göteborg", "Sweden" }
+				}
+			);
+		}
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+
+        }
+    }
+}

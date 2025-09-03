@@ -6,7 +6,7 @@ namespace Api.Controllers;
 public class VehicleTypeController(IVehicleTypeService _vehicleTypeService) : ControllerBase
 {
 	[HttpPost("add-vehicle-type")]
-	public async Task<IResult> AddVehicleTypeToTollCameraDataAsync([FromBody] List<TollCameraData> dailyTollCameraData)
+	public async Task<IResult> AddVehicleTypeToTollCameraDataAsync([FromBody] List<TollPassageData> dailyTollCameraData)
 	{
 		try
 		{
@@ -20,11 +20,11 @@ public class VehicleTypeController(IVehicleTypeService _vehicleTypeService) : Co
 
 
 	[HttpPost("filter-out-toll-free-vehicles")]
-	public async Task<IResult> FilterOutTollFreeVehicles([FromBody] List<TollCameraDataWithVehicleTypeDTO> tollCameraDataWithVehicleType)
+	public async Task<IResult> FilterOutTollFreeVehicles([FromBody] List<TollPassageData> tollPassageDataWithVehicleType)
 	{
 		try
 		{
-			return Results.Ok(await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollCameraDataWithVehicleType));
+			return Results.Ok(await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollPassageDataWithVehicleType));
 		}
 		catch (Exception e)
 		{

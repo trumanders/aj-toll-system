@@ -25,9 +25,6 @@ public class Program
 		builder.Services.AddScoped<ITollCameraService, TollCameraService>();
 		builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();		
 		builder.Services.AddScoped<IFeeService, FeeService>();
-		
-		
-		builder.Services.AddScoped<IPassagesService, PassagesService>();
 
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
@@ -36,7 +33,6 @@ public class Program
 		{
 			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
 			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
-			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOVehicleTypeName>();
 			config.CreateMap<FeeInterval, FeeIntervalDTO>();
 			config.CreateMap<VehicleType, VehicleTypeDTO>();
 			config.CreateMap<MonthlyFee, MonthlyFeeDTO>();
