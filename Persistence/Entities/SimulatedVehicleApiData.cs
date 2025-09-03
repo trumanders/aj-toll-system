@@ -26,4 +26,7 @@ public class SimulatedVehicleApiData : IEntity
 
 	[MaxLength(20), Required]
 	public string OwnerCity { get; set; }
+
+	[MaxLength(20), Required]
+	public string OwnerCountry { get; set; }
 }
