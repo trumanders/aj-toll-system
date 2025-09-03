@@ -1,6 +1,6 @@
 ﻿namespace Business.Services;
 
-public class PassagesService : IPassagesService
+public class PassagesService
 {
 	private readonly IDbService _dbService;
 	private readonly IFeeService _feeService;

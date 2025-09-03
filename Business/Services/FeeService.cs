@@ -4,11 +4,11 @@ public class FeeService(IDbService _dbService) : IFeeService
 {
 	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
 
-	private const decimal MAX_DAILY_FEE = 60;
+	private const decimal maxDailyFee = 60;
 
 	public decimal GetMaxDailyFee()
 	{
-		return MAX_DAILY_FEE;
+		return maxDailyFee;
 	}
 
 	public async Task<List<TollPassageData>> ApplyFeeToAllPassages(List<TollPassageData> tollPassageData)
@@ -74,13 +74,15 @@ public class FeeService(IDbService _dbService) : IFeeService
 		return vehicleDailyFees;
 	}
 
+	// MONTHLY FEE LOGIG HERE:
+
 	#region Private Methods
 
 	private decimal? CalculateTotalDailyFeeForVehicle(List<TollPassageData> dailyFeesForVehicle)
 	{
 		var dailyFee = dailyFeesForVehicle.Sum(x => x.Fee);
 
-		return dailyFee > 60 ? 60 : dailyFee;
+		return dailyFee > maxDailyFee ? maxDailyFee : dailyFee;
 	}
 
 	private void ApplyFeeDiscontToPassages(List<TollPassageData> tollPassages)

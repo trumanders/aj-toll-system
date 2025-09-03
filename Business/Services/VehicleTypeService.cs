@@ -2,27 +2,26 @@
 
 public class VehicleTypeService(IDbService _dbService) : IVehicleTypeService
 {
-	public async Task<List<TollCameraDataWithVehicleTypeDTO>> AddVehicleTypeToTollCameraDataAsync(List<TollCameraData> tollCameraDataToFilter)
+	public async Task<List<TollPassageData>> AddVehicleTypeToTollCameraDataAsync(List<TollPassageData> tollCameraDataToFilter)
 	{
 		var apiDataPlateAndType = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>(data =>
 			tollCameraDataToFilter.Select(x => x.PlateNumber).Contains(data.PlateNumber));
 
-		var tollCameraDataWithType = apiDataPlateAndType
+		var tollPassageDataWithType = apiDataPlateAndType
 				.Join(tollCameraDataToFilter,
 					plateAndType => plateAndType.PlateNumber,
 					dataToFilter => dataToFilter.PlateNumber,
-					(plateAndType, dataToFilter) => new TollCameraDataWithVehicleTypeDTO()
+					(plateAndType, dataToFilter) => new TollPassageData()
 					{
 						PlateNumber = plateAndType.PlateNumber,
 						VehicleTypeName = plateAndType.VehicleTypeName,
 						PassageTime = dataToFilter.PassageTime
 					});
 
-
-		return [.. tollCameraDataWithType];
+		return [.. tollPassageDataWithType];
 	}
 
-	public async Task<List<TollCameraDataWithVehicleTypeDTO>> FilterOutTollFreeVehiclesAsync(List<TollCameraDataWithVehicleTypeDTO> tollCameraDataWithVehicleType)
+	public async Task<List<TollPassageData>> FilterOutTollFreeVehiclesAsync(List<TollPassageData> tollCameraDataWithVehicleType)
 	{
 		if (tollCameraDataWithVehicleType.Any(x => x.VehicleTypeName is null))
 			throw new ArgumentException("VehicleType is required. Please include vehicle type in the request.");
