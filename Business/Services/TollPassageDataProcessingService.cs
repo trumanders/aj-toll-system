@@ -10,11 +10,8 @@ public class TollPassageDataProcessingService(
 		// Get raw toll camera data
 		var tollPassageData = MapToTollPassageData(await _tollCameraService.GetDailyTollCameraData(date, numberOfPassages));
 		
-		// Apply vehicle types
-		var tollCameraDataWithType = await _vehicleTypeService.AddVehicleTypeToTollCameraDataAsync(tollPassageData);
-
 		// Filter out toll free types
-		var tollCameraDataWithoutTollFreeVehicles = await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollCameraDataWithType);
+		var tollCameraDataWithoutTollFreeVehicles = await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollPassageData);
 
 		// Apply fees
 		var tollPassageDataWithFees = await _feeService.ApplyFeeToAllPassages(tollCameraDataWithoutTollFreeVehicles);

@@ -13,9 +13,6 @@ public class FeeService(IDbService _dbService) : IFeeService
 
 	public async Task<List<TollPassageData>> ApplyFeeToAllPassages(List<TollPassageData> tollPassageData)
 	{
-		if (tollPassageData.Any(x => x.VehicleTypeName is null))
-			throw new ArgumentException("VehicleType is required. Please include vehicle type in the request.");
-
 		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
 
 		if (feeIntervals.Count == 0)
@@ -35,7 +32,6 @@ public class FeeService(IDbService _dbService) : IFeeService
 							?.Fee ?? 0;
 						return passage;
 					})
-					.Where(passage => passage != null)
 					.ToList();
 
 				ApplyFeeDiscontToPassages(passagesWithFee);
