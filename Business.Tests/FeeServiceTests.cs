@@ -5,8 +5,6 @@ public class FeeServiceTests
 {
 	private IFeeService _sut;
 	private IDbService _fakeDbService;
-	private ITollFreeDaysService _fakeTollFreeDaysService;
-	private IFeeService _fakeFeeService;
 
 	private readonly List<FeeIntervalDTO> _fakeFeeIntervals =
 	[
@@ -23,44 +21,25 @@ public class FeeServiceTests
 
 	private readonly List<TollPassageData> _tollPassagesWithoutFee =
 	[
-		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), VehicleTypeName = "Car" },	// (16) (0, next is within hour and higher)
-		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0), VehicleTypeName = "Car" },	// 22
-
-		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), VehicleTypeName = "Car" },	// 22
-		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0), VehicleTypeName = "Car" },	// (16) (0, is within hour from previous which is higher)
-
-		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00), VehicleTypeName = "Car" },// 9
-
-		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59), VehicleTypeName = "Car" },	// 0
-
-		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0), VehicleTypeName = "Car" },	// (9) (0, next is within hour and higher)
-		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), VehicleTypeName = "Car" },	// 16
-
-		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), VehicleTypeName = "Car" },	// 22
-		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00), VehicleTypeName = "Car" }  // (16) (0, within hour from previous which is higher)
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// (16) (0, next is within hour and higher)
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0) },	// 22
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// 22
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0) },	// (16) (0, is within hour from previous which is higher)
+		new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00) },// 9
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59) },	// 0
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) },	// (9) (0, next is within hour and higher)
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59) },	// 16
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59) },	// 22
+		new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00) }  // (16) (0, within hour from previous which is higher)
 	];
 
 	private readonly List<decimal> _tollPassagesWithoutFeeExpectedFees = [22, 22, 9, 16, 22];
 
-[SetUp]
+	[SetUp]
 	public void SetUp()
 	{
 		_fakeDbService = A.Fake<IDbService>();
 		_sut = new FeeService(_fakeDbService);
-		_fakeTollFreeDaysService = A.Fake<ITollFreeDaysService>();
-		_fakeFeeService = A.Fake<IFeeService>();
-	}
-
-	[Test]
-	public void ApplyFeeToAllPassages_WhenNoVehicleTypeExists_ThrowsArgumentException()
-	{
-		// Arrange
-		var passageDataWithoutVehicleType = new List<TollPassageData>()
-		{ new() { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) } };
-
-		// Act & Assert
-		var ex = Assert.ThrowsAsync<ArgumentException>(async () => await _sut.ApplyFeeToAllPassages(passageDataWithoutVehicleType));
-		Assert.That(ex.Message, Is.EqualTo("VehicleType is required. Please include vehicle type in the request."));
 	}
 
 	[Test]
@@ -68,7 +47,7 @@ public class FeeServiceTests
 	{
 		// Arrange
 		var anyTollPassageData = new List<TollPassageData>()
-		{ new() { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0), VehicleTypeName = "Car" } };
+		{ new() { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) } };
 
 		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>()).Returns([]);
 		var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.ApplyFeeToAllPassages(anyTollPassageData));
@@ -109,16 +88,16 @@ public class FeeServiceTests
 		// Arrange
 		var tollPassageData = new List<TollPassageData>
 		{
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), VehicleTypeName = "Car", Fee = 0 },
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0), VehicleTypeName = "Car", Fee = 22 },
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), VehicleTypeName = "Car", Fee = 22 },
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0), VehicleTypeName = "Car", Fee = 0 },
-			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00), VehicleTypeName = "Car", Fee = 9 },
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59), VehicleTypeName = "Car", Fee = 0 },
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0), VehicleTypeName = "Car", Fee = 0 },
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), VehicleTypeName = "Car", Fee = 16 },
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), VehicleTypeName = "Car", Fee = 22 },
-			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00), VehicleTypeName = "Car", Fee = 0 }
+			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), Fee = 0 },
+			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 0, 0), Fee = 22 },
+			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), Fee = 22 },
+			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 8, 0, 0), Fee = 0 },
+			new () { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 10, 00, 00), Fee = 9 },
+			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 5, 59, 59), Fee = 0 },
+			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0), Fee = 0 },
+			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 6, 59, 59), Fee = 16 },
+			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 7, 59, 59), Fee = 22 },
+			new () { PlateNumber = "DEF456", PassageTime = new DateTime(2025, 1, 20, 8, 00, 00), Fee = 0 }
 		};
 
 		var expectedFees = new List<decimal> { 53, 38 };
