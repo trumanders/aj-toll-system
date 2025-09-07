@@ -1,4 +1,5 @@
 namespace Api;
+
 public class Program
 {
 	public static async Task Main(string[] args)
@@ -9,11 +10,14 @@ public class Program
 
 		builder.Services.AddDbContext<Context>(options =>
 		{
-			options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"),
-			sqlOptions => sqlOptions.EnableRetryOnFailure(
-				maxRetryCount: 5,
-				maxRetryDelay: TimeSpan.FromSeconds(10),
-				errorNumbersToAdd: null)
+			options.UseSqlServer(
+				builder.Configuration.GetConnectionString("SqlConnection"),
+				sqlOptions =>
+					sqlOptions.EnableRetryOnFailure(
+						maxRetryCount: 5,
+						maxRetryDelay: TimeSpan.FromSeconds(10),
+						errorNumbersToAdd: null
+					)
 			);
 		});
 
@@ -23,41 +27,47 @@ public class Program
 		builder.Services.AddScoped<IPublicHolidays, SwedenPublicHoliday>();
 		builder.Services.AddScoped<ITollFreeDaysService, TollFreeDaysService>();
 		builder.Services.AddScoped<ITollCameraService, TollCameraService>();
-		builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();		
+		builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();
 		builder.Services.AddScoped<IFeeService, FeeService>();
 
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
 
-		builder.Services.AddSingleton(new MapperConfiguration(config =>
-		{
-			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
-			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
-			config.CreateMap<FeeInterval, FeeIntervalDTO>();
-			config.CreateMap<VehicleType, VehicleTypeDTO>();
-			config.CreateMap<MonthlyFee, MonthlyFeeDTO>();
-			config.CreateMap<MonthlyFeeDTO, MonthlyFee>();	
-			config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>();	
-		}).CreateMapper());		
+		builder.Services.AddSingleton(
+			new MapperConfiguration(config =>
+			{
+				config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
+				config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
+				config.CreateMap<FeeInterval, FeeIntervalDTO>();
+				config.CreateMap<VehicleType, VehicleTypeDTO>();
+				config.CreateMap<MonthlyFee, MonthlyFeeDTO>();
+				config.CreateMap<MonthlyFeeDTO, MonthlyFee>();
+				config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>();
+			}).CreateMapper()
+		);
 
 		var app = builder.Build();
 
 		app.UseRouting();
 		app.UseOpenApi();
-		app.UseSwaggerUi((settings) =>
-		{
-			settings.Path = string.Empty;
-		});
-
-		app.Use(async (context, next) =>
-		{
-			if (context.Request.Path == "/")
+		app.UseSwaggerUi(
+			(settings) =>
 			{
-				context.Response.Redirect("/swagger"); 
-				return;
+				settings.Path = string.Empty;
 			}
-			await next.Invoke();
-		});
+		);
+
+		app.Use(
+			async (context, next) =>
+			{
+				if (context.Request.Path == "/")
+				{
+					context.Response.Redirect("/swagger");
+					return;
+				}
+				await next.Invoke();
+			}
+		);
 
 		app.UseHttpsRedirection();
 

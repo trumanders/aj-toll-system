@@ -11,18 +11,22 @@ public class SimulatedVehicleApiDataController : ControllerBase
 		_dbService = dbService;
 	}
 
-
 	[HttpGet("getAll")]
 	public async Task<IResult> GetAll()
 	{
 		try
 		{
-			var simulatedVehicleApiData = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
+			var simulatedVehicleApiData = await _dbService.GetAsync<
+				SimulatedVehicleApiData,
+				SimulatedVehicleApiDataDTO
+			>();
 			return Results.Ok(simulatedVehicleApiData);
 		}
 		catch (Exception e)
 		{
-			return Results.Problem($"An error occurred while retrieving data. Exception: {e.Message}");
+			return Results.Problem(
+				$"An error occurred while retrieving data. Exception: {e.Message}"
+			);
 		}
 	}
 
@@ -31,13 +35,18 @@ public class SimulatedVehicleApiDataController : ControllerBase
 	{
 		try
 		{
-			var vehiclePlateNumbers = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
+			var vehiclePlateNumbers = await _dbService.GetAsync<
+				SimulatedVehicleApiData,
+				SimulatedVehicleApiDataDTOPlateNumber
+			>();
 
 			return Results.Ok(vehiclePlateNumbers);
 		}
 		catch (Exception e)
 		{
-			return Results.Problem($"An error occurred while retrieving data. Exception: {e.Message}");
+			return Results.Problem(
+				$"An error occurred while retrieving data. Exception: {e.Message}"
+			);
 		}
 	}
 }

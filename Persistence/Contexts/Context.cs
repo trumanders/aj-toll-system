@@ -1,20 +1,21 @@
-﻿	namespace Persistence.Contexts;
-	public class Context : DbContext
+﻿namespace Persistence.Contexts;
+
+public class Context(DbContextOptions<Context> options) : DbContext(options)
+{
+	public DbSet<Billing> Billing => Set<Billing>();
+	public DbSet<FeeInterval> FeeInterval => Set<FeeInterval>();
+	public DbSet<MonthlyFee> MonthlyFee => Set<MonthlyFee>();
+	public DbSet<SimulatedVehicleApiData> SimulatedVehicleApiData => Set<SimulatedVehicleApiData>();
+	public DbSet<VehicleType> VehicleType => Set<VehicleType>();
+
+	protected override void OnModelCreating(ModelBuilder builder)
 	{
-		public DbSet<Billing> Billing => Set<Billing>();
-		public DbSet<FeeInterval> FeeInterval => Set<FeeInterval>();
-		public DbSet<MonthlyFee> MonthlyFee => Set<MonthlyFee>();
-		public DbSet<SimulatedVehicleApiData> SimulatedVehicleApiData => Set<SimulatedVehicleApiData>();
-		public DbSet<VehicleType> VehicleType => Set<VehicleType>();
+		builder.ApplyConfigurationsFromAssembly(typeof(Context).Assembly);
 
-		public Context(DbContextOptions<Context> options) : base(options) { }
+		base.OnModelCreating(builder);
 
-		protected override void OnModelCreating(ModelBuilder builder)
-		{
-			base.OnModelCreating(builder);
+		// Disable cascade delete here
 
-			// Disable cascade delete here
-
-			// Configure composite keys here (many to many)
-		}
+		// Configure composite keys here (many to many)
 	}
+}

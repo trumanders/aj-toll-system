@@ -1,6 +1,6 @@
 ﻿namespace Business.Tests;
 
-[TestFixture]	
+[TestFixture]
 public class TollFreeDaysServiceTests
 {
 	private ITollFreeDaysService _sut;
@@ -13,10 +13,10 @@ public class TollFreeDaysServiceTests
 		_sut = new TollFreeDaysService(_fakePublicHolidays);
 	}
 
-	[Test]	
+	[Test]
 	public void IsTollFreeDay_WhenHolidayProvided_ShouldReturnTrue()
 	{
-		var holiday = new DateTime(2024,1,1);
+		var holiday = new DateTime(2024, 1, 1);
 		var dayBeforeHoliday = holiday.AddDays(-1);
 		var saturday = new DateTime(2025, 1, 18);
 		var sunday = new DateTime(2025, 1, 19);
@@ -45,8 +45,10 @@ public class TollFreeDaysServiceTests
 		var chargeableFriday = new DateTime(2025, 1, 3);
 		var chargeableMonday = new DateTime(2025, 1, 6);
 
-		A.CallTo(() => _fakePublicHolidays.IsPublicHoliday(chargeableDayAferHoliday)).Returns(false);
-		A.CallTo(() => _fakePublicHolidays.IsPublicHoliday(chargeableDayTwoDaysBeforeHoliday)).Returns(false);
+		A.CallTo(() => _fakePublicHolidays.IsPublicHoliday(chargeableDayAferHoliday))
+			.Returns(false);
+		A.CallTo(() => _fakePublicHolidays.IsPublicHoliday(chargeableDayTwoDaysBeforeHoliday))
+			.Returns(false);
 		A.CallTo(() => _fakePublicHolidays.IsPublicHoliday(chargeableFriday)).Returns(false);
 		A.CallTo(() => _fakePublicHolidays.IsPublicHoliday(chargeableMonday)).Returns(false);
 

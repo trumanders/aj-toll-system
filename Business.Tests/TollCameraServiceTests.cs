@@ -5,25 +5,23 @@ namespace Business.Tests;
 [TestFixture]
 public class TollCameraServiceTests
 {
-	private ITollCameraService _sut;
-	private IDbService _fakeDbService;
-	private DateTime _date = new DateTime(2022, 02, 02);
+	private readonly ITollCameraService _sut;
+	private readonly IDbService _fakeDbService;
+	private readonly DateTime _date = new(2022, 02, 02);
 
 	private readonly List<SimulatedVehicleApiDataDTOPlateNumber> _fakeVehicleInfo =
-		[
-			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "ABC123" },
-			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "DEF456" },
-			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "GHI789" },
-			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "JKL012" },
-			new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "MNO345" },
-		];
+	[
+		new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "ABC123" },
+		new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "DEF456" },
+		new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "GHI789" },
+		new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "JKL012" },
+		new SimulatedVehicleApiDataDTOPlateNumber { PlateNumber = "MNO345" },
+	];
 
-	[SetUp]
-	public void Setup()
+	public TollCameraServiceTests()
 	{
 		_fakeDbService = A.Fake<IDbService>();
 		_sut = new TollCameraService(_fakeDbService);
-
 		A.CallTo((() => _fakeDbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>()))
 			.Returns(_fakeVehicleInfo);
 	}

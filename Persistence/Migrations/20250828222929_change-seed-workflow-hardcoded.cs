@@ -4,27 +4,27 @@
 
 namespace Persistence.Migrations
 {
-    /// <inheritdoc />
-    public partial class changeseedworkflowhardcoded : Migration
-    {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+	/// <inheritdoc />
+	public partial class changeseedworkflowhardcoded : Migration
+	{
+		/// <inheritdoc />
+		protected override void Up(MigrationBuilder migrationBuilder)
+		{
 			// Seed FeeInterval (Id, Fee, Start, End)
 			migrationBuilder.InsertData(
 				table: "FeeInterval",
 				columns: new[] { "Id", "Fee", "Start", "End" },
 				values: new object[,]
 				{
-					{ 1, 9, new TimeSpan(6,0,0), new TimeSpan(6,30,0) },
-					{ 2, 16, new TimeSpan(6,30,0), new TimeSpan(7,0,0) },
-					{ 3, 22, new TimeSpan(7,0,0), new TimeSpan(8,0,0) },
-					{ 4, 9, new TimeSpan(8,30,0), new TimeSpan(15,0,0) },
-					{ 5, 16, new TimeSpan(8,0,0), new TimeSpan(8,30,0) },
-					{ 6, 16, new TimeSpan(15,0,0), new TimeSpan(15,30,0) },
-					{ 7, 22, new TimeSpan(15,30,0), new TimeSpan(17,0,0) },
-					{ 8, 16, new TimeSpan(17,0,0), new TimeSpan(18,0,0) },
-					{ 9, 9, new TimeSpan(18,0,0), new TimeSpan(18,30,0) }
+					{ 1, 9, new TimeSpan(6, 0, 0), new TimeSpan(6, 30, 0) },
+					{ 2, 16, new TimeSpan(6, 30, 0), new TimeSpan(7, 0, 0) },
+					{ 3, 22, new TimeSpan(7, 0, 0), new TimeSpan(8, 0, 0) },
+					{ 4, 9, new TimeSpan(8, 30, 0), new TimeSpan(15, 0, 0) },
+					{ 5, 16, new TimeSpan(8, 0, 0), new TimeSpan(8, 30, 0) },
+					{ 6, 16, new TimeSpan(15, 0, 0), new TimeSpan(15, 30, 0) },
+					{ 7, 22, new TimeSpan(15, 30, 0), new TimeSpan(17, 0, 0) },
+					{ 8, 16, new TimeSpan(17, 0, 0), new TimeSpan(18, 0, 0) },
+					{ 9, 9, new TimeSpan(18, 0, 0), new TimeSpan(18, 30, 0) },
 				}
 			);
 
@@ -34,15 +34,15 @@ namespace Persistence.Migrations
 				columns: new[] { "Id", "VehicleTypeName", "IsTollFree" },
 				values: new object[,]
 				{
-			{ 1, "MOTORCYCLE", true },
-			{ 2, "TRACTOR", true },
-			{ 3, "EMERGENCY", true },
-			{ 4, "DIPLOMAT", true },
-			{ 5, "FOREIGN", true },
-			{ 6, "MILITARY", true },
-			{ 7, "CAR", false },
-			{ 8, "TRUCK", false },
-			{ 9, "BUS", false }
+					{ 1, "MOTORCYCLE", true },
+					{ 2, "TRACTOR", true },
+					{ 3, "EMERGENCY", true },
+					{ 4, "DIPLOMAT", true },
+					{ 5, "FOREIGN", true },
+					{ 6, "MILITARY", true },
+					{ 7, "CAR", false },
+					{ 8, "TRUCK", false },
+					{ 9, "BUS", false },
 				}
 			);
 
@@ -104,15 +104,12 @@ namespace Persistence.Migrations
 					{ 50, "RGX702", "Viola Vinge", "CAR" },
 					{ 51, "MTF981", "Torsten Törnqvist", "TRUCK" },
 					{ 52, "GQV753", "Ellinor Elm", "CAR" },
-					{ 53, "HZX610", "Sven Svahn", "TRUCK" }
+					{ 53, "HZX610", "Sven Svahn", "TRUCK" },
 				}
 			);
 		}
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-
-        }
-    }
+		/// <inheritdoc />
+		protected override void Down(MigrationBuilder migrationBuilder) { }
+	}
 }
