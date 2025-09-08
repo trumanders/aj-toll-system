@@ -24,6 +24,7 @@ public class TollPassageDataProcessingService(ITollCameraService _tollCameraServ
 		);
 
 		// Write to database MonthlyFee-table: Add vehicles+dailyfee to the table, accumulating monthly fee
+
 	}
 
 	private List<TollPassageData> MapToTollPassageData(List<TollCameraData> rawCameraData)

@@ -4,7 +4,6 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
 {
 	public DbSet<Billing> Billing => Set<Billing>();
 	public DbSet<FeeInterval> FeeInterval => Set<FeeInterval>();
-	public DbSet<MonthlyFee> MonthlyFee => Set<MonthlyFee>();
 	public DbSet<SimulatedVehicleApiData> SimulatedVehicleApiData => Set<SimulatedVehicleApiData>();
 	public DbSet<VehicleType> VehicleType => Set<VehicleType>();
 

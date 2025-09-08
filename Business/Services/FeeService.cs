@@ -76,10 +76,7 @@ public class FeeService(IDbService _dbService) : IFeeService
 		return vehicleDailyFees;
 	}
 
-	// MONTHLY FEE LOGIG HERE:
-
-
-
+	// MONTHLY FEE LOGIC HERE:
 
 	#region Private Methods
 

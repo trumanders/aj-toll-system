@@ -40,8 +40,6 @@ public class Program
 				config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
 				config.CreateMap<FeeInterval, FeeIntervalDTO>();
 				config.CreateMap<VehicleType, VehicleTypeDTO>();
-				config.CreateMap<MonthlyFee, MonthlyFeeDTO>();
-				config.CreateMap<MonthlyFeeDTO, MonthlyFee>();
 				config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>();
 			}).CreateMapper()
 		);
