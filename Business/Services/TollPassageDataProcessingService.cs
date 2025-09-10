@@ -1,23 +1,27 @@
 ﻿namespace Business.Services;
 
-public class TollPassageDataProcessingService(
-	ITollCameraService _tollCameraService,
-	IVehicleTypeService _vehicleTypeService,
-	IFeeService _feeService)
+public class TollPassageDataProcessingService(ITollCameraService _tollCameraService, IVehicleTypeService _vehicleTypeService, IFeeService _feeService)
 {
 	public async Task ProcessDailyTollCameraData(DateTime date, int numberOfPassages)
 	{
 		// Get raw toll camera data
-		var tollPassageData = MapToTollPassageData(await _tollCameraService.GetDailyTollCameraData(date, numberOfPassages));
-		
+		var tollPassageData = MapToTollPassageData(
+			await _tollCameraService.GetDailyTollCameraData(date, numberOfPassages)
+		);
+
 		// Filter out toll free types
-		var tollCameraDataWithoutTollFreeVehicles = await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollPassageData);
+		var tollCameraDataWithoutTollFreeVehicles =
+			await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollPassageData);
 
 		// Apply fees
-		var tollPassageDataWithFees = await _feeService.ApplyFeeToAllPassages(tollCameraDataWithoutTollFreeVehicles);
+		var tollPassageDataWithFees = await _feeService.ApplyFeeToAllPassages(
+			tollCameraDataWithoutTollFreeVehicles
+		);
 
 		// Summarize daily fees per vehicle
-		var vehiclesWithDailyFees = _feeService.GetDailyFeeSummaryForEachVehicle(tollPassageDataWithFees);
+		var vehiclesWithDailyFees = _feeService.GetDailyFeeSummaryForEachVehicle(
+			tollPassageDataWithFees
+		);
 
 		// Write to database MonthlyFee-table: Add vehicles+dailyfee to the table, accumulating monthly fee
 
@@ -29,11 +33,13 @@ public class TollPassageDataProcessingService(
 
 		foreach (var cameraData in rawCameraData)
 		{
-			tollPassageData.Add(new TollPassageData()
-			{
-				PlateNumber = cameraData.PlateNumber,
-				PassageTime = cameraData.PassageTime,
-			});
+			tollPassageData.Add(
+				new TollPassageData()
+				{
+					PlateNumber = cameraData.PlateNumber,
+					PassageTime = cameraData.PassageTime,
+				}
+			);
 		}
 		return tollPassageData;
 	}

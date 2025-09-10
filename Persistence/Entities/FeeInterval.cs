@@ -13,5 +13,4 @@ public class FeeInterval : IEntity
 
 	[Required]
 	public TimeSpan End { get; set; }
-
 }

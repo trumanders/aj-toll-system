@@ -7,6 +7,7 @@ public class DbService : IDbService
 {
 	private readonly Context _db;
 	private readonly IMapper _mapper;
+
 	public DbService(Context db, IMapper mapper)
 	{
 		_db = db;
@@ -64,7 +65,9 @@ public class DbService : IDbService
 	//}
 
 	// Get with expression
-	public async Task<List<TDto>> GetAsync<TEntity, TDto>(Expression<Func<TEntity, bool>> expression)
+	public async Task<List<TDto>> GetAsync<TEntity, TDto>(
+		Expression<Func<TEntity, bool>> expression
+	)
 		where TEntity : class, IEntity
 		where TDto : class
 	{
@@ -76,11 +79,12 @@ public class DbService : IDbService
 		return dtos;
 	}
 
-
 	public async Task<List<TDto>> GetWithExpressionAndIncludesAsync<TEntity, TDto>(
-		Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includes)
-			where TEntity : class, IEntity
-			where TDto : class
+		Expression<Func<TEntity, bool>> filter,
+		params Expression<Func<TEntity, object>>[] includes
+	)
+		where TEntity : class, IEntity
+		where TDto : class
 	{
 		IQueryable<TEntity> query = _db.Set<TEntity>();
 
@@ -97,7 +101,6 @@ public class DbService : IDbService
 		var entities = await query.ToListAsync();
 		return _mapper.Map<List<TDto>>(entities);
 	}
-
 
 	//public async Task<TDto> SingleAsync<TEntity, TDto>(Expression<Func<TEntity, bool>> expression)
 	//	where TEntity : class, IEntity
@@ -138,14 +141,19 @@ public class DbService : IDbService
 	//	return true;
 	//}
 
-	public async Task<bool> Update<TEntity, TDto>(Expression<Func<TEntity, bool>> expression, List<TDto> dtos)
-	where TEntity : class, IEntity
-	where TDto : class
+	public async Task<bool> Update<TEntity, TDto>(
+		Expression<Func<TEntity, bool>> expression,
+		List<TDto> dtos
+	)
+		where TEntity : class, IEntity
+		where TDto : class
 	{
 		var entities = await _db.Set<TEntity>().Where(expression).ToListAsync();
 
-		if (entities.Count != dtos.Count) return false;
-		if (entities.Any(e => e is null)) return false;
+		if (entities.Count != dtos.Count)
+			return false;
+		if (entities.Any(e => e is null))
+			return false;
 
 		for (int i = 0; i < entities.Count; i++)
 		{

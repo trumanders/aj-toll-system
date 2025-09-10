@@ -1,6 +1,7 @@
 ﻿using Business.Models;
 
 namespace Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 public class FeeController(IFeeService _feeService) : ControllerBase
@@ -14,7 +15,9 @@ public class FeeController(IFeeService _feeService) : ControllerBase
 		}
 		catch (Exception e)
 		{
-			return Results.Problem($"An error occurred while retrieving data. Exception: {e.Message}");
+			return Results.Problem(
+				$"An error occurred while retrieving data. Exception: {e.Message}"
+			);
 		}
 	}
 
@@ -27,7 +30,9 @@ public class FeeController(IFeeService _feeService) : ControllerBase
 		}
 		catch (Exception e)
 		{
-			return Results.Problem($"An error occurred while retrieving data. Exception: {e.Message}");
+			return Results.Problem(
+				$"An error occurred while retrieving data. Exception: {e.Message}"
+			);
 		}
 	}
 }

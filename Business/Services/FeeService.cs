@@ -22,32 +22,36 @@ public class FeeService(IDbService _dbService) : IFeeService
 
 		var passagesByPlateNumberWithFeeApplied = tollPassageData
 			.GroupBy(x => x.PlateNumber)
-			.Select(plateNumberGroup =>
-			{
-				var passagesWithFee = plateNumberGroup
-					.Select(passage =>
-					{
-						passage.Fee = feeIntervals
-							.FirstOrDefault(feeInterval => passage.PassageTime.TimeOfDay >= feeInterval.Start && passage.PassageTime.TimeOfDay < feeInterval.End)
-							?.Fee ?? 0;
-						return passage;
-					})
-					.ToList();
+				.Select(plateNumberGroup =>
+				{
+					var passagesWithFee = plateNumberGroup
+						.Select(passage =>
+						{
+							passage.Fee = feeIntervals
+								.FirstOrDefault(feeInterval => passage.PassageTime.TimeOfDay >= feeInterval.Start &&
+									passage.PassageTime.TimeOfDay < feeInterval.End)
+								?.Fee ?? 0;
+							return passage;
+						})
+						.ToList();
 
-				ApplyFeeDiscontToPassages(passagesWithFee);
-				RemoveZeroFees(passagesWithFee);
+					ApplyFeeDiscontToPassages(passagesWithFee);
+					RemoveZeroFees(passagesWithFee);
 
-				return passagesWithFee;
-			}).ToList();
+					return passagesWithFee;
+				})
+				.ToList();
 
 		return [.. passagesByPlateNumberWithFeeApplied.SelectMany(plateNumberGroup => plateNumberGroup)];
 	}
 
 	public List<VehicleDailyFee> GetDailyFeeSummaryForEachVehicle(List<TollPassageData> passageData)
-	{		
+	{
 		if (passageData.Any(x => x.Fee == null))
 		{
-			throw new InvalidOperationException("The passages must have fees applied to calculate the total daily fee");
+			throw new InvalidOperationException(
+				"The passages must have fees applied to calculate the total daily fee"
+			);
 		}
 
 		var passasgesByPlatenumber = passageData
@@ -59,18 +63,20 @@ public class FeeService(IDbService _dbService) : IFeeService
 
 		foreach (var platenumberGroup in passasgesByPlatenumber)
 		{
-			vehicleDailyFees.Add(new VehicleDailyFee()
-			{
-				PlateNumber = platenumberGroup.First().PlateNumber,
-				DailyFee = CalculateTotalDailyFeeForVehicle(platenumberGroup),
-				Date = platenumberGroup.First().PassageTime.Date
-			});
+			vehicleDailyFees.Add(
+				new VehicleDailyFee()
+				{
+					PlateNumber = platenumberGroup.First().PlateNumber,
+					DailyFee = CalculateTotalDailyFeeForVehicle(platenumberGroup),
+					Date = platenumberGroup.First().PassageTime.Date,
+				}
+			);
 		}
 
 		return vehicleDailyFees;
 	}
 
-	// MONTHLY FEE LOGIG HERE:
+	// MONTHLY FEE LOGIC HERE:
 
 	#region Private Methods
 
@@ -84,24 +90,41 @@ public class FeeService(IDbService _dbService) : IFeeService
 	private void ApplyFeeDiscontToPassages(List<TollPassageData> tollPassages)
 	{
 		if (tollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
-			throw new ArgumentException("All passages must be for the same vehicle.", nameof(tollPassages));
+			throw new ArgumentException(
+				"All passages must be for the same vehicle.",
+				nameof(tollPassages)
+			);
 
 		if (tollPassages == null)
-			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null when applying fee discount.");
+			throw new ArgumentNullException(
+				nameof(tollPassages),
+				"Toll passages list cannot be null when applying fee discount."
+			);
 
 		if (tollPassages.Count == 0)
-			throw new ArgumentException("Toll passages list cannot be empty when applying fee discount.", nameof(tollPassages));
+			throw new ArgumentException(
+				"Toll passages list cannot be empty when applying fee discount.",
+				nameof(tollPassages)
+			);
 
-		var firstPassageWithFee = tollPassages.FirstOrDefault(passage => passage.Fee > 0)
-			?? tollPassages.First();
+		var firstPassageWithFee =
+			tollPassages.FirstOrDefault(passage => passage.Fee > 0) ?? tollPassages.First();
 
 		var intervalStart = firstPassageWithFee;
 		var highestFeePassageInInterval = firstPassageWithFee;
 
 		// Start iterating from element after intervalStart / highestFeePassageInInterval
-		foreach (var tollPassage in tollPassages.SkipWhile(passage => passage != intervalStart).Skip(1))
+		foreach (
+			var tollPassage in tollPassages.SkipWhile(passage => passage != intervalStart).Skip(1)
+		)
 		{
-			if (IsPassageWithinInterval(tollPassage.PassageTime, intervalStart.PassageTime, _singleChargeInterval))
+			if (
+				IsPassageWithinInterval(
+					tollPassage.PassageTime,
+					intervalStart.PassageTime,
+					_singleChargeInterval
+				)
+			)
 			{
 				if (tollPassage.Fee >= highestFeePassageInInterval.Fee)
 				{

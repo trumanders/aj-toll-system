@@ -9,4 +9,3 @@ global using Persistence.Entities;
 global using Persistence.Interfaces;
 global using Persistence.Services;
 global using PublicHoliday;
-
