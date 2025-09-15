@@ -1,3 +1,5 @@
+using Business.Mapping;
+
 namespace Api;
 
 public class Program
@@ -33,16 +35,11 @@ public class Program
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
 
-		builder.Services.AddSingleton(
-			new MapperConfiguration(config =>
-			{
-				config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTO>();
-				config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateNumber>();
-				config.CreateMap<FeeInterval, FeeIntervalDTO>();
-				config.CreateMap<VehicleType, VehicleTypeDTO>();
-				config.CreateMap<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>();
-			}).CreateMapper()
-		);
+		builder.Services.AddAutoMapper(cfg =>
+		{
+			cfg.AddProfile<BusinessMappingProfile>();
+			cfg.AddProfile<DtoMappingProfile>();
+		});
 
 		var app = builder.Build();
 

@@ -1,6 +1,6 @@
-﻿namespace Common.DTO;
+﻿namespace Business.Models;
 
-public class FeeIntervalDTO
+public class FeeIntervalModel : IBusinessModel
 {
 	public decimal Fee { get; set; }
 	public TimeSpan Start { get; set; }

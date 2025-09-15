@@ -1,6 +1,6 @@
-﻿namespace Business.Models;
+﻿namespace Api.Dto;
 
-public class VehicleDailyFee : IBusinessModel
+public class DailyFeeDto
 {
 	public string PlateNumber { get; set; }
 	public decimal? DailyFee { get; set; }

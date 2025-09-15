@@ -2,7 +2,5 @@
 
 public interface IVehicleTypeService
 {
-	public Task<List<TollPassageData>> FilterOutTollFreeVehiclesAsync(
-		List<TollPassageData> tollPassageData
-	);
+	public Task<List<TollPassageData>> FilterOutTollFreeVehiclesAsync(List<TollCameraData> tollPassageData);
 }

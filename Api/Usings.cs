@@ -1,7 +1,9 @@
-﻿global using AutoMapper;
+﻿global using Api.Dto;
+global using Api.Mapping;
+global using AutoMapper;
 global using Business.Interfaces;
+global using Business.Models;
 global using Business.Services;
-global using Common.DTO;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Persistence.Contexts;

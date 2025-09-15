@@ -14,6 +14,10 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
 
 		base.OnModelCreating(builder);
 
+		builder.Entity<DailyFees>()
+			.HasIndex(d => new { d.Date, d.PlateNumber })
+			.IsUnique();
+
 		// Disable cascade delete here
 
 		// Configure composite keys here (many to many)

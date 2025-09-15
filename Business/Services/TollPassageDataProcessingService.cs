@@ -5,25 +5,18 @@ public class TollPassageDataProcessingService(ITollCameraService _tollCameraServ
 	public async Task ProcessDailyTollCameraData(DateTime date, int numberOfPassages)
 	{
 		// Get raw toll camera data
-		var tollPassageData = MapToTollPassageData(
-			await _tollCameraService.GetDailyTollCameraData(date, numberOfPassages)
-		);
+		var tollCameraData = await _tollCameraService.GetDailyTollCameraData(date, numberOfPassages);
 
 		// Filter out toll free types
-		var tollCameraDataWithoutTollFreeVehicles =
-			await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollPassageData);
+		var tollPassageData = await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollCameraData);
 
 		// Apply fees
-		var tollPassageDataWithFees = await _feeService.ApplyFeeToAllPassages(
-			tollCameraDataWithoutTollFreeVehicles
-		);
+		var tollPassageDataWithFees = await _feeService.ApplyFeeToAllPassages(tollPassageData);
 
-		// Summarize daily fees per vehicle
-		var vehiclesWithDailyFees = _feeService.GetDailyFeeSummaryForEachVehicle(
-			tollPassageDataWithFees
-		);
+		// Save daily fees per vehicle
+		var savedDailyFeesPerVehicle = await _feeService.SaveDailyFeeSummaryForEachVehicle(tollPassageDataWithFees);
 
-		// Write to database MonthlyFee-table: Add vehicles+dailyfee to the table, accumulating monthly fee
+
 
 	}
 

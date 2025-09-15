@@ -6,7 +6,7 @@ public class FeeServiceTests
 	private IFeeService _sut;
 	private IDbService _fakeDbService;
 
-	private readonly List<FeeIntervalDTO> _fakeFeeIntervals =
+	private readonly List<FeeIntervalModel> _fakeFeeIntervals =
 	[
 		new()
 		{
@@ -96,7 +96,7 @@ public class FeeServiceTests
 			new() { PlateNumber = "ABC123", PassageTime = new DateTime(2025, 1, 20, 6, 0, 0) },
 		};
 
-		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>()).Returns([]);
+		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalModel>()).Returns([]);
 		var exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
 			await _sut.ApplyFeeToAllPassages(anyTollPassageData)
 		);
@@ -107,7 +107,7 @@ public class FeeServiceTests
 	public async Task ApplyFeeToAllPassages_ReturnsCorrectFees()
 	{
 		// Arrange
-		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>())
+		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalModel>())
 			.Returns(_fakeFeeIntervals);
 
 		// Act
@@ -127,7 +127,7 @@ public class FeeServiceTests
 	public async Task ApplyFeeToAllPassages_OnlyKeepPassagesWithFee()
 	{
 		// Arrange
-		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalDTO>())
+		A.CallTo(() => _fakeDbService.GetAsync<FeeInterval, FeeIntervalModel>())
 			.Returns(_fakeFeeIntervals);
 
 		// Act
@@ -140,7 +140,7 @@ public class FeeServiceTests
 	}
 
 	[Test]
-	public void GetDailyFeeSummaryForEachVehicle_WhenValidInputProvided_ReturnsCorrectDailyFees()
+	public async Task GetDailyFeeSummaryForEachVehicle_WhenValidInputProvided_ReturnsCorrectDailyFees()
 	{
 		// Arrange
 		var tollPassageData = new List<TollPassageData>
@@ -210,7 +210,7 @@ public class FeeServiceTests
 		var expectedFees = new List<decimal> { 53, 38 };
 
 		// Act
-		var actualFees = _sut.GetDailyFeeSummaryForEachVehicle(tollPassageData)
+		var actualFees = (await _sut.SaveDailyFeeSummaryForEachVehicle(tollPassageData))
 			.Select(x => x.DailyFee)
 			.ToList();
 
@@ -222,7 +222,7 @@ public class FeeServiceTests
 	}
 
 	[Test]
-	public void GetDailyFeeSummaryForEachVehicle_WhenNoFeesApplied_ThrowInvalidOperationException()
+	public void SaveDailyFeeSummaryForEachVehicle_WhenNoFeesApplied_ThrowInvalidOperationException()
 	{
 		// Arrange
 		var tollPassagesWithoutFees = new List<TollPassageData>
@@ -231,9 +231,10 @@ public class FeeServiceTests
 		};
 
 		// Act & Assert
-		var exception = Assert.Throws<InvalidOperationException>(() =>
-			_sut.GetDailyFeeSummaryForEachVehicle(tollPassagesWithoutFees)
+		var exception = Assert.ThrowsAsync<InvalidOperationException>(() =>
+			_sut.SaveDailyFeeSummaryForEachVehicle(tollPassagesWithoutFees)
 		);
+
 		Assert.That(
 			exception.Message,
 			Is.EqualTo("The passages must have fees applied to calculate the total daily fee")
@@ -241,7 +242,7 @@ public class FeeServiceTests
 	}
 
 	[Test]
-	public void GetDailyFeeSummaryForEachVehicle_WhenDailyFeeExceedsMaxDailyFee_ReturnsMaxDailyFee()
+	public async Task GetDailyFeeSummaryForEachVehicle_WhenDailyFeeExceedsMaxDailyFee_ReturnsMaxDailyFee()
 	{
 		// Arrange
 		var vehicleTollPassages = new List<TollPassageData>
@@ -287,7 +288,7 @@ public class FeeServiceTests
 		var maxDailyFee = _sut.GetMaxDailyFee();
 
 		// Act
-		var actualDailyFees = _sut.GetDailyFeeSummaryForEachVehicle(vehicleTollPassages)
+		var actualDailyFees = (await _sut.SaveDailyFeeSummaryForEachVehicle(vehicleTollPassages))
 			.Select(x => x.DailyFee)
 			.ToList();
 
