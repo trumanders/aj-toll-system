@@ -2,24 +2,28 @@
 
 public class VehicleTypeService(IDbService _dbService) : IVehicleTypeService
 {
-	public async Task<List<TollPassageData>> FilterOutTollFreeVehiclesAsync(List<TollPassageData> tollPassageData)
+	public async Task<List<TollPassageData>> FilterOutTollFreeVehiclesAsync(List<TollCameraData> tollCameraData)
 	{
 		var plateNumberWithType = await _dbService
-			.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataDTOPlateAndType>(data => tollPassageData.Select(x => x.PlateNumber).Contains(data.PlateNumber));
+			.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataPlateAndType>(data =>
+				tollCameraData.Select(x => x.PlateNumber).Contains(data.PlateNumber)
+			);
 
-		var tollFreeVehicleTypeNames = (await _dbService.GetAsync<VehicleType, VehicleTypeDTO>(x => x.IsTollFree))
+		var tollFreeVehicleTypeNames = (await _dbService.GetAsync<VehicleType, VehicleTypeModel>(x => x.IsTollFree))
 			.Select(x => x.VehicleTypeName);
 
-		var nonTollFreeVehiclesPassageData = tollPassageData
-			.Join(
+		var nonTollFreeVehiclesPassageData = tollCameraData.Join(
 				plateNumberWithType,
-				tollPassage => tollPassage.PlateNumber,
+				tollCameraData => tollCameraData.PlateNumber,
 				plateAndType => plateAndType.PlateNumber,
-				(tollPassage, plateAndType) =>
-					new { TollPassage = tollPassage, plateAndType.VehicleTypeName }
+				(tollCameraData, plateAndType) => new { TollPassage = tollCameraData, plateAndType.VehicleTypeName }
 			)
 			.Where(x => !tollFreeVehicleTypeNames.Contains(x.VehicleTypeName))
-			.Select(x => x.TollPassage)
+			.Select(x => new TollPassageData
+			{
+				PlateNumber = x.TollPassage.PlateNumber,
+				PassageTime = x.TollPassage.PassageTime
+			})
 			.ToList();
 
 		return nonTollFreeVehiclesPassageData;

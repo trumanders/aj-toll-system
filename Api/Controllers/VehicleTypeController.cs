@@ -1,29 +1,23 @@
-﻿using Business.Models;
+﻿namespace Api.Controllers;
 
-namespace Api.Controllers;
+using AutoMapper;
 
 [Route("api/[controller]")]
 [ApiController]
-public class VehicleTypeController(IVehicleTypeService _vehicleTypeService) : ControllerBase
+public class VehicleTypeController(IVehicleTypeService _vehicleTypeService, IMapper _mapper) : ControllerBase
 {
 	[HttpPost("filter-out-toll-free-vehicles")]
-	public async Task<IResult> FilterOutTollFreeVehicles(
-		[FromBody] List<TollPassageData> tollPassageDataWithVehicleType
-	)
+	public async Task<IResult> FilterOutTollFreeVehicles([FromBody] List<TollCameraDataDto> tollCameraDataDto)
 	{
 		try
 		{
-			return Results.Ok(
-				await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(
-					tollPassageDataWithVehicleType
-				)
-			);
+			var tollCameraModels = _mapper.Map<List<TollCameraData>>(tollCameraDataDto);
+			var result = await _vehicleTypeService.FilterOutTollFreeVehiclesAsync(tollCameraModels);
+			return Results.Ok(_mapper.Map<List<TollPassageDataDto>>(result));
 		}
 		catch (Exception e)
 		{
-			return Results.Problem(
-				$"An error occurred while filtering out toll free vehicles. Exception: {e.Message}"
-			);
+			return Results.Problem($"An error occurred while filtering out toll free vehicles. Exception: {e.Message}");
 		}
 	}
 }

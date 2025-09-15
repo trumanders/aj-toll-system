@@ -2,25 +2,15 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class SimulatedVehicleApiDataController : ControllerBase
+public class SimulatedVehicleApiDataController(IDbService _dbService, IMapper _mapper) : ControllerBase
 {
-	private readonly IDbService _dbService;
-
-	public SimulatedVehicleApiDataController(IDbService dbService)
-	{
-		_dbService = dbService;
-	}
-
-	[HttpGet("getAll")]
-	public async Task<IResult> GetAll()
+	[HttpGet("get-all-simulated-api-data")]
+	public async Task<IResult> GetAllSimulatedApiData()
 	{
 		try
 		{
-			var simulatedVehicleApiData = await _dbService.GetAsync<
-				SimulatedVehicleApiData,
-				SimulatedVehicleApiDataDTO
-			>();
-			return Results.Ok(simulatedVehicleApiData);
+			var simulatedVehicleApiData = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataModel>();
+			return Results.Ok(_mapper.Map<List<SimulatedVehicleApiDataDto>>(simulatedVehicleApiData));
 		}
 		catch (Exception e)
 		{
@@ -30,17 +20,14 @@ public class SimulatedVehicleApiDataController : ControllerBase
 		}
 	}
 
-	[HttpGet("getAllPlatenumbers")]
+	[HttpGet("get-all-plate-numbers")]
 	public async Task<IResult> GetAllPlateNumbers()
 	{
 		try
 		{
-			var vehiclePlateNumbers = await _dbService.GetAsync<
-				SimulatedVehicleApiData,
-				SimulatedVehicleApiDataDTOPlateNumber
-			>();
+			var vehiclePlateNumbers = await _dbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataPlateNumber>();
 
-			return Results.Ok(vehiclePlateNumbers);
+			return Results.Ok(_mapper.Map<SimulatedVehicleApiDataPlateNumberDto>(vehiclePlateNumbers));
 		}
 		catch (Exception e)
 		{

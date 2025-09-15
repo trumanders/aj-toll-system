@@ -1,6 +1,6 @@
-﻿namespace Business.Models;
+﻿namespace Api.Dto;
 
-public class TollCameraData : IBusinessModel
+public class TollCameraDataDto
 {
 	public string PlateNumber { get; set; }
 	public DateTime PassageTime { get; set; }

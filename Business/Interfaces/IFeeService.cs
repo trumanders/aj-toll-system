@@ -4,8 +4,7 @@ public interface IFeeService
 {
 	public Task<List<TollPassageData>> ApplyFeeToAllPassages(List<TollPassageData> tollPassageData);
 
-	public List<VehicleDailyFee> GetDailyFeeSummaryForEachVehicle(
-		List<TollPassageData> tollPassageData
-	);
+	public Task<List<VehicleDailyFee>> SaveDailyFeeSummaryForEachVehicle(List<TollPassageData> passageData);
+
 	public decimal GetMaxDailyFee();
 }

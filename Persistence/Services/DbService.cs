@@ -1,51 +1,42 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Business.Interfaces;
 
 namespace Persistence.Services;
 
-public class DbService : IDbService
+public class DbService(Context _db, IMapper _mapper) : IDbService
 {
-	private readonly Context _db;
-	private readonly IMapper _mapper;
-
-	public DbService(Context db, IMapper mapper)
-	{
-		_db = db;
-		_mapper = mapper;
-	}
-
 	// Add
-	public async Task<TEntity> AddAsync<TEntity, TDto>(TDto dto)
+	public async Task<TBusinessModel> AddAsync<TEntity, TBusinessModel>(TBusinessModel model)
 		where TEntity : class, IEntity
-		where TDto : class
+		where TBusinessModel : class, IBusinessModel
 	{
-		// DTO -> Entity
-		var entity = _mapper.Map<TEntity>(dto);
-
+		var entity = _mapper.Map<TEntity>(model);
 		await _db.Set<TEntity>().AddAsync(entity);
-		return entity;
+		await SaveChangesAsync();
+
+		return _mapper.Map<TBusinessModel>(entity);
 	}
 
 	// Add
-	public async Task<List<TEntity>> AddAsync<TEntity, TDto>(List<TDto> dtos)
+	public async Task<List<TBusinessModel>> AddAsync<TEntity, TBusinessModel>(List<TBusinessModel> models)
 		where TEntity : class, IEntity
-		where TDto : class
+		where TBusinessModel : class, IBusinessModel
 	{
-		var entities = _mapper.Map<List<TEntity>>(dtos);
-
+		var entities = _mapper.Map<List<TEntity>>(models);
 		await _db.Set<TEntity>().AddRangeAsync(entities);
-		return entities;
+		await SaveChangesAsync();
+
+		return _mapper.Map<List<TBusinessModel>>(entities);
 	}
 
 	// Get all
-	public async Task<List<TDto>> GetAsync<TEntity, TDto>()
+	public async Task<List<TBusinessModel>> GetAsync<TEntity, TBusinessModel>()
 		where TEntity : class, IEntity
-		where TDto : class
+		where TBusinessModel : class, IBusinessModel
 	{
-		IQueryable<TEntity> query = _db.Set<TEntity>();
-
 		var entities = await _db.Set<TEntity>().ToListAsync();
-		return _mapper.Map<List<TDto>>(entities);
+		return _mapper.Map<List<TBusinessModel>>(entities);
 	}
 
 	//public async Task<List<TDto>> GetWithIncludesAsync<TEntity, TDto>(params Expression<Func<TEntity, object>>[] includes)
@@ -65,26 +56,24 @@ public class DbService : IDbService
 	//}
 
 	// Get with expression
-	public async Task<List<TDto>> GetAsync<TEntity, TDto>(
-		Expression<Func<TEntity, bool>> expression
-	)
+	public async Task<List<TBusinessModel>> GetAsync<TEntity, TBusinessModel>(Expression<Func<TEntity, bool>> expression)
 		where TEntity : class, IEntity
-		where TDto : class
+		where TBusinessModel : class, IBusinessModel
 	{
-		var dtos = await _db.Set<TEntity>()
+		var businessModels = await _db.Set<TEntity>()
 			.Where(expression)
-			.ProjectTo<TDto>(_mapper.ConfigurationProvider)
+			.ProjectTo<TBusinessModel>(_mapper.ConfigurationProvider)
 			.ToListAsync();
 
-		return dtos;
+		return businessModels;
 	}
 
-	public async Task<List<TDto>> GetWithExpressionAndIncludesAsync<TEntity, TDto>(
+	public async Task<List<TBusinessModel>> GetWithExpressionAndIncludesAsync<TEntity, TBusinessModel>(
 		Expression<Func<TEntity, bool>> filter,
 		params Expression<Func<TEntity, object>>[] includes
 	)
 		where TEntity : class, IEntity
-		where TDto : class
+		where TBusinessModel : class, IBusinessModel
 	{
 		IQueryable<TEntity> query = _db.Set<TEntity>();
 
@@ -99,7 +88,7 @@ public class DbService : IDbService
 		}
 
 		var entities = await query.ToListAsync();
-		return _mapper.Map<List<TDto>>(entities);
+		return _mapper.Map<List<TBusinessModel>>(entities);
 	}
 
 	//public async Task<TDto> SingleAsync<TEntity, TDto>(Expression<Func<TEntity, bool>> expression)
@@ -141,12 +130,12 @@ public class DbService : IDbService
 	//	return true;
 	//}
 
-	public async Task<bool> Update<TEntity, TDto>(
+	public async Task<bool> Update<TEntity, TBusinessModel>(
 		Expression<Func<TEntity, bool>> expression,
-		List<TDto> dtos
+		List<TBusinessModel> dtos
 	)
 		where TEntity : class, IEntity
-		where TDto : class
+		where TBusinessModel : class, IBusinessModel
 	{
 		var entities = await _db.Set<TEntity>().Where(expression).ToListAsync();
 

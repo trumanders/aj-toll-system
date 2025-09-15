@@ -13,7 +13,7 @@ public class FeeService(IDbService _dbService) : IFeeService
 
 	public async Task<List<TollPassageData>> ApplyFeeToAllPassages(List<TollPassageData> tollPassageData)
 	{
-		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalDTO>();
+		var feeIntervals = await _dbService.GetAsync<FeeInterval, FeeIntervalModel>();
 
 		if (feeIntervals.Count == 0)
 		{
@@ -35,7 +35,7 @@ public class FeeService(IDbService _dbService) : IFeeService
 						})
 						.ToList();
 
-					ApplyFeeDiscontToPassages(passagesWithFee);
+					ApplyFeeDiscountToPassages(passagesWithFee);
 					RemoveZeroFees(passagesWithFee);
 
 					return passagesWithFee;
@@ -45,7 +45,7 @@ public class FeeService(IDbService _dbService) : IFeeService
 		return [.. passagesByPlateNumberWithFeeApplied.SelectMany(plateNumberGroup => plateNumberGroup)];
 	}
 
-	public List<VehicleDailyFee> GetDailyFeeSummaryForEachVehicle(List<TollPassageData> passageData)
+	public async Task<List<VehicleDailyFee>> SaveDailyFeeSummaryForEachVehicle(List<TollPassageData> passageData)
 	{
 		if (passageData.Any(x => x.Fee == null))
 		{
@@ -54,29 +54,24 @@ public class FeeService(IDbService _dbService) : IFeeService
 			);
 		}
 
+
+
 		var passasgesByPlatenumber = passageData
 			.GroupBy(x => x.PlateNumber)
 			.Select(g => g.ToList())
 			.ToList();
 
-		var vehicleDailyFees = new List<VehicleDailyFee>();
+		var vehicleDailyFees = passasgesByPlatenumber
+			.Select(plateNumberGroup => new VehicleDailyFee
+			{
+				PlateNumber = plateNumberGroup.First().PlateNumber,
+				DailyFee = CalculateTotalDailyFeeForVehicle(plateNumberGroup),
+				Date = plateNumberGroup.First().PassageTime.Date,
+			})
+			.ToList();
 
-		foreach (var platenumberGroup in passasgesByPlatenumber)
-		{
-			vehicleDailyFees.Add(
-				new VehicleDailyFee()
-				{
-					PlateNumber = platenumberGroup.First().PlateNumber,
-					DailyFee = CalculateTotalDailyFeeForVehicle(platenumberGroup),
-					Date = platenumberGroup.First().PassageTime.Date,
-				}
-			);
-		}
-
-		return vehicleDailyFees;
+		return await _dbService.AddAsync<DailyFees, VehicleDailyFee>(vehicleDailyFees);
 	}
-
-	// MONTHLY FEE LOGIC HERE:
 
 	#region Private Methods
 
@@ -87,7 +82,7 @@ public class FeeService(IDbService _dbService) : IFeeService
 		return dailyFee > maxDailyFee ? maxDailyFee : dailyFee;
 	}
 
-	private void ApplyFeeDiscontToPassages(List<TollPassageData> tollPassages)
+	private void ApplyFeeDiscountToPassages(List<TollPassageData> tollPassages)
 	{
 		if (tollPassages.Select(x => x.PlateNumber).Distinct().Count() > 1)
 			throw new ArgumentException(
