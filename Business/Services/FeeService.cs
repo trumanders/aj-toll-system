@@ -45,7 +45,7 @@ public class FeeService(IDbService _dbService) : IFeeService
 		return [.. passagesByPlateNumberWithFeeApplied.SelectMany(plateNumberGroup => plateNumberGroup)];
 	}
 
-	public async Task<List<VehicleDailyFee>> SaveDailyFeeSummaryForEachVehicle(List<TollPassageData> passageData)
+	public List<VehicleDailyFee> CreateDailyFeeSummaryForEachVehicle(List<TollPassageData> passageData)
 	{
 		if (passageData.Any(x => x.Fee == null))
 		{
@@ -53,8 +53,6 @@ public class FeeService(IDbService _dbService) : IFeeService
 				"The passages must have fees applied to calculate the total daily fee"
 			);
 		}
-
-
 
 		var passasgesByPlatenumber = passageData
 			.GroupBy(x => x.PlateNumber)
@@ -70,7 +68,19 @@ public class FeeService(IDbService _dbService) : IFeeService
 			})
 			.ToList();
 
-		return await _dbService.AddAsync<DailyFees, VehicleDailyFee>(vehicleDailyFees);
+		return vehicleDailyFees;
+	}
+
+	public async Task<List<VehicleDailyFee>> SaveDailyFeeSummaryForEachVehicle(List<TollPassageData> passageData)
+	{
+		var passageDataDate = DateOnly.FromDateTime(passageData.First().PassageTime);
+		if (await _dbService.CheckDailyFeeExistingDate(passageDataDate))
+		{
+			throw new InvalidOperationException("There are already daily fees saved for the same date");
+		}
+
+		var dailyFeeSummary = CreateDailyFeeSummaryForEachVehicle(passageData);
+		return await _dbService.AddAsync<DailyFees, VehicleDailyFee>(dailyFeeSummary);
 	}
 
 	#region Private Methods

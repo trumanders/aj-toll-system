@@ -39,21 +39,10 @@ public class DbService(Context _db, IMapper _mapper) : IDbService
 		return _mapper.Map<List<TBusinessModel>>(entities);
 	}
 
-	//public async Task<List<TDto>> GetWithIncludesAsync<TEntity, TDto>(params Expression<Func<TEntity, object>>[] includes)
-	//	where TEntity : class, IEntity
-	//	where TDto : class
-	//{
-	//	IQueryable<TEntity> query = _db.Set<TEntity>();
-
-	//	foreach (var include in includes)
-	//	{
-	//		query = query.Include(include);
-	//	}
-
-	//	var entities = await query.ToListAsync();
-
-	//	return _mapper.Map<List<TDto>>(entities);
-	//}
+	public async Task<bool> CheckDailyFeeExistingDate(DateOnly dateToCheck)
+	{
+		return _db.DailyFees.Any(dailyFee => dailyFee.Date.DayOfYear == dateToCheck.DayOfYear);
+	}
 
 	// Get with expression
 	public async Task<List<TBusinessModel>> GetAsync<TEntity, TBusinessModel>(Expression<Func<TEntity, bool>> expression)
