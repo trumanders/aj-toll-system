@@ -42,7 +42,7 @@ public class FeeController(IFeeService _feeService, IMapper _mapper, IDbService 
 		try
 		{
 			var allDailyFees = await _dbService.GetAsync<DailyFees, VehicleDailyFee>();
-			return Results.Ok(_mapper.Map<DailyFeeDto>(allDailyFees));
+			return Results.Ok(_mapper.Map<List<DailyFeeDto>>(allDailyFees));
 		}
 		catch (Exception e)
 		{

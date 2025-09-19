@@ -8,6 +8,6 @@ public class DtoMappingProfile : Profile
 	{
 		CreateMap<TollCameraData, TollCameraDataDto>().ReverseMap();
 		CreateMap<TollPassageData, TollPassageDataDto>().ReverseMap();
-		CreateMap<VehicleDailyFee, DailyFeeDto>();
+		CreateMap<VehicleDailyFee, DailyFeeDto>().ReverseMap();
 	}
 }
