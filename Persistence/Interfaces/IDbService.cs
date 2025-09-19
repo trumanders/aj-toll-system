@@ -28,4 +28,6 @@ public interface IDbService
 	)
 		where TEntity : class, IEntity
 		where TBusinessModel : class, IBusinessModel;
+
+	public Task<bool> CheckDailyFeeExistingDate(DateOnly dateToCheck);
 }
