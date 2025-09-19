@@ -2,7 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class FeeController(IFeeService _feeService, IMapper _mapper) : ControllerBase
+public class FeeController(IFeeService _feeService, IMapper _mapper, IDbService _dbService) : ControllerBase
 {
 	[HttpPost("apply-fee-to-all-passages")]
 	public async Task<IResult> ApplyFeeToAllPassages([FromBody] List<TollPassageDataDto> tollPassageDataDtos)
@@ -33,6 +33,20 @@ public class FeeController(IFeeService _feeService, IMapper _mapper) : Controlle
 			return Results.Problem(
 				$"An error occurred while retrieving data. Exception: {e.Message}"
 			);
+		}
+	}
+
+	[HttpGet("get-all-daily-fees")]
+	public async Task<IResult> GetAllDailyFees()
+	{
+		try
+		{
+			var allDailyFees = await _dbService.GetAsync<DailyFees, VehicleDailyFee>();
+			return Results.Ok(_mapper.Map<DailyFeeDto>(allDailyFees));
+		}
+		catch (Exception e)
+		{
+			return Results.Problem($"An error occurred while retrieving data. Exception: {e.Message}");
 		}
 	}
 }

@@ -1,9 +1,9 @@
 ﻿namespace Business.Services;
 
-public class TollPassageDataProcessingService(
+public class TollCameraDataProcessingService(
 	ITollCameraService _tollCameraService,
 	IVehicleTypeService _vehicleTypeService,
-	IFeeService _feeService) : ITollPassageDataProcessingService
+	IFeeService _feeService) : ITollCameraDataProcessingService
 {
 	public async Task<List<VehicleDailyFee>> ProcessDailyTollCameraData(DateTime date, int numberOfPassages)
 	{

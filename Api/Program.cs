@@ -31,6 +31,7 @@ public class Program
 		builder.Services.AddScoped<ITollCameraService, TollCameraService>();
 		builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();
 		builder.Services.AddScoped<IFeeService, FeeService>();
+		builder.Services.AddScoped<ITollCameraDataProcessingService, TollCameraDataProcessingService>();
 
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerDocument();
