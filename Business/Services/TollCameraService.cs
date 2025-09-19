@@ -27,6 +27,9 @@ public class TollCameraService(IDbService _dbService) : ITollCameraService
 			);
 		}
 
+		if (tollCameraData.Any(p => p.PassageTime.Date != date.Date))
+			throw new InvalidOperationException("Mixed dates detected in toll camera data");
+
 		return [.. tollCameraData.OrderBy(x => x.PassageTime)];
 	}
 }

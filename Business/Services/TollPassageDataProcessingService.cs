@@ -1,8 +1,11 @@
 ﻿namespace Business.Services;
 
-public class TollPassageDataProcessingService(ITollCameraService _tollCameraService, IVehicleTypeService _vehicleTypeService, IFeeService _feeService)
+public class TollPassageDataProcessingService(
+	ITollCameraService _tollCameraService,
+	IVehicleTypeService _vehicleTypeService,
+	IFeeService _feeService) : ITollPassageDataProcessingService
 {
-	public async Task ProcessDailyTollCameraData(DateTime date, int numberOfPassages)
+	public async Task<List<VehicleDailyFee>> ProcessDailyTollCameraData(DateTime date, int numberOfPassages)
 	{
 		// Get raw toll camera data
 		var tollCameraData = await _tollCameraService.GetDailyTollCameraData(date, numberOfPassages);
@@ -16,24 +19,6 @@ public class TollPassageDataProcessingService(ITollCameraService _tollCameraServ
 		// Save daily fees per vehicle
 		var savedDailyFeesPerVehicle = await _feeService.SaveDailyFeeSummaryForEachVehicle(tollPassageDataWithFees);
 
-
-
-	}
-
-	private List<TollPassageData> MapToTollPassageData(List<TollCameraData> rawCameraData)
-	{
-		List<TollPassageData> tollPassageData = [];
-
-		foreach (var cameraData in rawCameraData)
-		{
-			tollPassageData.Add(
-				new TollPassageData()
-				{
-					PlateNumber = cameraData.PlateNumber,
-					PassageTime = cameraData.PassageTime,
-				}
-			);
-		}
-		return tollPassageData;
+		return savedDailyFeesPerVehicle;
 	}
 }

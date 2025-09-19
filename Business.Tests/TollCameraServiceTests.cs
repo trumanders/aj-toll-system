@@ -9,7 +9,7 @@ public class TollCameraServiceTests
 	private readonly IDbService _fakeDbService;
 	private readonly DateTime _date = new(2022, 02, 02);
 
-	private readonly List<SimulatedVehicleApiDataPlateNumber> _fakeVehicleInfo =
+	private readonly List<SimulatedVehicleApiDataPlateNumber> _fakePlateNumbers =
 	[
 		new SimulatedVehicleApiDataPlateNumber { PlateNumber = "ABC123" },
 		new SimulatedVehicleApiDataPlateNumber { PlateNumber = "DEF456" },
@@ -23,11 +23,11 @@ public class TollCameraServiceTests
 		_fakeDbService = A.Fake<IDbService>();
 		_sut = new TollCameraService(_fakeDbService);
 		A.CallTo((() => _fakeDbService.GetAsync<SimulatedVehicleApiData, SimulatedVehicleApiDataPlateNumber>()))
-			.Returns(_fakeVehicleInfo);
+			.Returns(_fakePlateNumbers);
 	}
 
 	[Test]
-	public async Task GetDailyTollCameraData_WhenValidInputProvided_ReturnsOrderedList()
+	public async Task GetDailyTollCameraData_WhenValidInputProvided_ShouldReturnOrderedList()
 	{
 		var numberOfPassages = 100;
 
@@ -39,7 +39,7 @@ public class TollCameraServiceTests
 	}
 
 	[Test]
-	public async Task GetDailyTollCameraData_WhenValidInputProvided_ReturnsNonNullResult()
+	public async Task GetDailyTollCameraData_WhenValidInputProvided_ShouldReturnNonNullResult()
 	{
 		var numberOfPassages = 100;
 
@@ -54,7 +54,7 @@ public class TollCameraServiceTests
 	[TestCase(100)]
 	[TestCase(1000)]
 	[TestCase(1000000)]
-	public async Task GetDailyTollCameraData_WhenValidInputProvided_ReturnsCorrectNumberOfPassages(int numberOfPassages)
+	public async Task GetDailyTollCameraData_WhenValidInputProvided_ShouldReturnCorrectNumberOfPassages(int numberOfPassages)
 	{
 		// Act
 		var result = await _sut.GetDailyTollCameraData(_date, numberOfPassages);
@@ -63,11 +63,7 @@ public class TollCameraServiceTests
 		Assert.That(result, Has.Count.EqualTo(numberOfPassages));
 	}
 
-	[TestCase(1)]
-	[TestCase(100)]
-	[TestCase(1000)]
-	[TestCase(1000000)]
-	public async Task GetDailyTollCameraData_WhenValidInputProvided_ReturnsResultWithTheSameDate(int numberOfPassages)
+	public async Task GetDailyTollCameraData_WhenValidInputProvided_ShouldReturnResultWithTheSameDate(int numberOfPassages)
 	{
 		// Act
 		var result = await _sut.GetDailyTollCameraData(_date, numberOfPassages);
